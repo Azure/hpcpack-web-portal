@@ -39,3 +39,10 @@ steps:
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: $(Build.ArtifactStagingDirectory)/**/Microsoft.HPC.WebPortal.*.nupkg
+    nuGetFeedType: 'internal'
+    publishVstsFeed: '5e2011c9-a9d1-448b-9be7-9e9c97526134'
