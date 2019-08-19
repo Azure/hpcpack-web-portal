@@ -3,6 +3,8 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
+name: 0.0.$(Rev:r)
+
 trigger:
 - master
 
@@ -18,5 +20,22 @@ steps:
 - script: |
     npm install -g @angular/cli
     npm install
-    ng build --prod
+    ng build web-portal
   displayName: 'npm install and build'
+
+- task: CopyFiles@2
+  inputs:
+    Contents: 'dist/web-portal/**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'Microsoft.HPC.WebPortal.nuspec'
+    versioningScheme: 'byBuildNumber'
+    packDestination: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
