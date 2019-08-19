@@ -18,12 +18,12 @@ steps:
 - script: |
     npm install -g @angular/cli
     npm install
-    ng build --prod
+    ng build web-portal
   displayName: 'npm install and build'
 
 - task: CopyFiles@2
   inputs:
-    Contents: 'dist/**'
+    Contents: 'dist/web-portal/**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
