@@ -30,3 +30,9 @@ steps:
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'Microsoft.HPC.WebPortal.nuspec'
+    versioningScheme: 'byBuildNumber'
