@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  API_BASE_PATH: 'https://23.101.22.85/hpc'
 };
 
 /*
