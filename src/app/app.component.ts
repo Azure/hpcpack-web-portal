@@ -13,15 +13,15 @@ export class AppComponent {
     private router: Router) {
   }
 
-  private get username(): string {
+  get username(): string {
     return this.authService.authenticatedUser ? this.authService.authenticatedUser.username : 'Guest';
   }
 
-  private get authenticated(): boolean {
+  get authenticated(): boolean {
     return this.authService.authenticatedUser != null;
   }
 
-  private logout(): void {
+  logout(): void {
     this.authService.reset();
     this.router.navigate(['/login']);
   }

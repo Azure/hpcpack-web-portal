@@ -8,10 +8,10 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  private username: string = '';
-  private password: string = '';
-  private returnUrl: string;
-  private error: string;
+  username: string = '';
+  password: string = '';
+  returnUrl: string;
+  error: string;
 
   constructor(
     private authService: AuthService,
@@ -23,7 +23,7 @@ export class LoginComponent {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  private login(): void {
+  login(): void {
     this.authService.authenticate(this.username, this.password).subscribe({
       next: (ok) => {
         if (ok) {
