@@ -67,6 +67,12 @@ stages:
   jobs:
   - job: Deploy
     steps:
-    - script: |
-        echo "I'm Deploying..."
-      displayName: 'Test Deploy'
+    - task: WindowsMachineFileCopy@2
+      inputs:
+        SourcePath: '$(Build.ArtifactStagingDirectory)/dist/web-portal/**'
+        MachineNames: '$(StagingHost)'
+        AdminUserName: '$(StagingHost.Username)'
+        AdminPassword: '$(StagingHost.AdminPassword)'
+        TargetPath: 'C:\\Program Files\\Microsoft HPC Pack 2016\\Bin\\WebPortal\\'
+        CleanTargetBeforeCopy: true
+      displayName: 'Deploy to $(StagingHost)'
