@@ -7,6 +7,7 @@ name: 0.1.$(Rev:r)
 
 trigger:
 - master
+- release
 
 stages:
 - stage: Build
@@ -59,3 +60,13 @@ stages:
         nuGetFeedType: 'internal'
         publishVstsFeed: '5e2011c9-a9d1-448b-9be7-9e9c97526134'
       displayName: 'Publish NuGet Package to Internal Feed'
+
+- stage: Deploy
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+  jobs:
+  - job: Deploy
+    steps:
+    - script: |
+        echo "I'm Deploying..."
+      displayName: 'Test Deploy'
