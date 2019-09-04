@@ -8,51 +8,54 @@ name: 0.1.$(Rev:r)
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - checkout: self
+      submodules: recursive
 
-steps:
-- checkout: self
-  submodules: recursive
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '10.x'
+      displayName: 'Install Node.js'
 
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+    - script: |
+        npm install -g @angular/cli
+        npm install
+      displayName: 'Install Angular CLI and npm Packages'
 
-- script: |
-    npm install -g @angular/cli
-    npm install
-  displayName: 'Install Angular CLI and npm Packages'
+    - script: |
+        ng build -c staging
+      displayName: 'Ng Build'
 
-- script: |
-    ng build -c staging
-  displayName: 'Ng Build'
+    - task: CopyFiles@2
+      inputs:
+        Contents: 'dist/web-portal/**'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      displayName: 'Copy Build Result'
 
-- task: CopyFiles@2
-  inputs:
-    Contents: 'dist/web-portal/**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copy Build Result'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+      displayName: 'Publish Build Result to Artifacts'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-  displayName: 'Publish Build Result to Artifacts'
+    - task: NuGetCommand@2
+      inputs:
+        command: 'pack'
+        packagesToPack: 'Microsoft.HPC.WebPortal.nuspec'
+        versioningScheme: 'byBuildNumber'
+        packDestination: '$(Build.ArtifactStagingDirectory)'
+      displayName: 'Make NuGet Package'
 
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: 'Microsoft.HPC.WebPortal.nuspec'
-    versioningScheme: 'byBuildNumber'
-    packDestination: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Make NuGet Package'
-
-- task: NuGetCommand@2
-  inputs:
-    command: 'push'
-    packagesToPush: $(Build.ArtifactStagingDirectory)/**/Microsoft.HPC.WebPortal.*.nupkg
-    nuGetFeedType: 'internal'
-    publishVstsFeed: '5e2011c9-a9d1-448b-9be7-9e9c97526134'
-  displayName: 'Publish NuGet Package to Internal Feed'
+    - task: NuGetCommand@2
+      inputs:
+        command: 'push'
+        packagesToPush: $(Build.ArtifactStagingDirectory)/**/Microsoft.HPC.WebPortal.*.nupkg
+        nuGetFeedType: 'internal'
+        publishVstsFeed: '5e2011c9-a9d1-448b-9be7-9e9c97526134'
+      displayName: 'Publish NuGet Package to Internal Feed'
