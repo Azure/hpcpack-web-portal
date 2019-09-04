@@ -47,7 +47,6 @@ export class AuthService {
   }
 
   reset(): void {
-    this.userService.user = null;
-    this.userService.authenticated = false;
+    this.userService.clear();
   }
 }
