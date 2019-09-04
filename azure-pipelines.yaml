@@ -12,6 +12,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+- checkout: self
+  submodules: recursive
+
 - task: NodeTool@0
   inputs:
     versionSpec: '10.x'
