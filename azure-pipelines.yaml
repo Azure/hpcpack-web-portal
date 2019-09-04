@@ -33,16 +33,8 @@ stages:
         ng build -c staging
       displayName: 'Ng Build'
 
-    - task: CopyFiles@2
-      inputs:
-        Contents: 'dist/web-portal/**'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
-      displayName: 'Copy Build Result'
-
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'drop'
+    - publish: 'dist/web-portal'
+      artifact: WebPortal
       displayName: 'Publish Build Result to Artifacts'
 
     - task: NuGetCommand@2
@@ -71,9 +63,12 @@ stages:
     steps:
     - checkout: none
 
+    - download: current
+      artifact: WebPortal
+
     - task: WindowsMachineFileCopy@2
       inputs:
-        SourcePath: '$(Build.ArtifactStagingDirectory)/dist/web-portal/**'
+        SourcePath: '$(Pipeline.Workspace)/WebPortal/**'
         MachineNames: '$(StagingHost)'
         AdminUserName: '$(StagingHost.Username)'
         AdminPassword: '$(StagingHost.AdminPassword)'
