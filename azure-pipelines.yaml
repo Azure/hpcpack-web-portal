@@ -68,10 +68,10 @@ stages:
 
     - task: WindowsMachineFileCopy@2
       inputs:
-        SourcePath: '$(Pipeline.Workspace)/WebPortal/**'
+        SourcePath: '$(Pipeline.Workspace)/WebPortal'
         MachineNames: '$(StagingHost)'
         AdminUserName: '$(StagingHost.Username)'
         AdminPassword: '$(StagingHost.AdminPassword)'
-        TargetPath: 'C:\\Program Files\\Microsoft HPC Pack 2016\\Bin\\WebPortal\\'
+        TargetPath: 'C:\\Program Files\\Microsoft HPC Pack 2016\\Bin\\WebPortal'
         CleanTargetBeforeCopy: true
       displayName: 'Deploy to $(StagingHost)'
