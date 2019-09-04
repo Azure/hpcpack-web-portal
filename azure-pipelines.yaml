@@ -23,13 +23,17 @@ steps:
 - script: |
     npm install -g @angular/cli
     npm install
-    ng build web-portal
-  displayName: 'npm install and build'
+  displayName: 'Install Angular Cli and npm packages'
+
+- script: |
+    ng build -c staging
+  displayName: 'Ng Build'
 
 - task: CopyFiles@2
   inputs:
     Contents: 'dist/web-portal/**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy build result'
 
 - task: NuGetCommand@2
   inputs:
@@ -37,11 +41,13 @@ steps:
     packagesToPack: 'Microsoft.HPC.WebPortal.nuspec'
     versioningScheme: 'byBuildNumber'
     packDestination: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Make NuGet package'
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
+  displayName: 'Publish build result to Artifacts'
 
 - task: NuGetCommand@2
   inputs:
@@ -49,3 +55,4 @@ steps:
     packagesToPush: $(Build.ArtifactStagingDirectory)/**/Microsoft.HPC.WebPortal.*.nupkg
     nuGetFeedType: 'internal'
     publishVstsFeed: '5e2011c9-a9d1-448b-9be7-9e9c97526134'
+  displayName: 'Publish NuGet package to internal feed'
