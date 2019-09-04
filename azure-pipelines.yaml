@@ -3,7 +3,7 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-name: 0.0.$(Rev:r)
+name: 0.1.$(Rev:r)
 
 trigger:
 - master
@@ -23,7 +23,7 @@ steps:
 - script: |
     npm install -g @angular/cli
     npm install
-  displayName: 'Install Angular Cli and npm packages'
+  displayName: 'Install Angular CLI and npm Packages'
 
 - script: |
     ng build -c staging
@@ -33,7 +33,13 @@ steps:
   inputs:
     Contents: 'dist/web-portal/**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copy build result'
+  displayName: 'Copy Build Result'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+  displayName: 'Publish Build Result to Artifacts'
 
 - task: NuGetCommand@2
   inputs:
@@ -41,13 +47,7 @@ steps:
     packagesToPack: 'Microsoft.HPC.WebPortal.nuspec'
     versioningScheme: 'byBuildNumber'
     packDestination: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Make NuGet package'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-  displayName: 'Publish build result to Artifacts'
+  displayName: 'Make NuGet Package'
 
 - task: NuGetCommand@2
   inputs:
@@ -55,4 +55,4 @@ steps:
     packagesToPush: $(Build.ArtifactStagingDirectory)/**/Microsoft.HPC.WebPortal.*.nupkg
     nuGetFeedType: 'internal'
     publishVstsFeed: '5e2011c9-a9d1-448b-9be7-9e9c97526134'
-  displayName: 'Publish NuGet package to internal feed'
+  displayName: 'Publish NuGet Package to Internal Feed'
