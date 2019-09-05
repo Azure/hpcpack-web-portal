@@ -59,7 +59,7 @@ stages:
   jobs:
   - job: Deploy
     pool: 
-      vmImage: ubuntu-latest
+      vmImage: windows-latest
     steps:
     - checkout: none
 
