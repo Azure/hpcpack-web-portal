@@ -38,6 +38,10 @@ stages:
       displayName: 'Install Angular CLI and npm Packages'
 
     - script: |
+        ng test --no-watch --no-progress --browsers=ChromeHeadlessCI
+      displayName: 'Ng Test'
+
+    - script: |
         ng build -c staging
       displayName: 'Ng Build'
 
