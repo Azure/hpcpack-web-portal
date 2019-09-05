@@ -66,12 +66,16 @@ stages:
     - download: current
       artifact: WebPortal
 
-    - task: WindowsMachineFileCopy@2
+    - task: AzureFileCopy@3
       inputs:
         SourcePath: '$(Pipeline.Workspace)/WebPortal'
-        MachineNames: '$(StagingHost)'
-        AdminUserName: '$(StagingHost.Username)'
-        AdminPassword: '$(StagingHost.Password)'
-        TargetPath: '$(StagingHost.TargetPath)'
+        azureSubscription: $(Subscription)
+        storage: $(StorageAccount)
+        Destination: 'AzureVMs'
+        ResourceFilteringMethod: machineNames
+        MachineNames: $(TargetHosts)
+        vmsAdminUserName: $(TargetHosts.AdminUserName)
+        vmsAdminPassword: $(TargetHosts.AdminPassword)
+        TargetPath: $(TargetHosts.Path)
         CleanTargetBeforeCopy: true
-      displayName: 'Deploy to $(StagingHost)'
+      displayName: 'Deploy to $(TargetHosts)'
