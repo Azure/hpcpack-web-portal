@@ -1,12 +1,23 @@
 import { TestBed, async } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { AppComponent } from './app.component';
+import { AuthService } from './auth.service';
+
+@Component({ selector: 'router-outlet', template: '' })
+class RouterOutletStubComponent {}
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        RouterOutletStubComponent,
         AppComponent
       ],
+      providers: [
+        { provide: Router, useValue: {} },
+        { provide: AuthService, useValue: {} },
+      ]
     }).compileComponents();
   }));
 
@@ -16,16 +27,4 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'web-portal'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('web-portal');
-  });
-
-  it('should render title in a h1 tag', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to web-portal!');
-  });
 });
