@@ -71,7 +71,7 @@ stages:
         SourcePath: '$(Pipeline.Workspace)/WebPortal'
         MachineNames: '$(StagingHost)'
         AdminUserName: '$(StagingHost.Username)'
-        AdminPassword: '$(StagingHost.AdminPassword)'
+        AdminPassword: '$(StagingHost.Password)'
         TargetPath: '$(StagingHost.TargetPath)'
         CleanTargetBeforeCopy: true
       displayName: 'Deploy to $(StagingHost)'
