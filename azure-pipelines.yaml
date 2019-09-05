@@ -79,4 +79,5 @@ stages:
         vmsAdminPassword: $(TargetHosts.AdminPassword)
         TargetPath: $(TargetHosts.Path)
         CleanTargetBeforeCopy: true
+        enableCopyPrerequisites: true
       displayName: 'Deploy to $(TargetHosts)'
