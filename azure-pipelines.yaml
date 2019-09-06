@@ -39,7 +39,11 @@ stages:
 
     - script: |
         ng test --no-watch --no-progress --browsers=ChromeHeadlessCI
-      displayName: 'Ng Test'
+      displayName: 'Ng Unit Test'
+
+    - script: |
+        ng e2e --protractor-config=e2e/protractor-ci.conf.js
+      displayName: 'Ng E2E Test'
 
     - script: |
         ng build -c staging
