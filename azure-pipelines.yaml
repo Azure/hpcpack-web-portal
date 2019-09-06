@@ -45,17 +45,17 @@ stages:
     - script: |
         npm install -g @angular/cli
         npm ci
-      displayName: 'Install Angular CLI and npm Packages'
+      displayName: 'Install npm Packages'
 
     - script: |
         npm run ci-test
-      displayName: 'Ng Unit Test'
+      displayName: 'Unit Test'
 
     - task: PublishTestResults@2
       inputs:
         testResultsFiles: 'unit-test-result.xml'
         failTaskOnFailedTests: true
-      displayName: 'Publish Unit Test Results'
+      displayName: 'Publish Unit Test Result'
 
     - task: PublishCodeCoverageResults@1
       inputs:
@@ -65,17 +65,17 @@ stages:
 
     - script: |
         npm run ci-e2e
-      displayName: 'Ng E2E Test'
+      displayName: 'E2E Test'
 
     - script: |
         npm run build-stg
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
-      displayName: 'Ng Build'
+      displayName: 'Build'
 
     - publish: 'dist/web-portal'
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       artifact: WebPortal
-      displayName: 'Publish Build Result to Artifacts'
+      displayName: 'Publish Build Result'
 
     - task: NuGetCommand@2
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
@@ -93,7 +93,7 @@ stages:
         packagesToPush: $(Build.ArtifactStagingDirectory)/**/Microsoft.HPC.WebPortal.*.nupkg
         nuGetFeedType: 'internal'
         publishVstsFeed: '5e2011c9-a9d1-448b-9be7-9e9c97526134'
-      displayName: 'Publish NuGet Package to Internal Feed'
+      displayName: 'Publish NuGet Package'
 
 - stage: Deploy
   dependsOn: Build
