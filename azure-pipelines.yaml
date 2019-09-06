@@ -17,6 +17,16 @@ trigger:
     - CONTRIBUTING.md
     - LICENSE
 
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - README.md
+    - CONTRIBUTING.md
+    - LICENSE
+
 stages:
 - stage: Build
   jobs:
@@ -53,9 +63,11 @@ stages:
 
     - script: |
         ng build -c staging
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Ng Build'
 
     - publish: 'dist/web-portal'
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       artifact: WebPortal
       displayName: 'Publish Build Result to Artifacts'
 
