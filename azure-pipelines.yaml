@@ -44,11 +44,11 @@ stages:
 
     - script: |
         npm install -g @angular/cli
-        npm install
+        npm ci
       displayName: 'Install Angular CLI and npm Packages'
 
     - script: |
-        ng test --no-watch --no-progress --browsers=ChromeHeadlessCI --reporters=junit --code-coverage
+        npm run ci-test
       displayName: 'Ng Unit Test'
 
     - task: PublishTestResults@2
@@ -64,11 +64,11 @@ stages:
       displayName: 'Publish Unit Test Code Coverage Result'
 
     - script: |
-        ng e2e --protractor-config=e2e/protractor-ci.conf.js
+        npm run ci-e2e
       displayName: 'Ng E2E Test'
 
     - script: |
-        ng build -c staging
+        npm run build-stg
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Ng Build'
 
