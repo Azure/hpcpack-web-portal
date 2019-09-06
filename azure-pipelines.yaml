@@ -48,7 +48,7 @@ stages:
       displayName: 'Install Angular CLI and npm Packages'
 
     - script: |
-        ng test --no-watch --no-progress --browsers=ChromeHeadlessCI --reporters=junit
+        ng test --no-watch --no-progress --browsers=ChromeHeadlessCI --reporters=junit --code-coverage
       displayName: 'Ng Unit Test'
 
     - task: PublishTestResults@2
@@ -56,6 +56,12 @@ stages:
         testResultsFiles: 'unit-test-result.xml'
         failTaskOnFailedTests: true
       displayName: 'Publish Unit Test Results'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: cobertura
+        summaryFileLocation: coverage/cobertura-coverage.xml
+      displayName: 'Publish Unit Test Code Coverage Result'
 
     - script: |
         ng e2e --protractor-config=e2e/protractor-ci.conf.js
