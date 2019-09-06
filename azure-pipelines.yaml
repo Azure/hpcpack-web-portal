@@ -48,7 +48,7 @@ stages:
       displayName: 'Install Angular CLI and npm Packages'
 
     - script: |
-        ng test --no-watch --no-progress --browsers=ChromeHeadlessCI --reporters=progress,junit
+        ng test --no-watch --no-progress --browsers=ChromeHeadlessCI --reporters=junit
       displayName: 'Ng Unit Test'
 
     - task: PublishTestResults@2
