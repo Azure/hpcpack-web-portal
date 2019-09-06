@@ -43,9 +43,8 @@ stages:
       displayName: 'Install Node.js'
 
     - script: |
-        npm install -g @angular/cli
         npm install
-      displayName: 'Install Angular CLI and npm Packages'
+      displayName: 'Install npm Packages'
 
     - script: |
         ng test --no-watch --no-progress --browsers=ChromeHeadlessCI --reporters=junit --code-coverage
