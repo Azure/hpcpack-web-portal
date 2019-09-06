@@ -38,8 +38,14 @@ stages:
       displayName: 'Install Angular CLI and npm Packages'
 
     - script: |
-        ng test --no-watch --no-progress --browsers=ChromeHeadlessCI
+        ng test --no-watch --no-progress --browsers=ChromeHeadlessCI --reporters=progress,junit
       displayName: 'Ng Unit Test'
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFiles: 'unit-test-result.xml'
+        failTaskOnFailedTests: true
+      displayName: 'Publish Unit Test Results'
 
     - script: |
         ng e2e --protractor-config=e2e/protractor-ci.conf.js
