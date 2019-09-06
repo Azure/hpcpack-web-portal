@@ -27,6 +27,9 @@ pr:
     - CONTRIBUTING.md
     - LICENSE
 
+variables:
+  npm_config_cache: $(Pipeline.Workspace)/.npm
+
 stages:
 - stage: Build
   jobs:
@@ -41,6 +44,12 @@ stages:
       inputs:
         versionSpec: '10.x'
       displayName: 'Install Node.js'
+
+    - task: CacheBeta@0
+      inputs:
+        key: npm | $(Agent.OS) | package-lock.json
+        path: $(npm_config_cache)
+      displayName: "Cache npm"
 
     - script: |
         npm ci
