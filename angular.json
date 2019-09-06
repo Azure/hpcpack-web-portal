@@ -126,7 +126,8 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "codeCoverageExclude": ["src/app/api-client/**/*"]
           }
         },
         "lint": {
