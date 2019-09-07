@@ -1,4 +1,4 @@
 [submodule "src/app/api-client"]
-	path = src/app/api-client
-	url = https://github.com/coin8086/hpcpack-rest-api-angular-client.git
-	branch = src
+  path = src/app/api-client
+  url = https://github.com/Azure/hpcpack-rest-api-angular-client.git
+  branch = src
