@@ -1,6 +1,13 @@
 # HPC Pack Web Portal
 
+[![Build Status](https://dev.azure.com/leizhan/hpcpack-web-portal-azure/_apis/build/status/Azure.hpcpack-web-portal?branchName=master)](https://dev.azure.com/leizhan/hpcpack-web-portal-azure/_build/latest?definitionId=7&branchName=master)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.1.
+## Get code
+
+```bash
+$ git clone --recurse-submodules git@github.com:Azure/hpcpack-web-portal.git
+```
 
 ## Development server
 
@@ -25,7 +32,3 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-## Generate Nuget Packge
-
-Run `nuget pack Microsoft.HPC.WebPortal.nuspec`
