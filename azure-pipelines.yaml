@@ -94,31 +94,35 @@ stages:
         publishVstsFeed: '5e2011c9-a9d1-448b-9be7-9e9c97526134'
       displayName: 'Publish NuGet Package'
 
-- stage: Deploy
-  dependsOn: Build
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
-  jobs:
-  - job: Deploy
-    pool:
-      vmImage: windows-latest
-    steps:
-    - checkout: none
 
-    - download: current
-      artifact: WebPortal
-
-    - task: AzureFileCopy@3
-      inputs:
-        SourcePath: '$(Pipeline.Workspace)/WebPortal'
-        azureSubscription: $(Subscription)
-        resourceGroup: $(ResourceGroup)
-        storage: $(StorageAccount)
-        Destination: 'AzureVMs'
-        ResourceFilteringMethod: machineNames
-        MachineNames: $(TargetHosts)
-        vmsAdminUserName: $(TargetHosts.AdminUserName)
-        vmsAdminPassword: $(TargetHosts.AdminPassword)
-        TargetPath: $(TargetHosts.Path)
-        CleanTargetBeforeCopy: true
-        enableCopyPrerequisites: true
-      displayName: 'Deploy to $(TargetHosts)'
+# The deploy is blocked on issue:
+# https://github.com/microsoft/azure-pipelines-tasks/issues/11158
+#
+# - stage: Deploy
+#   dependsOn: Build
+#   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+#   jobs:
+#   - job: Deploy
+#     pool:
+#       vmImage: windows-latest
+#     steps:
+#     - checkout: none
+#
+#     - download: current
+#       artifact: WebPortal
+#
+#     - task: AzureFileCopy@3
+#       inputs:
+#         SourcePath: '$(Pipeline.Workspace)/WebPortal'
+#         azureSubscription: $(Subscription)
+#         resourceGroup: $(ResourceGroup)
+#         storage: $(StorageAccount)
+#         Destination: 'AzureVMs'
+#         ResourceFilteringMethod: machineNames
+#         MachineNames: $(TargetHosts)
+#         vmsAdminUserName: $(TargetHosts.AdminUserName)
+#         vmsAdminPassword: $(TargetHosts.AdminPassword)
+#         TargetPath: $(TargetHosts.Path)
+#         CleanTargetBeforeCopy: true
+#         enableCopyPrerequisites: true
+#       displayName: 'Deploy to $(TargetHosts)'
