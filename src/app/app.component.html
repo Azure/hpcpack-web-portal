@@ -1,5 +1,5 @@
 <h1>Hello, {{username}}!</h1>
 <p *ngIf="authenticated">
-  <button (click)="logout()">Log out</button>
+  <a mat-flat-button color="primary" (click)="logout()">Log out</a>
 </p>
 <router-outlet></router-outlet>

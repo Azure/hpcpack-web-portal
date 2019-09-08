@@ -1,11 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { ApiModule, DefaultService, Configuration, ConfigurationParameters, BASE_PATH } from './api-client';
 
+import { MaterialModule } from './material.module'
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
@@ -23,6 +25,7 @@ import { ApiConfigService } from './api-config.service';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot([
@@ -30,6 +33,7 @@ import { ApiConfigService } from './api-config.service';
       { path: 'login', component: LoginComponent },
     ]),
     ApiModule,
+    MaterialModule,
   ],
   providers: [
     AuthService,

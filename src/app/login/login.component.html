@@ -1,15 +1,17 @@
-<p>
-  <label>Username: <input type="text" [(ngModel)]="username"/></label>
-</p>
+<div class="container">
+  <mat-form-field>
+    <mat-label>Username</mat-label>
+    <input matInput [(ngModel)]="username" required />
+  </mat-form-field>
 
-<p>
-  <label>Password: <input type="password" [(ngModel)]="password"/></label>
-</p>
+  <mat-form-field>
+    <mat-label>Password</mat-label>
+    <input matInput type="password" [(ngModel)]="password" required />
+  </mat-form-field>
 
-<p>
-  <button (click)="login()">Login</button>
-</p>
+  <a mat-flat-button color="primary" (click)="login()">Login</a>
 
-<p *ngIf="error">
-  {{error}}
-</p>
+  <p class="error" *ngIf="error">
+    {{error}}
+  </p>
+</div>

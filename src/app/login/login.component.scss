@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 20em;
+  margin: 1em auto;
+}
+
+.container > * {
+  width: 100%;
+}
+
+.container .error {
+  margin-top: 1em;
+  color: red;
+}
