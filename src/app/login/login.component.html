@@ -1,17 +1,17 @@
-<div class="container">
+<form [formGroup]="userCred" (ngSubmit)="login()" class="container">
   <mat-form-field>
     <mat-label>Username</mat-label>
-    <input matInput [(ngModel)]="username" required />
+    <input matInput formControlName="username" required />
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Password</mat-label>
-    <input matInput type="password" [(ngModel)]="password" required />
+    <input matInput type="password" formControlName="password" required />
   </mat-form-field>
 
-  <a mat-flat-button color="primary" (click)="login()">Login</a>
+  <button type="submit" mat-flat-button color="primary" [disabled]="!userCred.valid">Login</button>
 
   <p class="error" *ngIf="error">
     {{error}}
   </p>
-</div>
+</form>
