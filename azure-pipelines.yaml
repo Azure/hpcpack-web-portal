@@ -91,7 +91,7 @@ stages:
         command: 'push'
         packagesToPush: $(Build.ArtifactStagingDirectory)/**/Microsoft.HPC.WebPortal.*.nupkg
         nuGetFeedType: 'internal'
-        publishVstsFeed: '5e2011c9-a9d1-448b-9be7-9e9c97526134'
+        publishVstsFeed: $(VstsFeed)
       displayName: 'Publish NuGet Package'
 
 
