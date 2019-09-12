@@ -1,11 +1,28 @@
-mat-toolbar {
-  margin-bottom: 1em;
+.app {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-.toolbar-spacer {
-  flex: 1 1 auto;
+.body {
+  flex: 1;
 }
 
-.item {
-  margin-left: 1em;
+.header {
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
+
+  .item {
+    margin-left: 1em;
+  }
+}
+
+.nav-icon {
+  margin-right: 0.5em;
+  font-size: 1.1em;
 }

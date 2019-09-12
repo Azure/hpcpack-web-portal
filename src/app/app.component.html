@@ -1,8 +1,36 @@
-<mat-toolbar color="primary">
-  <span class="title">HPC Pack 2019</span>
-  <span class="toolbar-spacer"></span>
-  <span *ngIf="authenticated" class="item">{{username}}</span>
-  <a *ngIf="authenticated" class="item" mat-flat-button (click)="logout()">Log out</a>
-</mat-toolbar>
+<div class="app" *ngIf="authenticated; else guestView">
+  <mat-toolbar class="header" color="primary">
+    <button mat-icon-button (click)="nav.toggle()">
+      <i class="material-icons">menu</i>
+    </button>
+    <span class="title">HPC Pack 2019</span>
+    <span class="toolbar-spacer"></span>
+    <span class="item">{{username}}</span>
+    <a class="item" mat-flat-button (click)="logout()">Log out</a>
+  </mat-toolbar>
 
-<router-outlet></router-outlet>
+  <mat-sidenav-container class="body">
+    <mat-sidenav #nav mode="side" opened="true">
+      <mat-nav-list>
+        <a *ngFor="let item of navItems" class="nav-list" mat-list-item routerLinkActive="active" [routerLink]="item.link">
+          <i class="material-icons nav-icon">{{item.icon}}</i>
+          <span class="title">{{item.title}}</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<ng-template #guestView>
+  <div class="app">
+    <mat-toolbar class="header" color="primary">
+      <span class="title">HPC Pack 2019</span>
+    </mat-toolbar>
+    <div class="body">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</ng-template>

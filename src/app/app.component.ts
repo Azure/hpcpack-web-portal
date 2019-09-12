@@ -25,4 +25,22 @@ export class AppComponent {
     this.authService.reset();
     this.router.navigate(['/login']);
   }
+
+  readonly navItems = [
+    {
+      link: '#',
+      title: 'Item1',
+      icon: 'cloud',
+    },
+    {
+      link: '#',
+      title: 'Item2',
+      icon: 'cloud',
+    },
+    {
+      link: '#',
+      title: 'Item3',
+      icon: 'cloud',
+    },
+  ];
 }
