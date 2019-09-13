@@ -28,19 +28,24 @@ export class AppComponent {
 
   readonly navItems = [
     {
-      link: '#',
-      title: 'Item1',
-      icon: 'cloud',
+      link: 'dashboard',
+      title: 'Dashboard',
+      icon: 'dashboard',
     },
     {
-      link: '#',
-      title: 'Item2',
-      icon: 'cloud',
+      link: 'nodes',
+      title: 'Nodes',
+      icon: 'computer',
     },
     {
-      link: '#',
-      title: 'Item3',
-      icon: 'cloud',
+      link: 'jobs',
+      title: 'Jobs',
+      icon: 'list',
+    },
+    {
+      link: 'charts',
+      title: 'Charts',
+      icon: 'bar_chart',
     },
   ];
 }

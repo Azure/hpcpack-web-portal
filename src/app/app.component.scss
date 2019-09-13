@@ -26,3 +26,9 @@
   margin-right: 0.5em;
   font-size: 1.1em;
 }
+
+mat-nav-list a.active {
+  background-color: #fafafa;
+  color: #3f51b5;
+}
+
