@@ -1,0 +1,9 @@
+<ol>
+  <!-- Do not format the following line! It's for removing a space between li. -->
+  <li><a routerLink="">Home</a></li><li *ngFor="let item of breadcrumbs; last as last">
+    <span *ngIf="last; else link" class="last">{{ item.label }}</span>
+    <ng-template #link>
+      <a [routerLink]="[item.url, item.params]">{{ item.label }}</a>
+    </ng-template>
+  </li>
+</ol>

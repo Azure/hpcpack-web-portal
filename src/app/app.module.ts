@@ -14,6 +14,7 @@ import { AuthGuardService } from './auth-guard.service';
 import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 import { ApiConfigService } from './api-config.service';
+import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
 const routes: Routes = [{
   path: '',
@@ -22,21 +23,25 @@ const routes: Routes = [{
       path: 'dashboard',
       loadChildren: () => import('./dashboard/dashboard.module').then(mod => mod.DashboardModule),
       canLoad: [AuthGuardService],
+      data: { breadcrumb: "Dashboard" }
     },
     {
       path: 'nodes',
       loadChildren: () => import('./nodes/nodes.module').then(mod => mod.NodesModule),
       canLoad: [AuthGuardService],
+      data: { breadcrumb: "Nodes" }
     },
     {
       path: 'jobs',
       loadChildren: () => import('./jobs/jobs.module').then(mod => mod.JobsModule),
       canLoad: [AuthGuardService],
+      data: { breadcrumb: "Jobs" }
     },
     {
       path: 'charts',
       loadChildren: () => import('./charts/charts.module').then(mod => mod.ChartsModule),
       canLoad: [AuthGuardService],
+      data: { breadcrumb: "Charts" }
     },
     {
       path: 'login',
@@ -54,6 +59,7 @@ const routes: Routes = [{
   declarations: [
     AppComponent,
     LoginComponent,
+    BreadcrumbComponent,
   ],
   imports: [
     BrowserModule,
