@@ -1,12 +1,9 @@
 import { TestBed, async } from '@angular/core/testing';
-import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { RouterOutletStubComponent, RouterLinkDirectiveStub } from '../test-stubs'
 import { MaterialModule } from './material.module'
 import { AppComponent } from './app.component';
 import { AuthService } from './auth.service';
-
-@Component({ selector: 'router-outlet', template: '' })
-class RouterOutletStubComponent {}
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -16,6 +13,7 @@ describe('AppComponent', () => {
       ],
       declarations: [
         RouterOutletStubComponent,
+        RouterLinkDirectiveStub,
         AppComponent
       ],
       providers: [
