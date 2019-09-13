@@ -10,7 +10,6 @@ import { ApiModule, DefaultService, Configuration, ConfigurationParameters, BASE
 import { MaterialModule } from './material.module'
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component';
 import { AuthGuardService } from './auth-guard.service';
 import { AuthService } from './auth.service';
 import { UserService } from './user.service';
@@ -55,7 +54,6 @@ const routes: Routes = [{
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent
   ],
   imports: [
     BrowserModule,
