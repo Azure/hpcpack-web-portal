@@ -1,8 +1,25 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.space {
+  flex: 1;
+}
+
 .container {
   display: flex;
   flex-direction: column;
+  margin-top: 1em;
   width: 20em;
-  margin: 2em auto;
 }
 
 .container > * {
@@ -11,5 +28,6 @@
 
 .container .error {
   margin-top: 1em;
+  height: 1em;
   color: red;
 }
