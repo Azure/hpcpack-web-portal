@@ -5,6 +5,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 
 @NgModule({
@@ -15,6 +17,8 @@ import { MatListModule } from '@angular/material/list';
     MatInputModule,
     MatButtonModule,
     MatListModule,
+    MatProgressSpinnerModule,
+    OverlayModule,
   ]
 })
 export class MaterialModule { }

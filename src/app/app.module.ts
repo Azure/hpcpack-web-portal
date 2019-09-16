@@ -15,6 +15,7 @@ import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 import { ApiConfigService } from './api-config.service';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
 
 const routes: Routes = [{
   path: '',
@@ -60,6 +61,7 @@ const routes: Routes = [{
     AppComponent,
     LoginComponent,
     BreadcrumbComponent,
+    ProgressSpinnerComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.component'
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,9 @@ export class LoginComponent {
   returnUrl: string;
   userCred: FormGroup;
   error: string;
+
+  @ViewChild(ProgressSpinnerComponent, { static: false })
+  private spinner: ProgressSpinnerComponent;
 
   constructor(
     private authService: AuthService,
@@ -30,8 +34,10 @@ export class LoginComponent {
   }
 
   login(): void {
+    this.spinner.show();
     this.authService.authenticate(this.userCred.value.username, this.userCred.value.password).subscribe({
       next: (ok) => {
+        this.spinner.hide();
         if (ok) {
           this.router.navigate([this.returnUrl]);
           this.error = null;
@@ -39,6 +45,9 @@ export class LoginComponent {
         else {
           this.error = 'Invalid username or password!';
         }
+      },
+      error: (err) => {
+        this.spinner.hide();
       }
     });
   }
