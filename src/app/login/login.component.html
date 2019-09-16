@@ -4,7 +4,7 @@
     <form [formGroup]="userCred" (ngSubmit)="login()" class="container">
       <mat-form-field>
         <mat-label>Username</mat-label>
-        <input matInput formControlName="username" required />
+        <input matInput formControlName="username" required autofocus />
       </mat-form-field>
 
       <mat-form-field>
