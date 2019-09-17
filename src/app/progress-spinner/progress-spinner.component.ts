@@ -33,6 +33,12 @@ export class ProgressSpinnerComponent implements OnInit {
     if (this.globallyCentered) {
       config.positionStrategy = this.overlay.position().global().centerHorizontally().centerVertically();
     }
+    else {
+      //Center to the containing element/component otherwise.
+      config.positionStrategy = this.overlay.position().
+        flexibleConnectedTo(this.viewContainerRef.element.nativeElement.parentElement).
+        withPositions([{ originX: 'center', originY: 'center', overlayX: 'center', overlayY: 'center' }]);
+    }
     this.overlayRef = this.overlay.create(config);
   }
 
