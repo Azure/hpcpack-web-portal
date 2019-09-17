@@ -2,9 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { ProgressSpinnerComponentStub } from '../../test-stubs'
 import { MaterialModule } from '../material.module'
-import { LoginComponent } from './login.component';
 import { AuthService } from '../auth.service';
+import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -16,7 +17,10 @@ describe('LoginComponent', () => {
         ReactiveFormsModule,
         MaterialModule,
       ],
-      declarations: [ LoginComponent ],
+      declarations: [
+        ProgressSpinnerComponentStub,
+        LoginComponent,
+      ],
       providers: [
         { provide: Router, useValue: {} },
         { provide: ActivatedRoute, useValue: {} },
