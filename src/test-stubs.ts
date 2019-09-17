@@ -3,7 +3,7 @@ import { ProgressSpinnerMode, ThemePalette } from '@angular/material';
 
 
 @Component({ selector: 'router-outlet', template: '' })
-export class RouterOutletStubComponent {}
+export class RouterOutletComponentStub {}
 
 @Directive({
   selector: '[routerLink]'
