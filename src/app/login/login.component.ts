@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs'
 import { AuthService } from '../auth.service';
 import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.component'
 
@@ -9,10 +10,11 @@ import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.c
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
   returnUrl: string;
   userCred: FormGroup;
   error: string;
+  private subscription: Subscription;
 
   @ViewChild(ProgressSpinnerComponent, { static: false })
   private spinner: ProgressSpinnerComponent;
@@ -33,9 +35,22 @@ export class LoginComponent {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
+  ngOnDestroy(): void {
+    this.reset();
+  }
+
+  private reset(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
+    }
+    this.error = null;
+  }
+
   login(): void {
+    this.reset();
     this.spinner.show();
-    this.authService.authenticate(this.userCred.value.username, this.userCred.value.password).subscribe({
+    this.subscription = this.authService.authenticate(this.userCred.value.username, this.userCred.value.password).subscribe({
       next: (ok) => {
         this.spinner.hide();
         if (ok) {

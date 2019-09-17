@@ -22,28 +22,22 @@ export class AuthService {
   //2) Login new user
   authenticate(username: string, password: string): Observable<boolean> {
     this.reset();
-    let subscriber: Subscriber<boolean>;
-    let result = new Observable<boolean>(sub => {
-      subscriber = sub;
-    });
-
-    this.userService.user = { username: username, password: password };
-    this.api.getClusterVersion().subscribe({
-      next: (_) => {
-        this.userService.authenticated = true;
-        if (subscriber) {
+    return new Observable<boolean>(subscriber => {
+      //The following line set the username and password that the api-client will read
+      this.userService.user = { username: username, password: password };
+      let subscription = this.api.getClusterVersion().subscribe({
+        next: (_) => {
+          this.userService.authenticated = true;
           subscriber.next(true);
           subscriber.complete();
-          }
-      },
-      error: (_) => {
-        if (subscriber) {
+        },
+        error: (_) => {
           subscriber.next(false);
           subscriber.complete();
         }
-      }
+      });
+      return () => subscription.unsubscribe();
     });
-    return result;
   }
 
   reset(): void {
