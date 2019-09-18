@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OverlayModule } from '@angular/cdk/overlay';
 
@@ -17,6 +18,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatInputModule,
     MatButtonModule,
     MatListModule,
+    MatTabsModule,
     MatProgressSpinnerModule,
     OverlayModule,
   ]
