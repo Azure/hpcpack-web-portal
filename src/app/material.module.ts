@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OverlayModule } from '@angular/cdk/overlay';
 
@@ -19,6 +20,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatButtonModule,
     MatListModule,
     MatTabsModule,
+    MatTableModule,
     MatProgressSpinnerModule,
     OverlayModule,
   ]
