@@ -1,10 +1,20 @@
-export class Node {
-  name: string;
-  state: string;
-  reachable: boolean;
-  nodeGroups: string;
+import { RestProperty } from '../api-client/model/models'
 
-  get health(): string {
-    return this.reachable ? 'OK' : 'Error';
+export class Node {
+  Name: string;
+  State: string;
+  Reachable: boolean;
+  NodeGroups: string;
+
+  get Health(): string {
+    return this.Reachable ? 'OK' : 'Error';
+  }
+
+  static fromProperties(properties: Array<RestProperty>): Node {
+    let node = new Node();
+    properties.forEach(prop => {
+      (node as any)[prop.Name] = prop.Value;
+    });
+    return node;
   }
 }

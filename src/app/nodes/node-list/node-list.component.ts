@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material';
 import { Node } from '../../models/node'
+import { DefaultService as ApiService } from '../../api-client';
+import { RestObject } from '../../api-client/model/models'
+
 
 @Component({
   selector: 'app-node-list',
@@ -9,23 +13,16 @@ import { Node } from '../../models/node'
 export class NodeListComponent implements OnInit {
   displayedColumns: string[] = ['name', 'state', 'health', 'groups'];
 
-  dataSource: Node[] = [
-    { name: 'H1', state: 'Online', reachable: true, health: 'OK', nodeGroups: 'HeadNodes, ComputeNodes'},
-    { name: 'N1', state: 'Online', reachable: true, health: 'OK', nodeGroups: 'ComputeNodes'},
-    { name: 'N2', state: 'Online', reachable: true, health: 'OK', nodeGroups: 'ComputeNodes'},
-    { name: 'N3', state: 'Online', reachable: true, health: 'OK', nodeGroups: 'ComputeNodes'},
-    { name: 'N4', state: 'Online', reachable: true, health: 'OK', nodeGroups: 'ComputeNodes'},
-    { name: 'N5', state: 'Online', reachable: true, health: 'OK', nodeGroups: 'ComputeNodes'},
-    { name: 'N6', state: 'Online', reachable: true, health: 'OK', nodeGroups: 'ComputeNodes'},
-    { name: 'N7', state: 'Online', reachable: true, health: 'OK', nodeGroups: 'ComputeNodes'},
-    { name: 'N8', state: 'Online', reachable: true, health: 'OK', nodeGroups: 'ComputeNodes'},
-    { name: 'N9', state: 'Online', reachable: true, health: 'OK', nodeGroups: 'ComputeNodes'},
-    { name: 'N10', state: 'Online', reachable: true, health: 'OK',  nodeGroups: 'ComputeNodes'},
-  ];
+  dataSource: MatTableDataSource<Node> = new MatTableDataSource();
 
-  constructor() { }
+  constructor(
+    private api: ApiService,
+  ) {}
 
   ngOnInit() {
+    this.api.getNodes().subscribe(result => {
+      this.dataSource.data = result.map(e => Node.fromProperties(e.Properties));
+    })
   }
 
 }
