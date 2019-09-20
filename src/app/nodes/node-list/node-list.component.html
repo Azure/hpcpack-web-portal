@@ -1,4 +1,25 @@
+<div class="action-bar">
+  <button mat-button (click)="refresh()">Refresh</button>
+  <button mat-button [disabled]="!anySelected" (click)="bringOnline()">Bring Online</button>
+  <button mat-button [disabled]="!anySelected" (click)="takeOffline()">Task Offline</button>
+</div>
+
 <table mat-table [dataSource]="dataSource">
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox (change)="masterToggle()"
+                    [checked]="masterChecked"
+                    [indeterminate]="masterIndeterminate">
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let node">
+      <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="selection.toggle(node)"
+                    [checked]="selection.isSelected(node)">
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Name</th>
     <td mat-cell *matCellDef="let node">{{node.Name}}</td>
