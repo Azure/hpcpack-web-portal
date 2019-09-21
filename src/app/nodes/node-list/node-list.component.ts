@@ -1,36 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { Node } from '../../models/node'
 import { DefaultService as ApiService } from '../../api-client';
 import { RestObject } from '../../api-client/model/models'
-
+import { Looper } from '../../looper.service'
 
 @Component({
   selector: 'app-node-list',
   templateUrl: './node-list.component.html',
   styleUrls: ['./node-list.component.scss']
 })
-export class NodeListComponent implements OnInit {
+export class NodeListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['select', 'name', 'state', 'health', 'groups'];
 
   dataSource: MatTableDataSource<Node> = new MatTableDataSource();
 
   selection = new SelectionModel<Node>(true);
 
+  private interval = 2500;
+
+  private looper: Looper<RestObject[]>;
+
   constructor(
     private api: ApiService,
   ) {}
 
-  ngOnInit() {
-    this.refresh();
+  ngOnInit(): void {
+    this.looper = Looper.start(
+      this.api.getNodes(),
+      {
+        next: (data) => {
+          this.dataSource.data = data.map(e => Node.fromProperties(e.Properties));
+          //TODO: select by id?
+          let selected = new Set(this.selection.selected.map(e => e.Name));
+          this.selection.clear();
+          for (let node of this.dataSource.data) {
+            if (selected.has(node.Name)) {
+              this.selection.select(node);
+            }
+          }
+        }
+      },
+      this.interval
+    );
   }
 
-  refresh(): void {
-    this.api.getNodes().subscribe(result => {
-      this.selection.clear();
-      this.dataSource.data = result.map(e => Node.fromProperties(e.Properties));
-    })
+  ngOnDestroy(): void {
+    if (this.looper) {
+      this.looper.stop();
+    }
   }
 
   get anySelected(): boolean {
@@ -59,15 +78,11 @@ export class NodeListComponent implements OnInit {
 
   bringOnline(): void {
     let names = this.selection.selected.map(node => node.Name);
-    this.api.operateNodes("online", names).subscribe(_ => {
-      this.refresh();
-    });
+    this.api.operateNodes("online", names).subscribe();
   }
 
   takeOffline(): void {
     let names = this.selection.selected.map(node => node.Name);
-    this.api.operateNodes("offline", names).subscribe(_ => {
-      this.refresh();
-    });
+    this.api.operateNodes("offline", names).subscribe();
   }
 }
