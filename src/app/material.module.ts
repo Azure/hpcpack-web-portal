@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OverlayModule } from '@angular/cdk/overlay';
 
@@ -23,6 +24,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatListModule,
     MatTabsModule,
     MatTableModule,
+    MatSortModule,
     MatProgressSpinnerModule,
     OverlayModule,
   ]

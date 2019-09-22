@@ -3,8 +3,8 @@
   <button mat-button [disabled]="!anySelected" (click)="takeOffline()">Take Offline</button>
 </div>
 
-<table mat-table [dataSource]="dataSource">
-  <ng-container matColumnDef="select">
+<table mat-table [dataSource]="dataSource" matSort>
+  <ng-container matColumnDef="Select">
     <th mat-header-cell *matHeaderCellDef>
       <mat-checkbox (change)="masterToggle()"
                     [checked]="masterChecked"
@@ -19,22 +19,22 @@
     </td>
   </ng-container>
 
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Name</th>
+  <ng-container matColumnDef="Name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
     <td mat-cell *matCellDef="let node">{{node.Name}}</td>
   </ng-container>
 
-  <ng-container matColumnDef="state">
-    <th mat-header-cell *matHeaderCellDef>State</th>
+  <ng-container matColumnDef="State">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>State</th>
     <td mat-cell *matCellDef="let node">{{node.State}}</td>
   </ng-container>
 
-  <ng-container matColumnDef="health">
-    <th mat-header-cell *matHeaderCellDef>Health</th>
+  <ng-container matColumnDef="Health">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Health</th>
     <td mat-cell *matCellDef="let node">{{node.Health}}</td>
   </ng-container>
 
-  <ng-container matColumnDef="groups">
+  <ng-container matColumnDef="Groups">
     <th mat-header-cell *matHeaderCellDef>Groups</th>
     <td mat-cell *matCellDef="let node">{{node.NodeGroups}}</td>
   </ng-container>

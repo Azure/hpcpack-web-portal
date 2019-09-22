@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
+import { MatSort } from '@angular/material/sort';
 import { Node } from '../../models/node'
 import { DefaultService as ApiService } from '../../api-client';
 import { RestObject } from '../../api-client/model/models'
@@ -12,7 +13,7 @@ import { Looper } from '../../looper.service'
   styleUrls: ['./node-list.component.scss']
 })
 export class NodeListComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['select', 'name', 'state', 'health', 'groups'];
+  displayedColumns: string[] = ['Select', 'Name', 'State', 'Health', 'Groups'];
 
   dataSource: MatTableDataSource<Node> = new MatTableDataSource();
 
@@ -22,11 +23,15 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   private looper: Looper<RestObject[]>;
 
+  @ViewChild(MatSort, {static: true})
+  private sort: MatSort;
+
   constructor(
     private api: ApiService,
   ) {}
 
   ngOnInit(): void {
+    this.dataSource.sort = this.sort;
     this.looper = Looper.start(
       this.api.getNodes(),
       {
