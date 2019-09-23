@@ -1,0 +1,27 @@
+<mat-list>
+  <mat-list-item *ngFor="let item of selected" class="selected">
+    <div class="title">{{item}}</div>
+    <div>
+      <button mat-icon-button color="accent" matTooltip="Move item up" (click)="moveUp(item)">
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </button>
+      <button mat-icon-button color="accent" matTooltip="Move item down" (click)="moveDown(item)">
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+      <button mat-icon-button color="accent" matTooltip="Unselect item" (click)="unselect(item)">
+        <mat-icon>check_circle_outline</mat-icon>
+      </button>
+    </div>
+  </mat-list-item>
+
+  <mat-divider *ngIf="unselected?.length > 0"></mat-divider>
+
+  <mat-list-item *ngFor="let item of unselected" class="unselected">
+    <div class="title">{{item}}</div>
+    <div>
+      <button mat-icon-button matTooltip="Select item" (click)="select(item)">
+        <mat-icon>radio_button_unchecked</mat-icon>
+      </button>
+    </div>
+  </mat-list-item>
+</mat-list>

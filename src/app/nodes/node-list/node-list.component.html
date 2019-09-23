@@ -1,7 +1,9 @@
-<div class="action-bar">
+<!-- TODO: try mat-action-list -->
+<mat-action-list>
+  <button mat-button (click)="showColumnSelector()">Select Columns...</button>
   <button mat-button [disabled]="!anySelected" (click)="bringOnline()">Bring Online</button>
   <button mat-button [disabled]="!anySelected" (click)="takeOffline()">Take Offline</button>
-</div>
+</mat-action-list>
 
 <table mat-table [dataSource]="dataSource" matSort>
   <ng-container matColumnDef="Select">

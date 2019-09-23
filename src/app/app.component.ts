@@ -35,7 +35,7 @@ export class AppComponent {
     {
       link: 'nodes',
       title: 'Nodes',
-      icon: 'computer',
+      icon: 'computer', //TODO: change the icon!
     },
     {
       link: 'jobs',

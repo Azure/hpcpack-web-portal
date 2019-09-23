@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort } from '@angular/material/sort';
 import { Node } from '../../models/node'
 import { DefaultService as ApiService } from '../../api-client';
 import { RestObject } from '../../api-client/model/models'
 import { Looper } from '../../looper.service'
+import { ColumnSelectorComponent, ColumnSelectorResult } from '../../column-selector/column-selector.component'
 
 @Component({
   selector: 'app-node-list',
@@ -13,8 +14,6 @@ import { Looper } from '../../looper.service'
   styleUrls: ['./node-list.component.scss']
 })
 export class NodeListComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['Select', 'Name', 'State', 'Health', 'Groups'];
-
   dataSource: MatTableDataSource<Node> = new MatTableDataSource();
 
   selection = new SelectionModel<Node>(true);
@@ -26,8 +25,17 @@ export class NodeListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
 
+  private selectedColumns = ['Name', 'State', 'Health', 'Groups'];
+
+  private unselectedColumns: string[] = [];
+
+  get displayedColumns(): string[] {
+    return ['Select'].concat(this.selectedColumns);
+  }
+
   constructor(
     private api: ApiService,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -89,5 +97,16 @@ export class NodeListComponent implements OnInit, OnDestroy {
   takeOffline(): void {
     let names = this.selection.selected.map(node => node.Name);
     this.api.operateNodes("offline", names).subscribe();
+  }
+
+  showColumnSelector(): void {
+    let data = { selected: this.selectedColumns, unselected: this.unselectedColumns };
+    let dialogRef = this.dialog.open(ColumnSelectorComponent, { data })
+    dialogRef.afterClosed().subscribe((result: undefined | ColumnSelectorResult) => {
+      if (result) {
+        this.selectedColumns = result.selected;
+        this.unselectedColumns = result.unselected;
+        }
+    });
   }
 }
