@@ -30,5 +30,11 @@ export class LocalStorageService {
     this.store.clear();
   }
 
+  save(): void {
+    for (let key of this.store.keys()) {
+      sessionStorage.setItem(key, JSON.stringify(this.store.get(key)));
+    }
+  }
+
   constructor() { }
 }

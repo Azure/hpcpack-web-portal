@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from './models/user';
+import { UserOptions } from './models/user-options';
 import { LocalStorageService } from './local-storage.service';
 import { extend } from 'webdriver-js-extender';
 
@@ -21,6 +22,19 @@ export class UserService extends LocalStorageService {
 
   set authenticated(value: boolean) {
     this.setProperty('authenticated', value);
+  }
+
+  get userOptions(): UserOptions {
+    let opt = this.getProperty('userOptions');
+    if (opt === undefined) {
+      opt = new UserOptions();
+      this.userOptions = opt;
+    }
+    return opt;
+  }
+
+  set userOptions(value: UserOptions) {
+    this.setProperty('userOptions', value);
   }
 
   constructor() {

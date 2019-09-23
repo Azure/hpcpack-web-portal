@@ -3,6 +3,7 @@ import { MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@a
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort } from '@angular/material/sort';
 import { Node } from '../../models/node'
+import { UserService } from '../../user.service'
 import { DefaultService as ApiService } from '../../api-client';
 import { RestObject } from '../../api-client/model/models'
 import { Looper } from '../../looper.service'
@@ -25,23 +26,31 @@ export class NodeListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
 
-  private selectedColumns = ['Name', 'State', 'Health', 'Groups'];
+  private selectedColumns: string[];
 
-  private unselectedColumns: string[] = [
+  private get unselectedColumns(): string[] {
+    return NodeListComponent.availableColumns.filter(e => !this.selectedColumns.includes(e));
+  }
+
+  private static availableColumns: string[] = [
     'Availability',
     'AzureServiceName',
     'CpuSpeed',
     'DnsSuffix',
+    'Groups',
     'Guid',
+    'Health',
     'Id',
     'JobType',
     'Location',
     'MemorySize',
+    'Name',
     'NumCores',
     'NumSockets',
     'OfflineTime',
     'OnlineTime',
-    'Reachable'
+    'Reachable',
+    'State'
   ];
 
   get displayedColumns(): string[] {
@@ -49,9 +58,12 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private userService: UserService,
     private api: ApiService,
     private dialog: MatDialog,
-  ) {}
+  ) {
+    this.selectedColumns = this.userService.userOptions.nodeOptions.selectedColumns;
+  }
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
@@ -120,8 +132,9 @@ export class NodeListComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result: undefined | ColumnSelectorResult) => {
       if (result) {
         this.selectedColumns = result.selected;
-        this.unselectedColumns = result.unselected;
-        }
+        this.userService.userOptions.nodeOptions.selectedColumns = this.selectedColumns;
+        this.userService.save();
+      }
     });
   }
 }
