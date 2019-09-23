@@ -27,7 +27,22 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   private selectedColumns = ['Name', 'State', 'Health', 'Groups'];
 
-  private unselectedColumns: string[] = [];
+  private unselectedColumns: string[] = [
+    'Availability',
+    'AzureServiceName',
+    'CpuSpeed',
+    'DnsSuffix',
+    'Guid',
+    'Id',
+    'JobType',
+    'Location',
+    'MemorySize',
+    'NumCores',
+    'NumSockets',
+    'OfflineTime',
+    'OnlineTime',
+    'Reachable'
+  ];
 
   get displayedColumns(): string[] {
     return ['Select'].concat(this.selectedColumns);
