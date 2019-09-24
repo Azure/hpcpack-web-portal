@@ -1,4 +1,4 @@
-import { Component, Directive, Input, HostListener } from '@angular/core';
+import { NgModule, Component, Directive, Input, HostListener } from '@angular/core';
 import { ProgressSpinnerMode, ThemePalette } from '@angular/material';
 
 
@@ -18,17 +18,37 @@ export class RouterLinkDirectiveStub {
   }
 }
 
-@Component({ selector: 'mat-progress-spinner', template: '' })
-export class MatProgressSpinnerStub {
-  @Input() color: ThemePalette;
-  @Input() diameter: number;
-  @Input() mode: ProgressSpinnerMode;
-  @Input() strokeWidth: number;
-  @Input() value: number;
+@Directive({
+  selector: '[routerLinkActive]',
+  exportAs: 'routerLinkActive'
+})
+export class RouterLinkActiveDirectiveStub {
 }
+
+const ngStubs = [
+  RouterOutletComponentStub,
+  RouterLinkDirectiveStub,
+  RouterLinkActiveDirectiveStub,
+]
+
+@NgModule({
+  declarations: ngStubs,
+  exports: ngStubs,
+})
+export class AngularStubs {}
 
 @Component({ selector: 'app-progress-spinner', template: '' })
 export class ProgressSpinnerComponentStub {
   show(): void {}
   hide(): void {}
+}
+
+@Component({ selector: 'app-list-item-selector', template: '' })
+export class ListItemSelectorComponentStub {
+  @Input() selected: string[] = [];
+  @Input() unselected: string[] = [];
+}
+
+export class MatDialogRefStub<T> {
+  close() {}
 }

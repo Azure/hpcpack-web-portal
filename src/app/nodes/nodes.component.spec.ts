@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MaterialModule } from '../material.module'
+import { AngularStubs } from '../../test-stubs'
 import { NodesComponent } from './nodes.component';
 
 describe('NodesComponent', () => {
@@ -8,6 +10,10 @@ describe('NodesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        MaterialModule,
+        AngularStubs,
+      ],
       declarations: [ NodesComponent ]
     })
     .compileComponents();

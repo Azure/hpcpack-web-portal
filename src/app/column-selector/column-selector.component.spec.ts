@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
-import { ColumnSelectorComponent } from './column-selector.component';
+import { ColumnSelectorComponent, ColumnSelectorInput } from './column-selector.component';
+import { MaterialModule } from '../material.module'
+import { ListItemSelectorComponentStub, MatDialogRefStub } from '../../test-stubs'
 
 describe('ColumnSelectorComponent', () => {
   let component: ColumnSelectorComponent;
@@ -8,7 +11,15 @@ describe('ColumnSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ColumnSelectorComponent ]
+      imports: [ MaterialModule ],
+      declarations: [
+        ListItemSelectorComponentStub,
+        ColumnSelectorComponent
+      ],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: { selected: [], unselected: [] } as ColumnSelectorInput },
+        { provide: MatDialogRef, useClass: MatDialogRefStub },
+      ]
     })
     .compileComponents();
   }));

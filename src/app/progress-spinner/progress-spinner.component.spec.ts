@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Overlay } from '@angular/cdk/overlay';
 
-import { MatProgressSpinnerStub } from '../../test-stubs'
+import { MaterialModule } from '../material.module'
 import { ProgressSpinnerComponent } from './progress-spinner.component';
 
 describe('ProgressSpinnerComponent', () => {
@@ -10,8 +10,8 @@ describe('ProgressSpinnerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ MaterialModule ],
       declarations: [
-        MatProgressSpinnerStub,
         ProgressSpinnerComponent,
       ],
       providers: [
