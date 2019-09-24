@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { UserOptions } from '../models/user-options';
 import { LocalStorageService } from './local-storage.service';
-import { extend } from 'webdriver-js-extender';
 
 @Injectable({
   providedIn: 'root'
