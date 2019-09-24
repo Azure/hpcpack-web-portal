@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs'
 import { AuthService } from '../services/auth.service';
-import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.component'
+import { ProgressSpinnerComponent } from '../shared-components/progress-spinner/progress-spinner.component'
 
 @Component({
   selector: 'app-login',

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ListItemSelectorComponent } from './list-item-selector.component';
-import { MaterialModule } from '../material.module'
+import { MaterialModule } from '../../material.module'
 
 describe('ListItemSelectorComponent', () => {
   let component: ListItemSelectorComponent;

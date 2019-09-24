@@ -15,7 +15,7 @@ import { AuthService } from './services/auth.service';
 import { UserService } from './services/user.service';
 import { ApiConfigService } from './services/api-config.service';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
-import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
+import { SharedComponents } from './shared-components/shared-components.module'
 
 const routes: Routes = [{
   path: '',
@@ -61,7 +61,6 @@ const routes: Routes = [{
     AppComponent,
     LoginComponent,
     BreadcrumbComponent,
-    ProgressSpinnerComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,6 +70,7 @@ const routes: Routes = [{
     RouterModule.forRoot(routes),
     ApiModule,
     MaterialModule,
+    SharedComponents,
   ],
   providers: [
     AuthService,

@@ -7,7 +7,7 @@ import { UserService } from '../../services/user.service'
 import { DefaultService as ApiService } from '../../api-client';
 import { RestObject } from '../../api-client/model/models'
 import { Looper } from '../../services/looper.service'
-import { ColumnSelectorComponent, ColumnSelectorResult } from '../../column-selector/column-selector.component'
+import { ColumnSelectorComponent, ColumnSelectorResult } from '../../shared-components/column-selector/column-selector.component'
 
 @Component({
   selector: 'app-node-list',
