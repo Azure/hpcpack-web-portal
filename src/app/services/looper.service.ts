@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { first } from 'rxjs/operators'
 
 export interface ILooper<T> {
   observable: Observable<T>;
@@ -61,7 +62,7 @@ export class Looper<T> implements ILooper<T> {
         return;
       }
       let ts = new Date().getTime();
-      this.subscription = this.observable./*pipe(first()).*/subscribe(
+      this.subscription = this.observable.pipe(first()).subscribe(
         res => {
           if (this.stopped) {
             return;
