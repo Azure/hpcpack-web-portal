@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RouterOutletComponentStub, RouterLinkDirectiveStub } from '../test-stubs'
 import { MaterialModule } from './material.module'
 import { AppComponent } from './app.component';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 
 @Component({ selector: 'app-breadcrumb', template: '' })
 class BreadcrumbStubComponent {}

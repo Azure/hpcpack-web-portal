@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs'
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.component'
 
 @Component({

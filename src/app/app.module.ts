@@ -10,10 +10,10 @@ import { ApiModule, DefaultService, Configuration, ConfigurationParameters, BASE
 import { MaterialModule } from './material.module'
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { AuthGuardService } from './auth-guard.service';
-import { AuthService } from './auth.service';
-import { UserService } from './user.service';
-import { ApiConfigService } from './api-config.service';
+import { AuthGuardService } from './services/auth-guard.service';
+import { AuthService } from './services/auth.service';
+import { UserService } from './services/user.service';
+import { ApiConfigService } from './services/api-config.service';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
 

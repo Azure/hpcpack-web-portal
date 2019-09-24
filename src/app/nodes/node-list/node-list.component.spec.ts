@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MaterialModule } from '../../material.module'
 import { DefaultService as ApiService } from '../../api-client';
-import { UserService } from '../../user.service'
+import { UserService } from '../../services/user.service'
 import { NodeListComponent } from './node-list.component';
 
 describe('NodeListComponent', () => {

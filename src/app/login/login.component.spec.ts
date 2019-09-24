@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { ProgressSpinnerComponentStub } from '../../test-stubs'
 import { MaterialModule } from '../material.module'
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {

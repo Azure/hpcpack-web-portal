@@ -3,10 +3,10 @@ import { MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@a
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort } from '@angular/material/sort';
 import { Node } from '../../models/node'
-import { UserService } from '../../user.service'
+import { UserService } from '../../services/user.service'
 import { DefaultService as ApiService } from '../../api-client';
 import { RestObject } from '../../api-client/model/models'
-import { Looper } from '../../looper.service'
+import { Looper } from '../../services/looper.service'
 import { ColumnSelectorComponent, ColumnSelectorResult } from '../../column-selector/column-selector.component'
 
 @Component({

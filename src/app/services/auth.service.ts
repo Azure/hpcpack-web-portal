@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscriber } from 'rxjs';
-import { User } from './models/user';
-import { DefaultService as ApiService } from './api-client';
+import { User } from '../models/user';
+import { DefaultService as ApiService } from '../api-client';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -41,6 +41,7 @@ export class AuthService {
   }
 
   reset(): void {
+    //TODO: Do not clear user options!
     this.userService.clear();
   }
 }
