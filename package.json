@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "ci-test": "ng test --no-watch --no-progress --browsers=ChromeHeadlessCI --reporters=junit --code-coverage",
-    "ci-e2e": "ng e2e --protractor-config=e2e/protractor-ci.conf.js",
+    "ci-e2e": "ng e2e --protractor-config=e2e/protractor-ci.conf.js --port 4400",
     "build-stg": "ng build -c staging",
     "build-prd": "ng build --prod"
   },
