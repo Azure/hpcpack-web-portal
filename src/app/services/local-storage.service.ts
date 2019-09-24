@@ -6,10 +6,10 @@ import { Injectable } from '@angular/core';
 export class LocalStorageService {
   private store: Map<string, any> = new Map();
 
-  getProperty(key: string): any {
+  protected getProperty(key: string, persistent = false): any {
     let value = this.store.get(key);
     if (value === undefined) {
-      let str = sessionStorage.getItem(key);
+      let str = persistent ? localStorage.getItem(key): sessionStorage.getItem(key);
       if (str !== undefined && str !== null) {
         value = JSON.parse(str);
         this.store.set(key, value);
@@ -18,23 +18,14 @@ export class LocalStorageService {
     return value;
   }
 
-  setProperty(key: string, value: any): void {
+  protected setProperty(key: string, value: any, persistent = false): void {
     this.store.set(key, value);
-    sessionStorage.setItem(key, JSON.stringify(value));
-  }
-
-  clear(): void {
-    for (let k of this.store.keys()) {
-      sessionStorage.removeItem(k);
+    let json = JSON.stringify(value);
+    if (persistent) {
+      localStorage.setItem(key, json);
     }
-    this.store.clear();
-  }
-
-  save(): void {
-    for (let key of this.store.keys()) {
-      sessionStorage.setItem(key, JSON.stringify(this.store.get(key)));
+    else {
+      sessionStorage.setItem(key, json);
     }
   }
-
-  constructor() { }
 }

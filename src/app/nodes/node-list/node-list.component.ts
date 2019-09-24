@@ -133,7 +133,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
       if (result) {
         this.selectedColumns = result.selected;
         this.userService.userOptions.nodeOptions.selectedColumns = this.selectedColumns;
-        this.userService.save();
+        this.userService.userOptions = this.userService.userOptions; //save options
       }
     });
   }

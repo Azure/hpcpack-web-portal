@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   reset(): void {
-    //TODO: Do not clear user options!
-    this.userService.clear();
+    this.userService.authenticated = false;
+    this.userService.user = null;
   }
 }
