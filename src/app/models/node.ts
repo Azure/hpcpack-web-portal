@@ -1,4 +1,4 @@
-import { RestProperty } from '../api-client/model/models'
+import { RestProperty } from '../services/api.service'
 
 export class Node {
   //TODO: convert string to real type

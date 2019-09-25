@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AuthService } from './auth.service';
-import { DefaultService as ApiService } from '../api-client';
+import { ApiService } from './api.service';
 import { UserService } from './user.service';
 
 describe('AuthService', () => {

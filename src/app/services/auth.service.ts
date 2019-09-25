@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscriber } from 'rxjs';
 import { User } from '../models/user';
-import { DefaultService as ApiService } from '../api-client';
+import { ApiService } from './api.service';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class AuthService {
   authenticate(username: string, password: string): Observable<boolean> {
     this.reset();
     return new Observable<boolean>(subscriber => {
-      //The following line set the username and password that the api-client will read
+      //The following line set the username and password that the api service will read
       this.userService.user = { username: username, password: password };
       let subscription = this.api.getClusterVersion().subscribe({
         next: (_) => {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Configuration } from '../api-client/configuration'
+import { Configuration } from './api.service'
 import { UserService } from './user.service';
 
 @Injectable({

@@ -5,14 +5,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { ApiModule, DefaultService, Configuration, ConfigurationParameters, BASE_PATH } from './api-client';
-
 import { MaterialModule } from './material.module'
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { AuthService } from './services/auth.service';
 import { UserService } from './services/user.service';
+import { ApiService, BASE_PATH, Configuration } from './services/api.service';
 import { ApiConfigService } from './services/api-config.service';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { SharedComponents } from './shared-components/shared-components.module'
@@ -68,13 +67,13 @@ const routes: Routes = [{
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule.forRoot(routes),
-    ApiModule,
     MaterialModule,
     SharedComponents,
   ],
   providers: [
     AuthService,
     UserService,
+    ApiService,
     { provide: BASE_PATH, useValue: environment.API_BASE_PATH },
     { provide: Configuration, useClass: ApiConfigService },
   ],
