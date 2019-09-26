@@ -68,13 +68,18 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
-    this.api.getNodes(null, null, null, null, null, 10000).subscribe((data) => {
-      this.dataSource.data = data.map(e => Node.fromProperties(e.Properties));
-    });
+    this.refresh();
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  refresh(): void {
+    this.selection.clear();
+    this.api.getNodes(null, null, null, null, null, 10000).subscribe((data) => {
+      this.dataSource.data = data.map(e => Node.fromProperties(e.Properties));
+    });
   }
 
   get anySelected(): boolean {

@@ -1,5 +1,6 @@
 <mat-action-list>
   <button mat-button (click)="showColumnSelector()">Select Columns...</button>
+  <button mat-button (click)="refresh()">Refresh Data</button>
   <button mat-button [disabled]="!anySelected" (click)="bringOnline()">Bring Online</button>
   <button mat-button [disabled]="!anySelected" (click)="takeOffline()">Take Offline</button>
 </mat-action-list>
