@@ -24,6 +24,32 @@ export class Node {
     return this.Reachable ? 'OK' : 'Error';
   }
 
+  update(other: Node): void {
+    for (let key of Node.properties) {
+      (this as any)[key] = (other as any)[key];
+    }
+  }
+
+  static properties = [
+    'Availability',
+    'AzureServiceName',
+    'CpuSpeed',
+    'DnsSuffix',
+    'Guid',
+    'Id',
+    'JobType',
+    'Location',
+    'MemorySize',
+    'Name',
+    'NodeGroups',
+    'NumCores',
+    'NumSockets',
+    'OfflineTime',
+    'OnlineTime',
+    'Reachable',
+    'State',
+  ]
+
   static fromProperties(properties: Array<RestProperty>): Node {
     let node = new Node();
     properties.forEach(prop => {
