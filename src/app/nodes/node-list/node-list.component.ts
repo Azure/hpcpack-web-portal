@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort } from '@angular/material/sort';
+import { Subscription } from 'rxjs'
 import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
-import { ApiService, RestObject } from '../../services/api.service';
-import { ILooper, Looper } from '../../services/looper.service'
+import { ApiService } from '../../services/api.service';
 import { ColumnSelectorComponent, ColumnSelectorResult } from '../../shared-components/column-selector/column-selector.component'
 
 @Component({
@@ -18,11 +18,11 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   selection = new SelectionModel<Node>(true);
 
-  private updaters: ILooper<RestObject[]>[] = [];
-
   private updateInterval = 1200;
 
   private updateExpiredIn = 36 * 1000;
+
+  private subscription: Subscription = new Subscription();
 
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
@@ -74,9 +74,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    for (let updater of this.updaters) {
-      updater.stop(false);
-    }
+    this.subscription.unsubscribe();
   }
 
   get anySelected(): boolean {
@@ -103,60 +101,35 @@ export class NodeListComponent implements OnInit, OnDestroy {
       this.dataSource.data.forEach(node => this.selection.select(node));
   }
 
+  private updateNodes(nodes: Node[]): void {
+    let pairs: [string, Node][] = nodes.map(n => [n.Id, n]);
+    let idToNode = new Map<string, Node>(pairs);
+    for (let node of this.dataSource.data) {
+      let update = idToNode.get(node.Id);
+      if (update) {
+        node.update(update)
+      }
+    }
+  }
+
   bringOnline(): void {
     let names = this.selection.selected.map(node => node.Name);
-    this.api.operateNodes("online", names).subscribe(_ => {
-      let looper = Looper.start(
-        this.api.getNodes(null, names.join(',')),
-        {
-          next: (data, looper) => {
-            let pairs: [string, Node][] = data.map(e => {
-              let node = Node.fromProperties(e.Properties);
-              return [node.Id, node];
-            });
-            let idToNode = new Map<string, Node>(pairs);
-
-            //1. Update UI.
-            for (let node of this.dataSource.data) {
-              let update = idToNode.get(node.Id);
-              if (update) {
-                node.update(update)
-              }
-            }
-
-            //2. Check target status and filter out nodes that needs further check.
-            let names: string[] = [];
-            for (let node of idToNode.values()) {
-              if (node.State !== 'Online') {
-                names.push(node.Name);
-              }
-            }
-
-            //3. Do next check or finish.
-            if (names.length == 0) {
-              looper.stop();
-            }
-            else {
-              looper.observable = this.api.getNodes(null, names.join(','));
-            }
-          },
-          stop: (looper) => {
-            let idx = this.updaters.indexOf(looper);
-            if (idx >= 0) {
-              this.updaters.splice(idx, 1);
-            }
-          }
-        },
-        this.updateInterval,
-        this.updateExpiredIn
-      );
-      this.updaters.push(looper);
+    let sub = this.api.bringNodesOnlineAndWatch(names, this.updateInterval, this.updateExpiredIn).subscribe({
+      next: (nodes) => {
+        this.updateNodes(nodes);
+      }
     });
+    this.subscription.add(sub);
   }
 
   takeOffline(): void {
     let names = this.selection.selected.map(node => node.Name);
-    this.api.operateNodes("offline", names).subscribe();
+    let sub = this.api.takeNodesOfflineAndWatch(names, this.updateInterval, this.updateExpiredIn).subscribe({
+      next: (nodes) => {
+        this.updateNodes(nodes);
+      }
+    });
+    this.subscription.add(sub);
   }
 
   showColumnSelector(): void {
