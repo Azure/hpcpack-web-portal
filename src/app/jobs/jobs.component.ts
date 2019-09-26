@@ -22,7 +22,78 @@ export class JobsComponent implements OnInit {
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
 
-  private selectedColumns: string[] = ["Id", "Name", "Owner"];
+  private selectedColumns: string[];
+
+  private get unselectedColumns(): string[] {
+    return JobsComponent.availableColumns.filter(e => !this.selectedColumns.includes(e));
+  }
+
+  private static availableColumns: string[] = [
+    "Id",
+    "Name",
+    "Owner",
+    // "UserName",
+    // "Project",
+    // "RuntimeSeconds",
+    "SubmitTime",
+    "CreateTime",
+    "EndTime",
+    "StartTime",
+    "ChangeTime",
+    "State",
+    // "PreviousState",
+    // "MinCores",
+    // "MaxCores",
+    // "MinNodes",
+    // "MaxNodes",
+    // "MinSockets",
+    // "MaxSockets",
+    // "UnitType",
+    // "RequestedNodes",
+    // "IsExclusive",
+    // "RunUntilCanceled",
+    // "NodeGroups",
+    // "FailOnTaskFailure",
+    // "AutoCalculateMax",
+    // "AutoCalculateMin",
+    // "CanGrow",
+    // "CanShrink",
+    // "Preemptable",
+    "ErrorMessage",
+    // "HasRuntime",
+    // "RequeueCount",
+    // "MinMemory",
+    // "MaxMemory",
+    // "MinCoresPerNode",
+    // "MaxCoresPerNode",
+    // "EndpointReference",
+    // "SoftwareLicense",
+    // "OrderBy",
+    // "ClientSource",
+    "Progress",
+    // "ProgressMessage",
+    // "TargetResourceCount",
+    // "ExpandedPriority",
+    // "ServiceName",
+    // "JobTemplate",
+    // "HoldUntil",
+    // "NotifyOnStart",
+    // "NotifyOnCompletion",
+    // "ExcludedNodes",
+    // "EmailAddress",
+    // "Pool",
+    // "Priority",
+    // "AllocatedNodes",
+    // "JobValidExitCodes",
+    // "ParentJobIds",
+    // "FailDependentTasks",
+    // "NodeGroupOp",
+    // "SingleNode",
+    // "ChildJobIds",
+    // "EstimatedProcessMemory",
+    // "PlannedCoreCount",
+    // "TaskExecutionFailureRetryLimit",
+  ];
 
   get displayedColumns(): string[] {
     return ['Select'].concat(this.selectedColumns);
@@ -30,11 +101,15 @@ export class JobsComponent implements OnInit {
 
   constructor(
     private api: ApiService,
-  ) { }
+    private userService: UserService,
+    private dialog: MatDialog,
+  ) {
+    this.selectedColumns = this.userService.userOptions.jobOptions.selectedColumns;
+  }
 
   ngOnInit() {
     this.dataSource.sort = this.sort;
-    this.api.getJobs(null, null, null, null, null, 10000).subscribe((data) => {
+    this.api.getJobs(null, Job.properties.join(','), null, null, null, 10000).subscribe((data) => {
       this.dataSource.data = data.map(e => Job.fromProperties(e.Properties));
     });
   }
@@ -63,4 +138,15 @@ export class JobsComponent implements OnInit {
       this.dataSource.data.forEach(job => this.selection.select(job));
   }
 
+  showColumnSelector(): void {
+    let data = { selected: this.selectedColumns, unselected: this.unselectedColumns };
+    let dialogRef = this.dialog.open(ColumnSelectorComponent, { data })
+    dialogRef.afterClosed().subscribe((result: undefined | ColumnSelectorResult) => {
+      if (result) {
+        this.selectedColumns = result.selected;
+        this.userService.userOptions.jobOptions.selectedColumns = this.selectedColumns;
+        this.userService.userOptions = this.userService.userOptions; //save options
+      }
+    });
+  }
 }

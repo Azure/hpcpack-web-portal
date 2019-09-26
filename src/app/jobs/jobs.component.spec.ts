@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MaterialModule } from '../material.module'
 import { ApiService } from '../services/api.service';
+import { UserService } from '../services/user.service'
 import { JobsComponent } from './jobs.component';
 
 describe('JobsComponent', () => {
@@ -13,6 +14,7 @@ describe('JobsComponent', () => {
       imports: [ MaterialModule ],
       declarations: [ JobsComponent ],
       providers: [
+        { provide: UserService, useValue: { userOptions: { jobOptions: {} } } },
         { provide: ApiService, useValue: {} },
       ]
     })
