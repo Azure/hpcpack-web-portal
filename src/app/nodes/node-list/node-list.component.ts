@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
 import { ApiService, RestObject } from '../../services/api.service';
-import { Looper } from '../../services/looper.service'
+import { ILooper, Looper } from '../../services/looper.service'
 import { ColumnSelectorComponent, ColumnSelectorResult } from '../../shared-components/column-selector/column-selector.component'
 
 @Component({
@@ -18,9 +18,11 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   selection = new SelectionModel<Node>(true);
 
-  private interval = 2500;
+  private updaters: ILooper<RestObject[]>[] = [];
 
-  private looper: Looper<RestObject[]>;
+  private updateInterval = 1200;
+
+  private updateExpiredIn = 36 * 1000;
 
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
@@ -66,28 +68,14 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
-    this.looper = Looper.start(
-      this.api.getNodes(),
-      {
-        next: (data) => {
-          this.dataSource.data = data.map(e => Node.fromProperties(e.Properties));
-          //TODO: select by id?
-          let selected = new Set(this.selection.selected.map(e => e.Name));
-          this.selection.clear();
-          for (let node of this.dataSource.data) {
-            if (selected.has(node.Name)) {
-              this.selection.select(node);
-            }
-          }
-        }
-      },
-      this.interval
-    );
+    this.api.getNodes(null, null, null, null, null, 10000).subscribe((data) => {
+      this.dataSource.data = data.map(e => Node.fromProperties(e.Properties));
+    });
   }
 
   ngOnDestroy(): void {
-    if (this.looper) {
-      this.looper.stop();
+    for (let updater of this.updaters) {
+      updater.stop(false);
     }
   }
 
@@ -117,7 +105,53 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   bringOnline(): void {
     let names = this.selection.selected.map(node => node.Name);
-    this.api.operateNodes("online", names).subscribe();
+    this.api.operateNodes("online", names).subscribe(_ => {
+      let looper = Looper.start(
+        this.api.getNodes(null, names.join(',')),
+        {
+          next: (data, looper) => {
+            let pairs: [string, Node][] = data.map(e => {
+              let node = Node.fromProperties(e.Properties);
+              return [node.Id, node];
+            });
+            let idToNode = new Map<string, Node>(pairs);
+
+            //1. Update UI.
+            for (let node of this.dataSource.data) {
+              let update = idToNode.get(node.Id);
+              if (update) {
+                node.update(update)
+              }
+            }
+
+            //2. Check target status and filter out nodes that needs further check.
+            let names: string[] = [];
+            for (let node of idToNode.values()) {
+              if (node.State !== 'Online') {
+                names.push(node.Name);
+              }
+            }
+
+            //3. Do next check or finish.
+            if (names.length == 0) {
+              looper.stop();
+            }
+            else {
+              looper.observable = this.api.getNodes(null, names.join(','));
+            }
+          },
+          stop: (looper) => {
+            let idx = this.updaters.indexOf(looper);
+            if (idx >= 0) {
+              this.updaters.splice(idx, 1);
+            }
+          }
+        },
+        this.updateInterval,
+        this.updateExpiredIn
+      );
+      this.updaters.push(looper);
+    });
   }
 
   takeOffline(): void {
