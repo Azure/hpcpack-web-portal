@@ -24,7 +24,7 @@ describe('NodeListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NodeListComponent);
     component = fixture.componentInstance;
-    //TODO: uncomment this the following line.
+    //TODO: uncomment the following line.
     //fixture.detectChanges();
   });
 
