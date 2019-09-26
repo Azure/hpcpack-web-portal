@@ -9,20 +9,25 @@ export interface ILooper<T> {
 
   interval: number;
 
+  expiredIn?: number;
+
   readonly stopped: boolean;
 
   start(): void;
 
-  stop(): void;
+  stop(callHandler?: boolean): void;
 }
 
 export interface ILooperHandler<T> {
   next: (value: T, looper?: ILooper<T>) => void;
   error?: (value: any, looper?: ILooper<T>) => void;
+  stop?: (looper?: ILooper<T>) => void;
 }
 
 export class Looper<T> implements ILooper<T> {
   private timer: any;
+
+  private expiredAt: number;
 
   private subscription: Subscription;
 
@@ -34,13 +39,15 @@ export class Looper<T> implements ILooper<T> {
   constructor(
     public observable: Observable<T>,
     public handler: ILooperHandler<T>,
-    public interval: number) { }
+    public interval: number,
+    public expiredIn: number = null
+  ) {}
 
   get stopped(): boolean {
     return !this.inProgress;
   }
 
-  stop(): void {
+  stop(callHandler: boolean = true): void {
     if (this.timer) {
       clearTimeout(this.timer);
       this.timer = null;
@@ -49,31 +56,48 @@ export class Looper<T> implements ILooper<T> {
       this.subscription.unsubscribe();
       this.subscription = null;
     }
-    this.inProgress = false;
+    if (this.inProgress) {
+      this.inProgress = false;
+      if (callHandler && this.handler.stop) {
+        this.handler.stop(this);
+      }
+    }
+  }
+
+  private nextInterval(startTime: number): number {
+    let now = Date.now();
+    let elapsedTime = now - startTime;
+    let delta = this.interval - elapsedTime;
+    let interval = delta > 0 ? delta : 0;
+    return (this.expiredAt && this.expiredAt <= now + interval) ? null : interval;
   }
 
   start(): void {
     if (!this.stopped) {
       return;
     }
+    if (this.expiredIn) {
+      this.expiredAt = new Date(Date.now() + this.expiredIn).getTime();
+    }
     this.inProgress = true;
     let _loop = () => {
       if (this.stopped) {
         return;
       }
-      let ts = new Date().getTime();
+      let ts = Date.now();
       this.subscription = this.observable.pipe(first()).subscribe(
         res => {
           if (this.stopped) {
             return;
           }
-          let elapse = new Date().getTime() - ts;
           this.handler.next(res, this);
           if (this.stopped) {
             return;
           }
-          let delta = this.interval - elapse;
-          let _interval = delta > 0 ? delta : 0;
+          let _interval = this.nextInterval(ts);
+          if (_interval === null) {
+            this.stop();
+          }
           this.timer = setTimeout(_loop, _interval);
         },
         err => {
@@ -85,9 +109,10 @@ export class Looper<T> implements ILooper<T> {
             if (this.stopped) {
               return;
             }
-            let elapse = new Date().getTime() - ts;
-            let delta = this.interval - elapse;
-            let _interval = delta > 0 ? delta : 0;
+            let _interval = this.nextInterval(ts);
+            if (_interval === null) {
+              this.stop();
+            }
             this.timer = setTimeout(_loop, _interval);
           }
           else {
@@ -99,8 +124,8 @@ export class Looper<T> implements ILooper<T> {
     _loop();
   }
 
-  static start<T>(observable: Observable<T>, handler: ILooperHandler<T>, interval: number): Looper<T> {
-    let looper = new Looper<T>(observable, handler, interval);
+  static start<T>(observable: Observable<T>, handler: ILooperHandler<T>, interval: number, expiredIn: number = null): Looper<T> {
+    let looper = new Looper<T>(observable, handler, interval, expiredIn);
     looper.start();
     return looper;
   }
@@ -110,7 +135,7 @@ export class Looper<T> implements ILooper<T> {
   providedIn: 'root'
 })
 export class LooperService {
-  start<T>(observable: Observable<T>, handler: ILooperHandler<T>, interval: number): ILooper<T> {
-    return Looper.start(observable, handler, interval);
+  start<T>(observable: Observable<T>, handler: ILooperHandler<T>, interval: number, expiredIn: number = null): ILooper<T> {
+    return Looper.start(observable, handler, interval, expiredIn);
   }
 }
