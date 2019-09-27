@@ -14,9 +14,42 @@ import { ColumnSelectorComponent, ColumnSelectorResult } from '../../shared-comp
   styleUrls: ['./node-list.component.scss']
 })
 export class NodeListComponent implements OnInit, OnDestroy {
+  readonly columns = [
+    { name: 'Availability', label: 'Availability' },
+    { name: 'AzureServiceName', label: 'Azure Service Name' },
+    { name: 'CpuSpeed', label: 'Cpu Speed' },
+    { name: 'DnsSuffix', label: 'Dns Suffix' },
+    { name: 'Groups', label: 'Node Groups' },
+    { name: 'Guid', label: 'Guid' },
+    { name: 'Health', label: 'Health' },
+    { name: 'Id', label: 'Id' },
+    { name: 'JobType', label: 'Job Type' },
+    { name: 'Location', label: 'Location' },
+    { name: 'MemorySize', label: 'Memory Size' },
+    { name: 'Name', label: 'Name' },
+    { name: 'NumCores', label: 'Cores' },
+    { name: 'NumSockets', label: 'Sockets' },
+    { name: 'OfflineTime', label: 'Offline at' },
+    { name: 'OnlineTime', label: 'Online at' },
+    { name: 'Reachable', label: 'Reachable' },
+    { name: 'State', label: 'State' },
+  ];
+
+  private readonly availableColumns: string[] = this.columns.map(c => c.name);
+
   dataSource: MatTableDataSource<Node> = new MatTableDataSource();
 
   selection = new SelectionModel<Node>(true);
+
+  private selectedColumns: string[];
+
+  private get unselectedColumns(): string[] {
+    return this.availableColumns.filter(e => !this.selectedColumns.includes(e));
+  }
+
+  get displayedColumns(): string[] {
+    return ['Select'].concat(this.selectedColumns);
+  }
 
   private updateInterval = 1200;
 
@@ -27,40 +60,9 @@ export class NodeListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
 
-  private selectedColumns: string[];
-
-  private get unselectedColumns(): string[] {
-    return NodeListComponent.availableColumns.filter(e => !this.selectedColumns.includes(e));
-  }
-
-  private static availableColumns: string[] = [
-    'Availability',
-    'AzureServiceName',
-    'CpuSpeed',
-    'DnsSuffix',
-    'Groups',
-    'Guid',
-    'Health',
-    'Id',
-    'JobType',
-    'Location',
-    'MemorySize',
-    'Name',
-    'NumCores',
-    'NumSockets',
-    'OfflineTime',
-    'OnlineTime',
-    'Reachable',
-    'State'
-  ];
-
-  get displayedColumns(): string[] {
-    return ['Select'].concat(this.selectedColumns);
-  }
-
   constructor(
-    private userService: UserService,
     private api: ApiService,
+    private userService: UserService,
     private dialog: MatDialog,
   ) {
     this.selectedColumns = this.userService.userOptions.nodeOptions.selectedColumns;
