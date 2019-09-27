@@ -60,13 +60,18 @@ export class JobsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.dataSource.sort = this.sort;
-    this.api.getJobs(null, Job.properties.join(','), null, null, null, 10000).subscribe((data) => {
-      this.dataSource.data = data.map(e => Job.fromProperties(e.Properties));
-    });
+    this.refresh();
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  refresh(): void {
+    this.selection.clear();
+    this.api.getJobs(null, Job.properties.join(','), null, null, null, 10000).subscribe((data) => {
+      this.dataSource.data = data.map(e => Job.fromProperties(e.Properties));
+    });
   }
 
   get anySelected(): boolean {
