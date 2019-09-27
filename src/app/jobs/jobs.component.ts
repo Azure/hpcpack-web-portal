@@ -15,85 +15,31 @@ import { ColumnSelectorComponent, ColumnSelectorResult } from '../shared-compone
   styleUrls: ['./jobs.component.scss']
 })
 export class JobsComponent implements OnInit, OnDestroy {
+  readonly columns = [
+    { name: "Id", label: "Id" },
+    { name: "Name", label: "Name" },
+    { name: "Owner", label: "Owner" },
+    { name: "SubmitTime", label: "Submitted at" },
+    { name: "CreateTime", label: "Created at" },
+    { name: "EndTime", label: "Ended at" },
+    { name: "StartTime", label: "Started at" },
+    { name: "ChangeTime", label: "Changed at" },
+    { name: "State", label: "State" },
+    { name: "ErrorMessage", label: "Error Message" },
+    { name: "Progress", label: "Progress" },
+  ];
+
+  private readonly availableColumns: string[] = this.columns.map(c => c.name);
+
   dataSource: MatTableDataSource<Job> = new MatTableDataSource();
 
   selection = new SelectionModel<Job>(true);
 
-  @ViewChild(MatSort, {static: true})
-  private sort: MatSort;
-
   private selectedColumns: string[];
 
   private get unselectedColumns(): string[] {
-    return JobsComponent.availableColumns.filter(e => !this.selectedColumns.includes(e));
+    return this.availableColumns.filter(e => !this.selectedColumns.includes(e));
   }
-
-  private static availableColumns: string[] = [
-    "Id",
-    "Name",
-    "Owner",
-    // "UserName",
-    // "Project",
-    // "RuntimeSeconds",
-    "SubmitTime",
-    "CreateTime",
-    "EndTime",
-    "StartTime",
-    "ChangeTime",
-    "State",
-    // "PreviousState",
-    // "MinCores",
-    // "MaxCores",
-    // "MinNodes",
-    // "MaxNodes",
-    // "MinSockets",
-    // "MaxSockets",
-    // "UnitType",
-    // "RequestedNodes",
-    // "IsExclusive",
-    // "RunUntilCanceled",
-    // "NodeGroups",
-    // "FailOnTaskFailure",
-    // "AutoCalculateMax",
-    // "AutoCalculateMin",
-    // "CanGrow",
-    // "CanShrink",
-    // "Preemptable",
-    "ErrorMessage",
-    // "HasRuntime",
-    // "RequeueCount",
-    // "MinMemory",
-    // "MaxMemory",
-    // "MinCoresPerNode",
-    // "MaxCoresPerNode",
-    // "EndpointReference",
-    // "SoftwareLicense",
-    // "OrderBy",
-    // "ClientSource",
-    "Progress",
-    // "ProgressMessage",
-    // "TargetResourceCount",
-    // "ExpandedPriority",
-    // "ServiceName",
-    // "JobTemplate",
-    // "HoldUntil",
-    // "NotifyOnStart",
-    // "NotifyOnCompletion",
-    // "ExcludedNodes",
-    // "EmailAddress",
-    // "Pool",
-    // "Priority",
-    // "AllocatedNodes",
-    // "JobValidExitCodes",
-    // "ParentJobIds",
-    // "FailDependentTasks",
-    // "NodeGroupOp",
-    // "SingleNode",
-    // "ChildJobIds",
-    // "EstimatedProcessMemory",
-    // "PlannedCoreCount",
-    // "TaskExecutionFailureRetryLimit",
-  ];
 
   get displayedColumns(): string[] {
     return ['Select'].concat(this.selectedColumns);
@@ -104,6 +50,9 @@ export class JobsComponent implements OnInit, OnDestroy {
   private updateExpiredIn = 5 * 60 * 1000;
 
   private subscription: Subscription = new Subscription();
+
+  @ViewChild(MatSort, {static: true})
+  private sort: MatSort;
 
   constructor(
     private api: ApiService,

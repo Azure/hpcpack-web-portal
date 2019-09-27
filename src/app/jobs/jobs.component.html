@@ -22,59 +22,9 @@
     </td>
   </ng-container>
 
-  <ng-container matColumnDef="Id">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-    <td mat-cell *matCellDef="let row">{{row.Id}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="Name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-    <td mat-cell *matCellDef="let row">{{row.Name}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="State">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>State</th>
-    <td mat-cell *matCellDef="let row">{{row.State}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="Owner">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Owner</th>
-    <td mat-cell *matCellDef="let row">{{row.Owner}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="Progress">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Progress</th>
-    <td mat-cell *matCellDef="let row">{{row.Progress}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="CreateTime">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Created at</th>
-    <td mat-cell *matCellDef="let row">{{row.CreateTime}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="SubmitTime">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Submitted at</th>
-    <td mat-cell *matCellDef="let row">{{row.SubmitTime}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="StartTime">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Started at</th>
-    <td mat-cell *matCellDef="let row">{{row.StartTime}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="ChangeTime">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Changed at</th>
-    <td mat-cell *matCellDef="let row">{{row.ChangeTime}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="EndTime">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Ended at</th>
-    <td mat-cell *matCellDef="let row">{{row.EndTime}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="ErrorMessage">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Error Message</th>
-    <td mat-cell *matCellDef="let row">{{row.ErrorMessage}}</td>
+  <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
+    <td mat-cell *matCellDef="let row">{{row[column.name]}}</td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
