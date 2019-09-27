@@ -6,7 +6,8 @@ import { Subscription } from 'rxjs'
 import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
 import { ApiService } from '../../services/api.service';
-import { ColumnSelectorComponent, ColumnSelectorResult } from '../../shared-components/column-selector/column-selector.component'
+import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
+  from '../../shared-components/column-selector/column-selector.component'
 
 @Component({
   selector: 'app-node-list',
@@ -14,7 +15,7 @@ import { ColumnSelectorComponent, ColumnSelectorResult } from '../../shared-comp
   styleUrls: ['./node-list.component.scss']
 })
 export class NodeListComponent implements OnInit, OnDestroy {
-  readonly columns = [
+  readonly columns: ColumnDef[] = [
     { name: 'Availability', label: 'Availability' },
     { name: 'AzureServiceName', label: 'Azure Service Name' },
     { name: 'CpuSpeed', label: 'Cpu Speed' },
@@ -42,10 +43,6 @@ export class NodeListComponent implements OnInit, OnDestroy {
   selection = new SelectionModel<Node>(true);
 
   private selectedColumns: string[];
-
-  private get unselectedColumns(): string[] {
-    return this.availableColumns.filter(e => !this.selectedColumns.includes(e));
-  }
 
   get displayedColumns(): string[] {
     return ['Select'].concat(this.selectedColumns);
@@ -140,7 +137,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   showColumnSelector(): void {
-    let data = { selected: this.selectedColumns, unselected: this.unselectedColumns };
+    let data: ColumnSelectorInput = { selected: this.selectedColumns, columns: this.columns };
     let dialogRef = this.dialog.open(ColumnSelectorComponent, { data })
     dialogRef.afterClosed().subscribe((result: undefined | ColumnSelectorResult) => {
       if (result) {

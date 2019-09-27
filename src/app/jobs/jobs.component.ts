@@ -6,8 +6,8 @@ import { Subscription, Observable } from 'rxjs'
 import { Job } from '../models/job'
 import { UserService } from '../services/user.service'
 import { ApiService } from '../services/api.service';
-import { ColumnSelectorComponent, ColumnSelectorResult } from '../shared-components/column-selector/column-selector.component'
-
+import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
+  from '../shared-components/column-selector/column-selector.component'
 
 @Component({
   selector: 'app-jobs',
@@ -15,7 +15,7 @@ import { ColumnSelectorComponent, ColumnSelectorResult } from '../shared-compone
   styleUrls: ['./jobs.component.scss']
 })
 export class JobsComponent implements OnInit, OnDestroy {
-  readonly columns = [
+  readonly columns: ColumnDef[] = [
     { name: "Id", label: "Id" },
     { name: "Name", label: "Name" },
     { name: "Owner", label: "Owner" },
@@ -36,10 +36,6 @@ export class JobsComponent implements OnInit, OnDestroy {
   selection = new SelectionModel<Job>(true);
 
   private selectedColumns: string[];
-
-  private get unselectedColumns(): string[] {
-    return this.availableColumns.filter(e => !this.selectedColumns.includes(e));
-  }
 
   get displayedColumns(): string[] {
     return ['Select'].concat(this.selectedColumns);
@@ -98,7 +94,7 @@ export class JobsComponent implements OnInit, OnDestroy {
   }
 
   showColumnSelector(): void {
-    let data = { selected: this.selectedColumns, unselected: this.unselectedColumns };
+    let data: ColumnSelectorInput = { selected: this.selectedColumns, columns: this.columns };
     let dialogRef = this.dialog.open(ColumnSelectorComponent, { data })
     dialogRef.afterClosed().subscribe((result: undefined | ColumnSelectorResult) => {
       if (result) {
