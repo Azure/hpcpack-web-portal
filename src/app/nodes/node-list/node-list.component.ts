@@ -19,7 +19,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
     { name: 'AzureServiceName', label: 'Azure Service Name' },
     { name: 'CpuSpeed', label: 'Cpu Speed' },
     { name: 'DnsSuffix', label: 'Dns Suffix' },
-    { name: 'Groups', label: 'Node Groups' },
+    { name: 'NodeGroups', label: 'Node Groups' },
     { name: 'Guid', label: 'Guid' },
     { name: 'Health', label: 'Health' },
     { name: 'Id', label: 'Id' },

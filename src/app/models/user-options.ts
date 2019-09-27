@@ -8,7 +8,7 @@ export interface JobOptions {
 
 //NOTE: ensure all user options have a default value.
 export class UserOptions {
-  nodeOptions: NodeOptions = { selectedColumns: ['Id', 'Name', 'State', 'Health', 'Groups'] };
+  nodeOptions: NodeOptions = { selectedColumns: ['Id', 'Name', 'State', 'Health', 'NodeGroups'] };
   jobOptions: JobOptions = {
     selectedColumns: [
       "Id",
