@@ -17,7 +17,7 @@ describe('ColumnSelectorComponent', () => {
         ColumnSelectorComponent
       ],
       providers: [
-        { provide: MAT_DIALOG_DATA, useValue: { selected: [], unselected: [] } as ColumnSelectorInput },
+        { provide: MAT_DIALOG_DATA, useValue: { selected: [], columns: [] } as ColumnSelectorInput },
         { provide: MatDialogRef, useClass: MatDialogRefStub },
       ]
     })
