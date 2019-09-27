@@ -1,5 +1,9 @@
 <mat-action-list>
   <button mat-button (click)="showColumnSelector()">Select Columns...</button>
+  <button mat-button [disabled]="!anySelected" (click)="submitJobs()">Submit</button>
+  <button mat-button [disabled]="!anySelected" (click)="cancelJobs()">Cancel</button>
+  <button mat-button [disabled]="!anySelected" (click)="finishJobs()">Finish</button>
+  <button mat-button [disabled]="!anySelected" (click)="requeueJobs()">Requeue</button>
 </mat-action-list>
 
 <table mat-table [dataSource]="dataSource" matSort>

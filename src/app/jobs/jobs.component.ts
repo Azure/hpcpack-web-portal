@@ -1,8 +1,8 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort } from '@angular/material/sort';
-import { Subscription } from 'rxjs'
+import { Subscription, Observable } from 'rxjs'
 import { Job } from '../models/job'
 import { UserService } from '../services/user.service'
 import { ApiService } from '../services/api.service';
@@ -14,7 +14,7 @@ import { ColumnSelectorComponent, ColumnSelectorResult } from '../shared-compone
   templateUrl: './jobs.component.html',
   styleUrls: ['./jobs.component.scss']
 })
-export class JobsComponent implements OnInit {
+export class JobsComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<Job> = new MatTableDataSource();
 
   selection = new SelectionModel<Job>(true);
@@ -99,6 +99,12 @@ export class JobsComponent implements OnInit {
     return ['Select'].concat(this.selectedColumns);
   }
 
+  private updateInterval = 1500;
+
+  private updateExpiredIn = 5 * 60 * 1000;
+
+  private subscription: Subscription = new Subscription();
+
   constructor(
     private api: ApiService,
     private userService: UserService,
@@ -112,6 +118,10 @@ export class JobsComponent implements OnInit {
     this.api.getJobs(null, Job.properties.join(','), null, null, null, 10000).subscribe((data) => {
       this.dataSource.data = data.map(e => Job.fromProperties(e.Properties));
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   get anySelected(): boolean {
@@ -148,5 +158,37 @@ export class JobsComponent implements OnInit {
         this.userService.userOptions = this.userService.userOptions; //save options
       }
     });
+  }
+
+  private updateJob(job: Job): void {
+    let old = this.dataSource.data.find(j => j.Id === job.Id)
+    if (old) {
+      old.update(job);
+    }
+  }
+
+  private operateOnSelectedJobs(operate: (job: Job) => Observable<Job>): void {
+    for (let job of this.selection.selected) {
+      let sub = operate(job).subscribe(newJob => {
+        this.updateJob(newJob);
+      });
+      this.subscription.add(sub);
+    }
+  }
+
+  submitJobs(): void {
+    this.operateOnSelectedJobs(job => this.api.submitJobAndWatch(parseInt(job.Id), this.updateInterval, this.updateExpiredIn));
+  }
+
+  cancelJobs(): void {
+    this.operateOnSelectedJobs(job => this.api.cancelJobAndWatch(parseInt(job.Id), this.updateInterval, this.updateExpiredIn));
+  }
+
+  finishJobs(): void {
+    this.operateOnSelectedJobs(job => this.api.finishJobAndWatch(parseInt(job.Id), this.updateInterval, this.updateExpiredIn));
+  }
+
+  requeueJobs(): void {
+    this.operateOnSelectedJobs(job => this.api.requeueJobAndWatch(parseInt(job.Id), this.updateInterval, this.updateExpiredIn));
   }
 }

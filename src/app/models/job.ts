@@ -67,6 +67,10 @@ export class Job {
   PlannedCoreCount: string;
   TaskExecutionFailureRetryLimit: string;
 
+  get Ended(): boolean {
+    return ['Finished', 'Failed', 'Canceled'].includes(this.State);
+  }
+
   update(other: Job): void {
     for (let key of Job.properties) {
       (this as any)[key] = (other as any)[key];

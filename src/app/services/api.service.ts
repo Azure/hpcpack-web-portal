@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subscriber } from 'rxjs'
 import { DefaultService, BASE_PATH, Configuration } from '../api-client'
 import { Node } from '../models/node'
+import { Job } from '../models/job'
 import { ILooper, Looper } from './looper.service'
 
 export * from '../api-client'
@@ -63,5 +64,47 @@ export class ApiService extends DefaultService {
 
   takeNodesOfflineAndWatch(names: string[], updateInterval: number, updateExpiredIn: number): Observable<Node[]> {
     return this.doNodeOperationAndWatch('offline', 'Offline', names, updateInterval, updateExpiredIn);
+  }
+
+  doJobOperationAndWatch(operation: Observable<any>, jobId: number, updateInterval: number, updateExpiredIn: number): Observable<Job> {
+    return new Observable<Job>(subscriber => {
+      operation.subscribe(_ => {
+        let looper = Looper.start(
+          this.getJob(jobId),
+          {
+            next: (data, looper) => {
+              let job = Job.fromProperties(data);
+              subscriber.next(job);
+
+              if (job.Ended) {
+                looper.stop();
+              }
+            },
+            stop: () => {
+              subscriber.complete();
+            }
+          },
+          updateInterval,
+          updateExpiredIn
+        );
+        return () => looper.stop();
+      });
+    });
+  }
+
+  requeueJobAndWatch(jobId: number, updateInterval: number, updateExpiredIn: number): Observable<Job> {
+    return this.doJobOperationAndWatch(this.requeueJob(jobId), jobId, updateInterval, updateExpiredIn);
+  }
+
+  submitJobAndWatch(jobId: number, updateInterval: number, updateExpiredIn: number): Observable<Job> {
+    return this.doJobOperationAndWatch(this.submitJob(jobId), jobId, updateInterval, updateExpiredIn);
+  }
+
+  cancelJobAndWatch(jobId: number, updateInterval: number, updateExpiredIn: number): Observable<Job> {
+    return this.doJobOperationAndWatch(this.cancelJob(jobId), jobId, updateInterval, updateExpiredIn);
+  }
+
+  finishJobAndWatch(jobId: number, updateInterval: number, updateExpiredIn: number): Observable<Job> {
+    return this.doJobOperationAndWatch(this.finishJob(jobId), jobId, updateInterval, updateExpiredIn);
   }
 }
