@@ -1,8 +1,9 @@
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort } from '@angular/material/sort';
-import { Subscription, Observable } from 'rxjs'
+import { Subscription, Observable, fromEvent } from 'rxjs'
+import { debounceTime } from 'rxjs/operators'
 import { Job } from '../models/job'
 import { UserService } from '../services/user.service'
 import { ApiService } from '../services/api.service';
@@ -14,7 +15,7 @@ import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelector
   templateUrl: './jobs.component.html',
   styleUrls: ['./jobs.component.scss']
 })
-export class JobsComponent implements OnInit, OnDestroy {
+export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly columns: ColumnDef[] = [
     { name: "Id", label: "Id" },
     { name: "Name", label: "Name" },
@@ -47,6 +48,9 @@ export class JobsComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription = new Subscription();
 
+  @ViewChild('tableContainer', { read: ElementRef, static: false })
+  private tableContainerRef: ElementRef;
+
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
 
@@ -65,6 +69,32 @@ export class JobsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  ngAfterViewInit(): void {
+    fromEvent<Event>(this.tableContainerRef.nativeElement, 'scroll')
+      .pipe(debounceTime(500))
+      .subscribe(e => this.onTableScroll(e));
+  }
+
+  private isLoading: boolean = false;
+
+  private allLoaded: boolean = false;
+
+  private loadData(): void {
+    console.log('Loading more data...');
+  }
+
+  onTableScroll(e: Event): void {
+    console.log('Scrolling...');
+    if (this.isLoading || this.allLoaded) {
+      return;
+    }
+    let target = e.target as Element;
+    let totalScrollableDistance = target.scrollHeight - target.clientHeight;
+    if (totalScrollableDistance > 0 && target.scrollTop / totalScrollableDistance >= 0.8) {
+      this.loadData();
+    }
   }
 
   refresh(): void {
