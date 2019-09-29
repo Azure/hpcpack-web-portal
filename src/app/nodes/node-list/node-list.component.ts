@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, OnDestroy, AfterViewInit, ViewChild } fr
 import { MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort } from '@angular/material/sort';
+import { MatSidenavContainer } from '@angular/material/sidenav'
 import { Subscription, Observable, fromEvent } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
 import { Node } from '../../models/node'
@@ -62,6 +63,11 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
   private allLoaded: boolean = false;
 
   private readonly dataPageSize = 100;
+
+  private actionListHidden = false;
+
+  @ViewChild(MatSidenavContainer, { static: false })
+  private sidenavContainer: MatSidenavContainer;
 
   @ViewChild('tableContainer', { read: ElementRef, static: false })
   private tableContainerRef: ElementRef;
@@ -215,5 +221,18 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.userService.userOptions = this.userService.userOptions; //save options
       }
     });
+  }
+
+  get isActionListHidden(): boolean {
+    return this.actionListHidden;
+  }
+
+  toggleActionList(): void {
+    this.actionListHidden = !this.actionListHidden;
+    setTimeout(() => this.sidenavContainer.updateContentMargins(), 0);
+  }
+
+  get toggleActionListIcon(): string {
+    return this.actionListHidden ? 'keyboard_arrow_left' : 'keyboard_arrow_right';
   }
 }

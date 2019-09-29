@@ -11,6 +11,7 @@ import { ApiService } from '../services/api.service';
 import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
   from '../shared-components/column-selector/column-selector.component'
 
+//TODO: A table component with "scroll to load" and "side action panel"?
 @Component({
   selector: 'app-jobs',
   templateUrl: './jobs.component.html',
