@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations'
 
 import { MaterialModule } from '../material.module'
 import { ApiService } from '../services/api.service';
@@ -11,7 +12,7 @@ describe('JobsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ MaterialModule ],
+      imports: [ NoopAnimationsModule, MaterialModule ],
       declarations: [ JobsComponent ],
       providers: [
         { provide: UserService, useValue: { userOptions: { jobOptions: {} } } },
