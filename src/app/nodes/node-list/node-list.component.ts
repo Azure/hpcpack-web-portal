@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort } from '@angular/material/sort';
-import { Subscription } from 'rxjs'
+import { Subscription, Observable, fromEvent } from 'rxjs'
+import { debounceTime } from 'rxjs/operators'
 import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
 import { ApiService } from '../../services/api.service';
@@ -14,7 +15,7 @@ import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelector
   templateUrl: './node-list.component.html',
   styleUrls: ['./node-list.component.scss']
 })
-export class NodeListComponent implements OnInit, OnDestroy {
+export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly columns: ColumnDef[] = [
     { name: 'Availability', label: 'Availability' },
     { name: 'AzureServiceName', label: 'Azure Service Name' },
@@ -54,6 +55,17 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription = new Subscription();
 
+  private continuationToken: string = null;
+
+  private isLoading: boolean = false;
+
+  private allLoaded: boolean = false;
+
+  private readonly dataPageSize = 100;
+
+  @ViewChild('tableContainer', { read: ElementRef, static: false })
+  private tableContainerRef: ElementRef;
+
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
 
@@ -71,14 +83,71 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.reset();
   }
 
-  refresh(): void {
+  ngAfterViewInit(): void {
+    fromEvent<Event>(this.tableContainerRef.nativeElement, 'scroll')
+      .pipe(debounceTime(500))
+      .subscribe(e => this.onTableScroll(e));
+  }
+
+  private reset(): void {
+    //TODO: Use separate subscriptions for loading and updating and don't unsubscribe the updating one on reset?
+    this.subscription.unsubscribe();
+    //When a subscription is unsubscribed, new subscription added to it won't work.
+    //So a new subscription instance is required.
+    this.subscription = new Subscription();
     this.selection.clear();
-    this.api.getNodes(null, null, null, null, null, 10000).subscribe((data) => {
-      this.dataSource.data = data.map(e => Node.fromProperties(e.Properties));
+    this.dataSource.data = [];
+    this.continuationToken = null;
+    this.isLoading = false;
+    this.allLoaded = false;
+  }
+
+  //TODO: let browser refresh instead?
+  refresh(): void {
+    this.reset();
+    this.loadMoreData();
+  }
+
+  get loadDataActionText(): string {
+    return this.isLoading ? 'Loading...' : 'Load More Data';
+  }
+
+  loadMoreData(): void {
+    console.log('Loading more data...');
+    if (this.isLoading || this.allLoaded) {
+      return;
+    }
+    this.isLoading = true;
+    //TODO: 1. Get only those for columns?
+    let sub = this.api.getNodes(null, null, null, null, null, this.dataPageSize, this.continuationToken, 'response').subscribe({
+      next: res => {
+        this.isLoading = false;
+        this.continuationToken = res.headers.get('x-ms-continuation-queryId');
+        this.allLoaded = (this.continuationToken == null);
+        let nodes = res.body.map(e => Node.fromProperties(e.Properties));
+        this.dataSource.data = this.dataSource.data.concat(nodes);
+      },
+      error: err => {
+        this.isLoading = false;
+        console.log(err);
+      }
     });
+    this.subscription.add(sub);
+  }
+
+  onTableScroll(e: Event): void {
+    console.log('Scrolling...');
+    if (this.isLoading || this.allLoaded) {
+      return;
+    }
+    let target = e.target as Element;
+    let totalScrollableDistance = target.scrollHeight - target.clientHeight;
+    if (totalScrollableDistance > 0 && target.scrollTop / totalScrollableDistance >= 0.8) {
+      this.loadMoreData();
+    }
   }
 
   get anySelected(): boolean {

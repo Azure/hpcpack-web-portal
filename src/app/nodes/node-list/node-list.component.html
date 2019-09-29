@@ -1,31 +1,38 @@
-<mat-action-list>
-  <button mat-button (click)="showColumnSelector()">Select Columns...</button>
-  <button mat-button (click)="refresh()">Refresh Data</button>
-  <button mat-button [disabled]="!anySelected" (click)="bringOnline()">Bring Online</button>
-  <button mat-button [disabled]="!anySelected" (click)="takeOffline()">Take Offline</button>
-</mat-action-list>
+<div class="content">
+  <mat-action-list>
+    <button mat-button (click)="showColumnSelector()">Select Columns...</button>
+    <button mat-button (click)="refresh()">Refresh Data</button>
+    <button mat-button [disabled]="isLoading || allLoaded" (click)="loadMoreData()">{{loadDataActionText}}</button>
+    <button mat-button [disabled]="!anySelected" (click)="bringOnline()">Bring Online</button>
+    <button mat-button [disabled]="!anySelected" (click)="takeOffline()">Take Offline</button>
+  </mat-action-list>
 
-<table mat-table [dataSource]="dataSource" matSort>
-  <ng-container matColumnDef="Select">
-    <th mat-header-cell *matHeaderCellDef>
-      <mat-checkbox (change)="masterToggle()"
-                    [checked]="masterChecked"
-                    [indeterminate]="masterIndeterminate">
-      </mat-checkbox>
-    </th>
-    <td mat-cell *matCellDef="let node">
-      <mat-checkbox (click)="$event.stopPropagation()"
-                    (change)="selection.toggle(node)"
-                    [checked]="selection.isSelected(node)">
-      </mat-checkbox>
-    </td>
-  </ng-container>
+  <div class="table-container" #tableContainer>
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="Select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="masterToggle()"
+                        [checked]="masterChecked"
+                        [indeterminate]="masterIndeterminate">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let node">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="selection.toggle(node)"
+                        [checked]="selection.isSelected(node)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
 
-  <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
-    <td mat-cell *matCellDef="let node">{{node[column.name]}}</td>
-  </ng-container>
+      <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
+        <td mat-cell *matCellDef="let node">{{node[column.name]}}</td>
+      </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <mat-progress-bar *ngIf="isLoading" mode="buffer"></mat-progress-bar>
+</div>
