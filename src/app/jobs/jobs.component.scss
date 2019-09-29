@@ -1,3 +1,21 @@
+.container {
+  height: 100%;
+}
+
+.side-nav {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.side-nav-btn button {
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
 .content {
   display: flex;
   flex-direction: column;
