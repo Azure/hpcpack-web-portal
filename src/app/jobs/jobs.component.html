@@ -2,6 +2,7 @@
   <mat-action-list>
     <button mat-button (click)="showColumnSelector()">Select Columns...</button>
     <button mat-button (click)="refresh()">Refresh Data</button>
+    <button mat-button [disabled]="isLoading || allLoaded" (click)="loadMoreData()">{{loadDataActionText}}</button>
     <button mat-button [disabled]="!anySelected" (click)="submitJobs()">Submit</button>
     <button mat-button [disabled]="!anySelected" (click)="cancelJobs()">Cancel</button>
     <button mat-button [disabled]="!anySelected" (click)="finishJobs()">Finish</button>
@@ -34,4 +35,6 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
+
+  <mat-progress-bar *ngIf="isLoading" mode="buffer"></mat-progress-bar>
 </div>

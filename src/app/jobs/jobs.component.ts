@@ -48,6 +48,14 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private subscription: Subscription = new Subscription();
 
+  private continuationToken: string = null;
+
+  private isLoading: boolean = false;
+
+  private allLoaded: boolean = false;
+
+  private readonly dataPageSize = 100;
+
   @ViewChild('tableContainer', { read: ElementRef, static: false })
   private tableContainerRef: ElementRef;
 
@@ -68,7 +76,7 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.reset();
   }
 
   ngAfterViewInit(): void {
@@ -77,12 +85,46 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(e => this.onTableScroll(e));
   }
 
-  private isLoading: boolean = false;
+  private reset(): void {
+    //TODO: Use separate subscriptions for loading and updating and don't unsubscribe the updating one on reset?
+    this.subscription.unsubscribe();
+    this.selection.clear();
+    this.dataSource.data = [];
+    this.continuationToken = null;
+    this.isLoading = false;
+    this.allLoaded = false;
+  }
 
-  private allLoaded: boolean = false;
+  //TODO: let browser refresh instead?
+  refresh(): void {
+    this.reset();
+    this.loadMoreData();
+  }
 
-  private loadData(): void {
+  get loadDataActionText(): string {
+    return this.isLoading ? 'Loading...' : 'Load More Data';
+  }
+
+  loadMoreData(): void {
     console.log('Loading more data...');
+    if (this.isLoading || this.allLoaded) {
+      return;
+    }
+    this.isLoading = true;
+    //TODO: 1. Get only those for columns? 2. Filter on job owner for user role?
+    this.api.getJobs(null, Job.properties.join(','), null, null, null, this.dataPageSize, this.continuationToken, 'response').subscribe({
+      next: res => {
+        this.isLoading = false;
+        this.continuationToken = res.headers.get('x-ms-continuation-queryId');
+        this.allLoaded = (this.continuationToken == null);
+        let jobs = res.body.map(e => Job.fromProperties(e.Properties));
+        this.dataSource.data = this.dataSource.data.concat(jobs);
+      },
+      error: err => {
+        this.isLoading = false;
+        console.log(err);
+      }
+    })
   }
 
   onTableScroll(e: Event): void {
@@ -93,15 +135,8 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
     let target = e.target as Element;
     let totalScrollableDistance = target.scrollHeight - target.clientHeight;
     if (totalScrollableDistance > 0 && target.scrollTop / totalScrollableDistance >= 0.8) {
-      this.loadData();
+      this.loadMoreData();
     }
-  }
-
-  refresh(): void {
-    this.selection.clear();
-    this.api.getJobs(null, Job.properties.join(','), null, null, null, 10000).subscribe((data) => {
-      this.dataSource.data = data.map(e => Job.fromProperties(e.Properties));
-    });
   }
 
   get anySelected(): boolean {
