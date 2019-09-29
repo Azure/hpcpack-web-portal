@@ -40,7 +40,7 @@ export class AppComponent {
     {
       link: 'jobs',
       title: 'Jobs',
-      icon: 'list',
+      icon: 'work',
     },
     {
       link: 'charts',
