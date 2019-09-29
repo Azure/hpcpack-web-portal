@@ -88,6 +88,9 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
   private reset(): void {
     //TODO: Use separate subscriptions for loading and updating and don't unsubscribe the updating one on reset?
     this.subscription.unsubscribe();
+    //When a subscription is unsubscribed, new subscription added to it won't work.
+    //So a new subscription instance is required.
+    this.subscription = new Subscription();
     this.selection.clear();
     this.dataSource.data = [];
     this.continuationToken = null;
@@ -112,7 +115,7 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.isLoading = true;
     //TODO: 1. Get only those for columns? 2. Filter on job owner for user role?
-    this.api.getJobs(null, Job.properties.join(','), null, null, null, this.dataPageSize, this.continuationToken, 'response').subscribe({
+    let sub = this.api.getJobs(null, Job.properties.join(','), null, null, null, this.dataPageSize, this.continuationToken, 'response').subscribe({
       next: res => {
         this.isLoading = false;
         this.continuationToken = res.headers.get('x-ms-continuation-queryId');
@@ -124,7 +127,8 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isLoading = false;
         console.log(err);
       }
-    })
+    });
+    this.subscription.add(sub);
   }
 
   onTableScroll(e: Event): void {
