@@ -6,10 +6,8 @@
       </div>
       <mat-list [ngClass]="{'hidden': isActionListHidden}">
         <mat-list-item><button mat-button (click)="showColumnSelector()">Select Columns...</button></mat-list-item>
-        <mat-divider></mat-divider>
         <mat-list-item><button mat-button (click)="refresh()">Refresh Data</button></mat-list-item>
         <mat-list-item><button mat-button [disabled]="!canLoadMore" (click)="loadMoreData()">{{loadDataActionText}}</button></mat-list-item>
-        <mat-divider></mat-divider>
         <mat-list-item><button mat-button [disabled]="!anySelected" (click)="submitJobs()">Submit</button></mat-list-item>
         <mat-list-item><button mat-button [disabled]="!anySelected" (click)="cancelJobs()">Cancel</button></mat-list-item>
         <mat-list-item><button mat-button [disabled]="!anySelected" (click)="finishJobs()">Finish</button></mat-list-item>
