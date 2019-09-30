@@ -52,9 +52,17 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private continuationToken: string = null;
 
-  private isLoading: boolean = false;
+  private loading: boolean = false;
+
+  get isLoading(): boolean {
+    return this.loading;
+  }
 
   private allLoaded: boolean = false;
+
+  get canLoadMore(): boolean {
+    return !(this.loading || this.allLoaded);
+  }
 
   private readonly dataPageSize = 100;
 
@@ -101,7 +109,7 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selection.clear();
     this.dataSource.data = [];
     this.continuationToken = null;
-    this.isLoading = false;
+    this.loading = false;
     this.allLoaded = false;
   }
 
@@ -112,26 +120,26 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get loadDataActionText(): string {
-    return this.isLoading ? 'Loading...' : 'Load More Data';
+    return this.loading ? 'Loading...' : 'Load More Data';
   }
 
   loadMoreData(): void {
     console.log('Loading more data...');
-    if (this.isLoading || this.allLoaded) {
+    if (!this.canLoadMore) {
       return;
     }
-    this.isLoading = true;
+    this.loading = true;
     //TODO: 1. Get only those for columns? 2. Filter on job owner for user role?
     let sub = this.api.getJobs(null, Job.properties.join(','), null, null, null, this.dataPageSize, this.continuationToken, 'response').subscribe({
       next: res => {
-        this.isLoading = false;
+        this.loading = false;
         this.continuationToken = res.headers.get('x-ms-continuation-queryId');
         this.allLoaded = (this.continuationToken == null);
         let jobs = res.body.map(e => Job.fromProperties(e.Properties));
         this.dataSource.data = this.dataSource.data.concat(jobs);
       },
       error: err => {
-        this.isLoading = false;
+        this.loading = false;
         console.log(err);
       }
     });
@@ -140,7 +148,7 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onTableScroll(e: Event): void {
     console.log('Scrolling...');
-    if (this.isLoading || this.allLoaded) {
+    if (!this.canLoadMore) {
       return;
     }
     let target = e.target as Element;
