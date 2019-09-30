@@ -12,8 +12,13 @@
   height: 100%;
 }
 
+
 .side-nav-btn button {
   height: 100%;
+}
+
+.side-nav mat-list {
+  margin-left: -1.5em;
 }
 
 .hidden {
