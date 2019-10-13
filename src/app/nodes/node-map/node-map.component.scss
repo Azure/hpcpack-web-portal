@@ -1,0 +1,83 @@
+:host {
+  flex: 1;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 1em;
+}
+
+.action {
+  margin-right: 1em;
+}
+
+.nodes {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+
+.node {
+  display: inline-block;
+  border: dotted 1px;
+}
+
+.size-1 {
+  width: 1em;
+  height: 1em;
+  margin: 1px;
+}
+
+.size-2 {
+  width: 2em;
+  height: 2em;
+  margin: 0.1em;
+}
+
+.size-3 {
+  width: 4em;
+  height: 4em;
+  margin: 0.2em;
+}
+
+.size-4 {
+  width: 8em;
+  height: 8em;
+  margin: 0.3em;
+}
+
+.size-5 {
+  width: 16em;
+  height: 16em;
+  margin: 0.5em;
+}
+
+.degree-unknown {
+  background-color: gray;
+}
+
+.degree-1 {
+  background-color: lightgreen
+}
+
+.degree-2 {
+  background-color: green
+}
+
+.degree-3 {
+  background-color: darkgreen;
+}
+
+.degree-4 {
+  background-color: yellow;
+}
+
+.degree-5 {
+  background-color: red;
+}

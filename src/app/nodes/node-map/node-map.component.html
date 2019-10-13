@@ -1,1 +1,21 @@
-Heat map
+<div class="container">
+  <div class="actions">
+    <mat-form-field class="action">
+      <mat-label>Metric</mat-label>
+      <mat-select [(value)]="selectedMetric" (selectionChange)="changeMetricTo($event.value)">
+        <mat-option *ngFor="let metric of metrics" [value]="metric.value">{{metric.label}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="action">
+      <input type="number" matInput placeholder="Min Value" min="0" [formControl]="metricMinInput" readonly="true">
+    </mat-form-field>
+    <mat-form-field class="action">
+      <input type="number" matInput placeholder="Max Value" min="0" [formControl]="metricMaxInput" readonly="true">
+    </mat-form-field>
+    <mat-slider min="1" max="5" step="1" [value]="blockSize" (change)="changeSizeTo($event.value)" matTooltip="Change the size of node metric block"></mat-slider>
+  </div>
+  <div class="nodes">
+    <div *ngFor="let metric of nodeMetrics" class="node" [ngClass]="[nodeSizeClass, nodeColorClass(metric)]" matTooltip="{{nodeMetricTip(metric)}}">
+    </div>
+  </div>
+</div>

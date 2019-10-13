@@ -1,7 +1,7 @@
 import { Injectable, Optional, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subscriber } from 'rxjs'
-import { DefaultService, BASE_PATH, Configuration } from '../api-client'
+import { DefaultService, BASE_PATH, Configuration, NodeMetric } from '../api-client'
 import { Node } from '../models/node'
 import { Job } from '../models/job'
 import { ILooper, Looper } from './looper.service'
@@ -18,6 +18,25 @@ export class ApiService extends DefaultService {
     @Optional() configuration: Configuration
   ) {
     super(httpClient, basePath, configuration);
+  }
+
+  getNodeMetricsInLoop(metric: string, updateInterval: number): Observable<NodeMetric[]> {
+    return new Observable<NodeMetric[]>(subscriber => {
+      let looper = Looper.start(
+        this.getNodeMetrics(metric),
+        {
+          next: (data) => {
+            subscriber.next(data);
+          },
+          //An error handler here will prevent an error from stopping the loop
+          error: (err) => {
+            console.error(err);
+          }
+        },
+        updateInterval,
+      );
+      return () => looper.stop();
+    });
   }
 
   doNodeOperationAndWatch(operation: 'online' | 'offline', targetState: string, nodeNames: string[], updateInterval: number, updateExpiredIn: number): Observable<Node[]> {
