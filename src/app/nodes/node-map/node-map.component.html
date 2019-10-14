@@ -2,17 +2,17 @@
   <div class="actions">
     <mat-form-field class="action">
       <mat-label>Metric</mat-label>
-      <mat-select [(value)]="selectedMetric" (selectionChange)="changeMetricTo($event.value)">
+      <mat-select [(value)]="selectedMetric" (selectionChange)="changeMetric()">
         <mat-option *ngFor="let metric of metrics" [value]="metric.value">{{metric.label}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field class="action">
-      <input type="number" matInput placeholder="Min Value" min="0" [formControl]="metricMinInput" readonly="true">
+      <input type="number" matInput placeholder="Min Value" min="0" [formControl]="metricMinInput" (change)="changeValueRange()">
     </mat-form-field>
     <mat-form-field class="action">
-      <input type="number" matInput placeholder="Max Value" min="0" [formControl]="metricMaxInput" readonly="true">
+      <input type="number" matInput placeholder="Max Value" min="0" [formControl]="metricMaxInput" (change)="changeValueRange()">
     </mat-form-field>
-    <mat-slider min="1" max="5" step="1" [value]="blockSize" (change)="changeSizeTo($event.value)" matTooltip="Change the size of node metric block"></mat-slider>
+    <mat-slider min="1" max="5" step="1" [value]="blockSize" (change)="changeBlockSize($event.value)" matTooltip="Change the size of node metric block"></mat-slider>
   </div>
   <div class="nodes">
     <div *ngFor="let metric of nodeMetrics" class="node" [ngClass]="[nodeSizeClass, nodeColorClass(metric)]" matTooltip="{{nodeMetricTip(metric)}}">

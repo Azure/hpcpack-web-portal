@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs'
 import { NodeMetric } from '../../api-client'
 import { ApiService } from '../../services/api.service';
+import { UserService } from '../../services/user.service'
 
 @Component({
   selector: 'app-node-map',
@@ -18,27 +19,45 @@ export class NodeMapComponent implements OnInit, OnDestroy {
     { value: 'HPCCoresInUse', label: 'Cores in Use', min: 0, max: 8 },
   ];
 
-  private selectedMetricIndex = 0;
+  private selectedMetricIndex: number;
+
+  private userOptions = this.user.userOptions.nodeMetricOptions;
 
   get selectedMetric(): string {
-    return this.metrics[this.selectedMetricIndex].value;
+    return this.userOptions.selectedMetric || this.metrics[this.selectedMetricIndex].value;
   }
 
   set selectedMetric(value: string) {
     this.selectedMetricIndex = this.metrics.findIndex(e => e.value === value);
+    this.userOptions.selectedMetric = value;
+    this.user.saveUserOptions();
   }
 
   get metricMinValue(): number {
-    return this.metrics[this.selectedMetricIndex].min;
+    let val: number;
+    try {
+      val = this.userOptions.metricRanges[this.selectedMetric].min;
+    }
+    catch {
+      val = undefined;
+    }
+    return val || this.metrics[this.selectedMetricIndex].min;
   }
 
   get metricMaxValue(): number {
-    return this.metrics[this.selectedMetricIndex].max;
+    let val: number;
+    try {
+      val = this.userOptions.metricRanges[this.selectedMetric].max;
+    }
+    catch {
+      val = undefined;
+    }
+    return val || this.metrics[this.selectedMetricIndex].max;
   }
 
-  metricMinInput = this.fb.control(this.metricMinValue);
+  metricMinInput: FormControl;
 
-  metricMaxInput = this.fb.control(this.metricMaxValue);
+  metricMaxInput: FormControl;
 
   private setMetricRange(): void {
     this.metricMinInput.setValue(this.metricMinValue);
@@ -49,12 +68,29 @@ export class NodeMapComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
 
-  blockSize: number = 3;
+  get blockSize(): number {
+    return this.userOptions.blockSize || 3;
+  }
+
+  set blockSize(size: number) {
+    this.userOptions.blockSize = size;
+    this.user.saveUserOptions();
+  }
 
   constructor(
     private fb: FormBuilder,
     private api: ApiService,
-  ) { }
+    private user: UserService,
+  ) {
+    if (this.userOptions.selectedMetric) {
+      this.selectedMetricIndex = this.metrics.findIndex(e => e.value === this.userOptions.selectedMetric);
+    }
+    else {
+      this.selectedMetricIndex = 0;
+    }
+    this.metricMinInput = this.fb.control(this.metricMinValue);
+    this.metricMaxInput = this.fb.control(this.metricMaxValue);
+  }
 
   ngOnInit() {
     this.watch();
@@ -77,13 +113,18 @@ export class NodeMapComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeMetricTo(metric: string): void {
+  changeMetric(): void {
     this.reset();
     this.watch();
     this.setMetricRange();
   }
 
-  changeSizeTo(size: number): void {
+  changeValueRange(): void {
+    this.userOptions.metricRanges[this.selectedMetric] = { min: this.metricMinInput.value, max: this.metricMaxInput.value };
+    this.user.saveUserOptions();
+  }
+
+  changeBlockSize(size: number): void {
     this.blockSize = size;
   }
 
@@ -99,22 +140,22 @@ export class NodeMapComponent implements OnInit, OnDestroy {
     }
 
     let span = this.metricMaxValue - this.metricMinValue;
-    let degree: number;
     if (span <= 0) {
       return 'degree-unknown';
     }
 
-    let v = val / span;
-    if (v < 20) {
+    let degree: number;
+    let v = (val - this.metricMinValue) / span;
+    if (v < 0.2) {
       degree = 1;
     }
-    else if (v < 40) {
+    else if (v < 0.4) {
       degree = 2;
     }
-    else if (v < 60) {
+    else if (v < 0.6) {
       degree = 3;
     }
-    else if (v < 80) {
+    else if (v < 0.8) {
       degree = 4;
     }
     else {
