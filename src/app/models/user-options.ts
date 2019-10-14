@@ -6,10 +6,12 @@ export interface NodeMetricOptions {
 
 export interface NodeOptions {
   selectedColumns?: string[];
+  hideActionList?: boolean;
 }
 
 export interface JobOptions {
   selectedColumns?: string[];
+  hideActionList?: boolean;
 }
 
 //NOTE: ensure all user options that are not leaves in the tree have a proper value.

@@ -46,12 +46,14 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private static readonly defaultSelectedColumns = ['Id', 'Name', 'State', 'Health', 'NodeGroups'];
 
+  private userOptions = this.userService.userOptions.nodeOptions;
+
   private get selectedColumns(): string[] {
-    return this.userService.userOptions.nodeOptions.selectedColumns || NodeListComponent.defaultSelectedColumns;
+    return this.userOptions.selectedColumns || NodeListComponent.defaultSelectedColumns;
   }
 
   private set selectedColumns(value: string[]) {
-    this.userService.userOptions.nodeOptions.selectedColumns = value;
+    this.userOptions.selectedColumns = value;
     this.userService.saveUserOptions();
   }
 
@@ -81,7 +83,14 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private readonly dataPageSize = 100;
 
-  private actionListHidden = false;
+  private get actionListHidden(): boolean {
+    return this.userOptions.hideActionList !== undefined ? this.userOptions.hideActionList : false;
+  }
+
+  private set actionListHidden(val: boolean) {
+    this.userOptions.hideActionList = val;
+    this.userService.saveUserOptions();
+  }
 
   @ViewChild(MatSidenavContainer, { static: false })
   private sidenavContainer: MatSidenavContainer;

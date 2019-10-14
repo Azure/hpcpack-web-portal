@@ -52,12 +52,14 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
     "ErrorMessage",
   ];
 
+  private userOptions = this.userService.userOptions.jobOptions;
+
   private get selectedColumns(): string[] {
-    return this.userService.userOptions.jobOptions.selectedColumns || JobsComponent.defaultSelectedColumns;
+    return this.userOptions.selectedColumns || JobsComponent.defaultSelectedColumns;
   }
 
   private set selectedColumns(value: string[]) {
-    this.userService.userOptions.jobOptions.selectedColumns = value;
+    this.userOptions.selectedColumns = value;
     this.userService.saveUserOptions();
   }
 
@@ -87,7 +89,14 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private readonly dataPageSize = 100;
 
-  private actionListHidden = false;
+  private get actionListHidden(): boolean {
+    return this.userOptions.hideActionList !== undefined ? this.userOptions.hideActionList : false;
+  }
+
+  private set actionListHidden(val: boolean) {
+    this.userOptions.hideActionList = val;
+    this.userService.saveUserOptions();
+  }
 
   @ViewChild(MatSidenavContainer, { static: false })
   private sidenavContainer: MatSidenavContainer;
