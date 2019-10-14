@@ -16,6 +16,11 @@
   </div>
   <div class="nodes">
     <div *ngFor="let metric of nodeMetrics" class="node" [ngClass]="[nodeSizeClass, nodeColorClass(metric)]" matTooltip="{{nodeMetricTip(metric)}}">
+      <div *ngIf="showTip" class="tip">
+        <div class="spacer"></div>
+        <div class="tip-content">{{metric.NodeName}}<br />{{nodeMetricDisplayValue(metric)}}</div>
+        <div class="spacer"></div>
+      </div>
     </div>
   </div>
 </div>

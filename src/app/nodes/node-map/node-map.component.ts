@@ -128,6 +128,10 @@ export class NodeMapComponent implements OnInit, OnDestroy {
     this.blockSize = size;
   }
 
+  get showTip(): boolean {
+    return this.blockSize >= 3;
+  }
+
   //For size-1, size-2, ..., size-5
   get nodeSizeClass(): string {
     return `size-${this.blockSize}`;
@@ -135,7 +139,7 @@ export class NodeMapComponent implements OnInit, OnDestroy {
 
   nodeColorClass(metric: NodeMetric): string {
     let val = this.nodeMetricValue(metric);
-    if (!val) {
+    if (val === undefined || val == null) {
       return 'degree-unknown';
     }
 
@@ -168,7 +172,15 @@ export class NodeMapComponent implements OnInit, OnDestroy {
     return metric.Metrics[this.selectedMetric];
   }
 
+  nodeMetricDisplayValue(metric: NodeMetric): string {
+    let val = this.nodeMetricValue(metric);
+    if (val === undefined || val == null) {
+      return 'N/A';
+    }
+    return Math.round(val).toString();
+  }
+
   nodeMetricTip(metric: NodeMetric): string {
-    return `${metric.NodeName}: ${this.nodeMetricValue(metric)}`;
+    return `${metric.NodeName}: ${this.nodeMetricDisplayValue(metric)}`;
   }
 }

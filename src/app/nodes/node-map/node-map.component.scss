@@ -28,6 +28,21 @@
   border: dotted 1px;
 }
 
+.tip {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tip-content {
+  text-align: center;
+  overflow: hidden;
+}
+
+.spacer {
+  flex: 1;
+}
+
 .size-1 {
   width: 1em;
   height: 1em;
