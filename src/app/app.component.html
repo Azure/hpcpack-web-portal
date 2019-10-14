@@ -6,8 +6,7 @@
     <span class="title">HPC Pack 2019</span>
     <app-breadcrumb class="item"></app-breadcrumb>
     <span class="toolbar-spacer"></span>
-    <span class="item">{{username}}</span>
-    <a class="item" mat-flat-button (click)="logout()">Log out</a>
+    <button class="item" mat-button [matMenuTriggerFor]="usermenu">{{username}}</button>
   </mat-toolbar>
 
   <mat-sidenav-container class="body">
@@ -24,6 +23,10 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
+
+<mat-menu #usermenu="matMenu">
+  <button mat-menu-item (click)="logout()">Log out</button>
+</mat-menu>
 
 <ng-template #guestView>
   <div class="app">

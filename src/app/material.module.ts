@@ -17,6 +17,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 
@@ -40,6 +41,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    MatMenuModule,
     OverlayModule,
   ]
 })
