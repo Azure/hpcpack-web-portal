@@ -38,7 +38,28 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   selection = new SelectionModel<Job>(true);
 
-  private selectedColumns: string[];
+  private static readonly defaultSelectedColumns = [
+    "Id",
+    "Name",
+    "State",
+    "Owner",
+    "Progress",
+    "CreateTime",
+    "SubmitTime",
+    "StartTime",
+    "ChangeTime",
+    "EndTime",
+    "ErrorMessage",
+  ];
+
+  private get selectedColumns(): string[] {
+    return this.userService.userOptions.jobOptions.selectedColumns || JobsComponent.defaultSelectedColumns;
+  }
+
+  private set selectedColumns(value: string[]) {
+    this.userService.userOptions.jobOptions.selectedColumns = value;
+    this.userService.saveUserOptions();
+  }
 
   get displayedColumns(): string[] {
     return ['Select'].concat(this.selectedColumns);
@@ -81,9 +102,7 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
     private api: ApiService,
     private userService: UserService,
     private dialog: MatDialog,
-  ) {
-    this.selectedColumns = this.userService.userOptions.jobOptions.selectedColumns;
-  }
+  ) {}
 
   ngOnInit() {
     this.dataSource.sort = this.sort;
@@ -188,8 +207,6 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef.afterClosed().subscribe((result: undefined | ColumnSelectorResult) => {
       if (result) {
         this.selectedColumns = result.selected;
-        this.userService.userOptions.jobOptions.selectedColumns = this.selectedColumns;
-        this.userService.userOptions = this.userService.userOptions; //save options
       }
     });
   }

@@ -44,7 +44,16 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   selection = new SelectionModel<Node>(true);
 
-  private selectedColumns: string[];
+  private static readonly defaultSelectedColumns = ['Id', 'Name', 'State', 'Health', 'NodeGroups'];
+
+  private get selectedColumns(): string[] {
+    return this.userService.userOptions.nodeOptions.selectedColumns || NodeListComponent.defaultSelectedColumns;
+  }
+
+  private set selectedColumns(value: string[]) {
+    this.userService.userOptions.nodeOptions.selectedColumns = value;
+    this.userService.saveUserOptions();
+  }
 
   get displayedColumns(): string[] {
     return ['Select'].concat(this.selectedColumns);
@@ -87,9 +96,7 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
     private api: ApiService,
     private userService: UserService,
     private dialog: MatDialog,
-  ) {
-    this.selectedColumns = this.userService.userOptions.nodeOptions.selectedColumns;
-  }
+  ) {}
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
@@ -225,8 +232,6 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef.afterClosed().subscribe((result: undefined | ColumnSelectorResult) => {
       if (result) {
         this.selectedColumns = result.selected;
-        this.userService.userOptions.nodeOptions.selectedColumns = this.selectedColumns;
-        this.userService.userOptions = this.userService.userOptions; //save options
       }
     });
   }

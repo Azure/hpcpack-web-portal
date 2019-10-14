@@ -44,4 +44,8 @@ export class UserService extends LocalStorageService {
     this.setProperty(this.userOptionsKey, value, true);
   }
 
+  saveUserOptions(): void {
+    this.userOptions = this.userOptions;
+  }
+
 }
