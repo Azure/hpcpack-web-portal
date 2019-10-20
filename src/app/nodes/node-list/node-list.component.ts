@@ -10,6 +10,7 @@ import { UserService } from '../../services/user.service'
 import { ApiService } from '../../services/api.service';
 import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
   from '../../shared-components/column-selector/column-selector.component'
+import { CommanderComponent } from '../commander/commander.component'
 
 @Component({
   selector: 'app-node-list',
@@ -256,5 +257,10 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get toggleActionListIcon(): string {
     return this.actionListHidden ? 'keyboard_arrow_left' : 'keyboard_arrow_right';
+  }
+
+  runCommand(): void {
+    let nodeNames = this.selection.selected.map(node => node.Name);
+    let dialogRef = this.dialog.open(CommanderComponent, { data: nodeNames, disableClose: true, minWidth: '50%' });
   }
 }

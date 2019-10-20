@@ -1,0 +1,60 @@
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+
+  .command {
+    display: flex;
+    flex-direction: row;
+
+    .cmd-line {
+      flex: 1;
+    }
+  }
+
+  .result {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+
+    .node-select {
+      box-sizing: border-box;
+      height: 100%;
+      overflow: auto;
+
+      .selected {
+        background-color: #fafafa;
+      }
+
+      tr:hover {
+        cursor: pointer;
+      }
+    }
+
+    .output {
+      box-sizing: border-box;
+      height: 100%;
+      flex: 1;
+      overflow: auto;
+      margin-left: 1em;
+
+      pre {
+        box-sizing: border-box;
+        height: 100%;
+        padding: 1em;
+        margin: 0;
+        background-color: black;
+        color: white;
+        overflow: auto;
+      }
+
+      .error {
+        color: red;
+      }
+    }
+  }
+}
+
+mat-dialog-actions {
+  justify-content: flex-end;
+}

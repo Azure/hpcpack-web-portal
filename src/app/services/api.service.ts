@@ -1,6 +1,6 @@
 import { Injectable, Optional, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subscriber } from 'rxjs'
+import { Observable } from 'rxjs'
 import { DefaultService, BASE_PATH, Configuration, NodeMetric } from '../api-client'
 import { Node } from '../models/node'
 import { Job } from '../models/job'

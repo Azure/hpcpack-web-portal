@@ -8,6 +8,7 @@ import { SharedComponents } from '../shared-components/shared-components.module'
 import { NodesComponent } from './nodes.component'
 import { NodeListComponent } from './node-list/node-list.component';
 import { NodeMapComponent } from './node-map/node-map.component';
+import { CommanderComponent } from './commander/commander.component';
 
 const routes: Routes = [{
   path: '',
@@ -24,6 +25,7 @@ const routes: Routes = [{
     NodesComponent,
     NodeListComponent,
     NodeMapComponent,
+    CommanderComponent,
   ],
   imports: [
     CommonModule,
@@ -32,5 +34,6 @@ const routes: Routes = [{
     MaterialModule,
     SharedComponents,
   ],
+  entryComponents: [CommanderComponent],
 })
 export class NodesModule { }

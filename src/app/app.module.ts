@@ -13,6 +13,7 @@ import { AuthService } from './services/auth.service';
 import { UserService } from './services/user.service';
 import { ApiService, BASE_PATH, Configuration } from './services/api.service';
 import { ApiConfigService } from './services/api-config.service';
+import { RemoteCommandService } from './services/remote-command.service'
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { SharedComponents } from './shared-components/shared-components.module'
 
@@ -74,6 +75,7 @@ const routes: Routes = [{
     AuthService,
     UserService,
     ApiService,
+    RemoteCommandService,
     { provide: BASE_PATH, useValue: environment.API_BASE_PATH },
     { provide: Configuration, useClass: ApiConfigService },
   ],
