@@ -1,9 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable } from 'rxjs'
-
 import { BASE_PATH } from './api.service'
 import { UserService } from './user.service'
-import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
