@@ -18,8 +18,6 @@ mat-dialog-content {
     flex-direction: row;
 
     .node-select {
-      box-sizing: border-box;
-      height: 100%;
       overflow: auto;
 
       .selected {
@@ -32,8 +30,6 @@ mat-dialog-content {
     }
 
     .output {
-      box-sizing: border-box;
-      height: 100%;
       flex: 1;
       overflow: auto;
       margin-left: 1em;
