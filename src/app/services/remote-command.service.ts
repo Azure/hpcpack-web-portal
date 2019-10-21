@@ -13,12 +13,30 @@ export class RemoteCommandService {
     @Inject(BASE_PATH) private basePath: string,
     private userService: UserService,
   ) {
+    this.setupJQuery();
+    this.userService.onAuthStateChange = (authenticated) => {
+      if (authenticated) {
+        this.setupJQuery();
+      }
+      else {
+        this.resetJQuery();
+      }
+    }
+  }
+
+  private setupJQuery(): void {
     //NOTE: SignalR client relies on jQuery for XHR and thus auth header. However,
     //there's no way for WS auth, so SignalR falls back to Long Poll!
     $.ajaxSetup({
       headers: {
         'Authorization': this.basicAuthHeader
       }
+    });
+  }
+
+  private resetJQuery(): void {
+    $.ajaxSetup({
+      headers: {}
     });
   }
 
