@@ -25,7 +25,6 @@
 
 .node {
   display: inline-block;
-  border: dotted 1px;
 
   .tip {
     display: flex;
@@ -48,30 +47,35 @@
   width: 1em;
   height: 1em;
   margin: 1px;
+  border-radius: 0.2em;
 }
 
 .size-2 {
   width: 2em;
   height: 2em;
   margin: 0.1em;
+  border-radius: 0.3em;
 }
 
 .size-3 {
   width: 4em;
   height: 4em;
   margin: 0.2em;
+  border-radius: 0.5em;
 }
 
 .size-4 {
   width: 8em;
   height: 8em;
   margin: 0.3em;
+  border-radius: 1em;
 }
 
 .size-5 {
   width: 16em;
   height: 16em;
   margin: 0.5em;
+  border-radius: 2em;
 }
 
 .degree-unknown {
