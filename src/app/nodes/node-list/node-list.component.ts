@@ -25,7 +25,6 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
     { name: 'DnsSuffix', label: 'Dns Suffix' },
     { name: 'NodeGroups', label: 'Node Groups' },
     { name: 'Guid', label: 'Guid' },
-    { name: 'Health', label: 'Health' },
     { name: 'Id', label: 'Id' },
     { name: 'JobType', label: 'Job Type' },
     { name: 'Location', label: 'Location' },
@@ -45,7 +44,7 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   selection = new SelectionModel<Node>(true);
 
-  private static readonly defaultSelectedColumns = ['Id', 'Name', 'State', 'Health', 'NodeGroups'];
+  private static readonly defaultSelectedColumns = ['Id', 'Name', 'State', 'Reachable', 'NodeGroups'];
 
   private userOptions = this.userService.userOptions.nodeOptions;
 

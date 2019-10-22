@@ -20,10 +20,6 @@ export class Node {
   Reachable: boolean;
   State: string;
 
-  get Health(): string {
-    return this.Reachable ? 'OK' : 'Error';
-  }
-
   update(other: Node): void {
     for (let key of Node.properties) {
       (this as any)[key] = (other as any)[key];
