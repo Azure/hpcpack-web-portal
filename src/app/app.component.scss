@@ -38,3 +38,9 @@
     }
   }
 }
+
+.app.small {
+  app-breadcrumb {
+    display: none;
+  }
+}
