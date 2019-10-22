@@ -263,4 +263,8 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
     let nodeNames = this.selection.selected.map(node => node.Name);
     let dialogRef = this.dialog.open(CommanderComponent, { data: nodeNames, disableClose: true, minWidth: '50%' });
   }
+
+  get adminView(): boolean {
+    return this.userService.user.isAdmin;
+  }
 }
