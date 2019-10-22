@@ -9,7 +9,8 @@
 
       <mat-form-field>
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" required />
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required />
+        <mat-icon matSuffix (click)="togglePassword()">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
       </mat-form-field>
 
       <button type="submit" mat-flat-button color="primary" [disabled]="!userCred.valid">Login</button>

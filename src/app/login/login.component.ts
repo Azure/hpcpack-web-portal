@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   returnUrl: string;
   userCred: FormGroup;
   error: string;
+  hidePassword: boolean = true;
   private subscription: Subscription;
 
   @ViewChild(ProgressSpinnerComponent, { static: false })
@@ -65,5 +66,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.spinner.hide();
       }
     });
+  }
+
+  togglePassword(): void {
+    this.hidePassword = !this.hidePassword;
   }
 }
