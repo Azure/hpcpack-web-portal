@@ -6,16 +6,24 @@
     <span class="title">HPC Pack 2019</span>
     <app-breadcrumb class="item"></app-breadcrumb>
     <span class="toolbar-spacer"></span>
-    <button class="item" mat-button [matMenuTriggerFor]="usermenu">{{username}}</button>
+    <span class="item username">{{username}}</span>
   </mat-toolbar>
 
   <mat-sidenav-container class="body">
     <mat-sidenav #nav mode="side" opened="true">
       <mat-nav-list>
-        <a *ngFor="let item of navItems" class="nav-list" mat-list-item routerLinkActive="active" [routerLink]="item.link">
-          <i class="material-icons nav-icon">{{item.icon}}</i>
-          <span class="title">{{item.title}}</span>
-        </a>
+        <ng-container *ngFor="let item of navItems">
+          <a *ngIf="item.link; else button" class="nav-list" mat-list-item routerLinkActive="active" [routerLink]="item.link">
+            <i class="material-icons nav-icon">{{item.icon}}</i>
+            <span class="title">{{item.title}}</span>
+          </a>
+          <ng-template #button>
+            <a class="nav-list" mat-list-item (click)="logout()">
+              <i class="material-icons nav-icon">{{item.icon}}</i>
+              <span class="title">{{item.title}}</span>
+            </a>
+          </ng-template>
+        </ng-container>
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
@@ -23,10 +31,6 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
-
-<mat-menu #usermenu="matMenu">
-  <button mat-menu-item (click)="logout()">Log out</button>
-</mat-menu>
 
 <ng-template #guestView>
   <div class="app">

@@ -63,9 +63,8 @@ export class AppComponent implements OnInit, OnDestroy {
       icon: 'work',
     },
     {
-      link: 'charts',
-      title: 'Charts',
-      icon: 'bar_chart',
+      title: 'Logout',
+      icon: 'exit_to_app',
     },
   ];
 }
