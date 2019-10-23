@@ -8,6 +8,7 @@ import { debounceTime } from 'rxjs/operators'
 import { Job } from '../models/job'
 import { UserService } from '../services/user.service'
 import { ApiService } from '../services/api.service';
+import { MediaQueryService } from '../services/media-query.service'
 import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
   from '../shared-components/column-selector/column-selector.component'
 
@@ -90,7 +91,8 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly dataPageSize = 100;
 
   private get actionListHidden(): boolean {
-    return this.userOptions.hideActionList !== undefined ? this.userOptions.hideActionList : false;
+    return this.userOptions.hideActionList !== undefined ? this.userOptions.hideActionList :
+      (this.mediaQuery.smallWidth ? true: false);
   }
 
   private set actionListHidden(val: boolean) {
@@ -108,6 +110,7 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
   private sort: MatSort;
 
   constructor(
+    private mediaQuery: MediaQueryService,
     private api: ApiService,
     private userService: UserService,
     private dialog: MatDialog,
