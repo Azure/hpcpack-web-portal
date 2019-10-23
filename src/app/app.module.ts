@@ -14,6 +14,7 @@ import { UserService } from './services/user.service';
 import { ApiService, BASE_PATH, Configuration } from './services/api.service';
 import { ApiConfigService } from './services/api-config.service';
 import { RemoteCommandService } from './services/remote-command.service'
+import { MediaQueryService } from './services/media-query.service'
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { SharedComponents } from './shared-components/shared-components.module'
 
@@ -76,6 +77,7 @@ const routes: Routes = [{
     UserService,
     ApiService,
     RemoteCommandService,
+    MediaQueryService,
     { provide: BASE_PATH, useValue: environment.API_BASE_PATH },
     { provide: Configuration, useClass: ApiConfigService },
   ],

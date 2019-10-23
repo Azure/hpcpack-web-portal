@@ -1,4 +1,4 @@
-<div class="app" [ngClass]="appClass" *ngIf="authenticated; else guestView">
+<div class="app" [ngClass]="{'small': mediaQuery.smallWidth}" *ngIf="authenticated; else guestView">
   <mat-toolbar class="header" color="primary">
     <button mat-icon-button (click)="nav.toggle()">
       <i class="material-icons">menu</i>

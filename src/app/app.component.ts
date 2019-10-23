@@ -1,37 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
+import { MediaQueryService } from './services/media-query.service'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
-  private smallDisplayQuery: MediaQueryList = window.matchMedia("(max-width: 560px)");
-
-  private appClass: string;
-
+export class AppComponent {
   constructor(
+    private mediaQuery: MediaQueryService,
     private authService: AuthService,
     private router: Router) {}
-
-  ngOnInit(): void {
-    this.smallDisplayQuery.addListener(() => this.onDisplayWidthChange());
-    this.onDisplayWidthChange();
-  }
-
-  ngOnDestroy(): void {
-  }
-
-  private onDisplayWidthChange(): void {
-    if (this.smallDisplayQuery.matches) {
-      this.appClass = 'small'
-    }
-    else {
-      this.appClass = '';
-    }
-  }
 
   get username(): string {
     return this.authService.authenticatedUser ? this.authService.authenticatedUser.username : 'Guest';
