@@ -12,18 +12,15 @@
   <mat-sidenav-container class="body">
     <mat-sidenav #nav mode="side" opened="true">
       <mat-nav-list>
-        <ng-container *ngFor="let item of navItems">
-          <a *ngIf="item.link; else button" class="nav-list" mat-list-item routerLinkActive="active" [routerLink]="item.link">
-            <i class="material-icons nav-icon">{{item.icon}}</i>
-            <span class="title">{{item.title}}</span>
-          </a>
-          <ng-template #button>
-            <a class="nav-list" mat-list-item (click)="logout()">
-              <i class="material-icons nav-icon">{{item.icon}}</i>
-              <span class="title">{{item.title}}</span>
-            </a>
-          </ng-template>
-        </ng-container>
+        <a *ngFor="let item of navItems" mat-list-item routerLinkActive="active" [routerLink]="item.link">
+          <i class="material-icons nav-icon">{{item.icon}}</i>
+          <span class="title">{{item.title}}</span>
+        </a>
+        <mat-divider></mat-divider>
+        <a mat-list-item (click)="logout()">
+          <i class="material-icons nav-icon">exit_to_app</i>
+          <span class="title">Logout</span>
+        </a>
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
