@@ -47,11 +47,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   readonly navItems = [
-    {
-      link: 'dashboard',
-      title: 'Dashboard',
-      icon: 'dashboard',
-    },
+    // {
+    //   link: 'dashboard',
+    //   title: 'Dashboard',
+    //   icon: 'dashboard',
+    // },
     {
       link: 'nodes',
       title: 'Nodes',
