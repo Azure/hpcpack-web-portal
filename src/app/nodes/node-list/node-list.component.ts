@@ -82,7 +82,7 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
     return !(this.loading || this.allLoaded);
   }
 
-  private readonly dataPageSize = 100;
+  private readonly dataPageSize = 50;
 
   private get actionListHidden(): boolean {
     return this.userOptions.hideActionList !== undefined ? this.userOptions.hideActionList :
