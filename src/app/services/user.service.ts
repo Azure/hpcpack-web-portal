@@ -21,6 +21,10 @@ export class UserService extends LocalStorageService {
     this.setProperty(this.userKey, value);
   }
 
+  saveUser(): void {
+    this.user = this.user;
+  }
+
   protected readonly authenticatedKey = 'authenticated';
 
   get authenticated(): boolean {

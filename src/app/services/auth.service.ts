@@ -30,6 +30,7 @@ export class AuthService {
           this.userService.authenticated = true;
           //TODO: Why UserRole.Administrator is valid in editor but not in ng server?
           this.userService.user.isAdmin = (roles.indexOf('Administrator') >= 0);
+          this.userService.saveUser();
           subscriber.next(true);
           subscriber.complete();
         },
