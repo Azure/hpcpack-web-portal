@@ -10,7 +10,7 @@ import { MediaQueryService } from './services/media-query.service'
 })
 export class AppComponent {
   constructor(
-    private mediaQuery: MediaQueryService,
+    public mediaQuery: MediaQueryService,
     private authService: AuthService,
     private router: Router) {}
 
