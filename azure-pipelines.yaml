@@ -67,7 +67,7 @@ stages:
       displayName: 'E2E Test'
 
     - script: |
-        npm run build-stg
+        npm run build-prd
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Build'
 
