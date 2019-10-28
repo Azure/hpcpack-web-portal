@@ -44,8 +44,9 @@ export class AppComponent {
       icon: 'work',
     },
     {
-      title: 'Logout',
-      icon: 'exit_to_app',
+      link: 'charts',
+      title: 'Charts',
+      icon: 'bar_chart',
     },
   ];
 }
