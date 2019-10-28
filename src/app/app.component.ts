@@ -43,10 +43,10 @@ export class AppComponent {
       title: 'Jobs',
       icon: 'work',
     },
-    {
-      link: 'charts',
-      title: 'Charts',
-      icon: 'bar_chart',
-    },
+    // {
+    //   link: 'charts',
+    //   title: 'Charts',
+    //   icon: 'bar_chart',
+    // },
   ];
 }
