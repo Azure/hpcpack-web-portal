@@ -43,5 +43,9 @@ export class AppComponent {
       title: 'Jobs',
       icon: 'work',
     },
+    {
+      title: 'Logout',
+      icon: 'exit_to_app',
+    },
   ];
 }
