@@ -62,7 +62,7 @@ stages:
         packDestination: '$(Build.ArtifactStagingDirectory)'
       displayName: 'Make NuGet Package'
 
-    - publish: Microsoft.HPC.WebPortal.*.nupkg
+    - publish: $(Build.ArtifactStagingDirectory)/Microsoft.HPC.WebPortal.$(name).nupkg
       artifact: 'NuGet Package'
       displayName: 'Publish NuGet Package'
 
