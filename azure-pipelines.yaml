@@ -64,7 +64,7 @@ stages:
 
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)/**/Microsoft.HPC.WebPortal.*.nupkg'
+        targetPath: '$(Pipeline.Workspace)'
         artifact: 'NuGet Package'
       displayName: 'Publish NuGet Package'
 
