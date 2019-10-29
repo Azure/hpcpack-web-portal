@@ -47,43 +47,26 @@ stages:
       displayName: 'Install npm Packages'
 
     - script: |
-        npm run ci-test
-      displayName: 'Unit Test'
-
-    - task: PublishTestResults@2
-      inputs:
-        testResultsFiles: 'unit-test-result.xml'
-        failTaskOnFailedTests: true
-      displayName: 'Publish Unit Test Result'
-
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: cobertura
-        summaryFileLocation: coverage/cobertura-coverage.xml
-      displayName: 'Publish Unit Test Code Coverage Result'
-
-    - script: |
-        npm run ci-e2e
-      displayName: 'E2E Test'
-
-    - script: |
         npm run build-prd
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Build'
 
     - publish: 'dist/web-portal'
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       artifact: WebPortal
       displayName: 'Publish Build Result'
 
     - task: NuGetCommand@2
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       inputs:
         command: 'pack'
         packagesToPack: 'Microsoft.HPC.WebPortal.nuspec'
         versioningScheme: 'byBuildNumber'
         packDestination: '$(Build.ArtifactStagingDirectory)'
       displayName: 'Make NuGet Package'
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/**/Microsoft.HPC.WebPortal.*.nupkg'
+        artifact: 'NuGet Package'
+      displayName: 'Publish NuGet Package'
 
 #   - task: NuGetCommand@2
 #     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
