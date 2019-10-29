@@ -62,10 +62,8 @@ stages:
         packDestination: '$(Build.ArtifactStagingDirectory)'
       displayName: 'Make NuGet Package'
 
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(Pipeline.Workspace)'
-        artifact: 'NuGet Package'
+    - publish: Microsoft.HPC.WebPortal.*.nupkg
+      artifact: 'NuGet Package'
       displayName: 'Publish NuGet Package'
 
 #   - task: NuGetCommand@2
