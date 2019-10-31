@@ -46,38 +46,38 @@ stages:
         npm ci
       displayName: 'Install npm Packages'
 
-    - script: |
-        npm run ci-test
-      displayName: 'Unit Test'
+    # - script: |
+    #     npm run ci-test
+    #   displayName: 'Unit Test'
 
-    - task: PublishTestResults@2
-      inputs:
-        testResultsFiles: 'unit-test-result.xml'
-        failTaskOnFailedTests: true
-      displayName: 'Publish Unit Test Result'
+    # - task: PublishTestResults@2
+    #   inputs:
+    #     testResultsFiles: 'unit-test-result.xml'
+    #     failTaskOnFailedTests: true
+    #   displayName: 'Publish Unit Test Result'
 
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: cobertura
-        summaryFileLocation: coverage/cobertura-coverage.xml
-      displayName: 'Publish Unit Test Code Coverage Result'
+    # - task: PublishCodeCoverageResults@1
+    #   inputs:
+    #     codeCoverageTool: cobertura
+    #     summaryFileLocation: coverage/cobertura-coverage.xml
+    #   displayName: 'Publish Unit Test Code Coverage Result'
 
-    - script: |
-        npm run ci-e2e
-      displayName: 'E2E Test'
+    # - script: |
+    #     npm run ci-e2e
+    #   displayName: 'E2E Test'
 
     - script: |
         npm run build-prd
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+      # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Build'
 
     - script: |
         ./make-zip $(name)
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+      # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Packaging Build Result'
 
     - publish: 'dist/*.zip'
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+      # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Publish Build Result'
 
     # - task: NuGetCommand@2
