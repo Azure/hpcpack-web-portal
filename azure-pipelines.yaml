@@ -71,58 +71,12 @@ stages:
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Build'
 
-    - publish: 'dist/web-portal'
+    - script: |
+        ./make-zip $BUILD_BUILDNUMBER
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
-      artifact: WebPortal
+      displayName: 'Package Build Result'
+
+    - publish: 'dist/WebPortal-$(Build.BuildNumber).zip'
+      artifact: Package
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Publish Build Result'
-
-    - task: NuGetCommand@2
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
-      inputs:
-        command: 'pack'
-        packagesToPack: 'Microsoft.HPC.WebPortal.nuspec'
-        versioningScheme: 'byBuildNumber'
-        packDestination: '$(Build.ArtifactStagingDirectory)'
-      displayName: 'Make NuGet Package'
-
-#   - task: NuGetCommand@2
-#     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
-#     inputs:
-#       command: 'push'
-#       packagesToPush: $(Build.ArtifactStagingDirectory)/**/Microsoft.HPC.WebPortal.*.nupkg
-#       nuGetFeedType: 'internal'
-#       publishVstsFeed: $(VstsFeed)
-#     displayName: 'Publish NuGet Package'
-
-
-# The deploy is blocked on issue:
-# https://github.com/microsoft/azure-pipelines-tasks/issues/11158
-#
-# - stage: Deploy
-#   dependsOn: Build
-#   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
-#   jobs:
-#   - job: Deploy
-#     pool:
-#       vmImage: windows-latest
-#     steps:
-#     - checkout: none
-#
-#     - download: current
-#       artifact: WebPortal
-#
-#     - task: AzureFileCopy@3
-#       inputs:
-#         SourcePath: '$(Pipeline.Workspace)/WebPortal'
-#         azureSubscription: $(Subscription)
-#         resourceGroup: $(ResourceGroup)
-#         storage: $(StorageAccount)
-#         Destination: 'AzureVMs'
-#         ResourceFilteringMethod: machineNames
-#         MachineNames: $(TargetHosts)
-#         vmsAdminUserName: $(TargetHosts.AdminUserName)
-#         vmsAdminPassword: $(TargetHosts.AdminPassword)
-#         TargetPath: $(TargetHosts.Path)
-#         CleanTargetBeforeCopy: true
-#         enableCopyPrerequisites: true
-#       displayName: 'Deploy to $(TargetHosts)'
