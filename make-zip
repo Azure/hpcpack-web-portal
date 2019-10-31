@@ -2,4 +2,7 @@
 
 version=${1:?Version is required.}
 
-cd dist/web-portal && echo "$version" > version && zip -r ../"WebPortal-$version.zip" *
+cd dist/web-portal && \
+  echo "$version" > version && \
+  git rev-parse --short HEAD > revision && \
+  zip -r ../"WebPortal-$version.zip" *
