@@ -71,19 +71,23 @@ stages:
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Build'
 
-    - publish: 'dist/web-portal'
+    - script: |
+        ./make-zip $(name)
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
-      artifact: WebPortal
+      displayName: 'Packaging Build Result'
+
+    - publish: 'dist/*.zip'
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
       displayName: 'Publish Build Result'
 
-    - task: NuGetCommand@2
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
-      inputs:
-        command: 'pack'
-        packagesToPack: 'Microsoft.HPC.WebPortal.nuspec'
-        versioningScheme: 'byBuildNumber'
-        packDestination: '$(Build.ArtifactStagingDirectory)'
-      displayName: 'Make NuGet Package'
+    # - task: NuGetCommand@2
+    #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+    #   inputs:
+    #     command: 'pack'
+    #     packagesToPack: 'Microsoft.HPC.WebPortal.nuspec'
+    #     versioningScheme: 'byBuildNumber'
+    #     packDestination: '$(Build.ArtifactStagingDirectory)'
+    #   displayName: 'Make NuGet Package'
 
 #   - task: NuGetCommand@2
 #     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
