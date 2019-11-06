@@ -1,1 +1,18 @@
-<p>dashboard works!</p>
+<div>
+  <canvas baseChart
+    chartType="doughnut"
+    [options]="nodeChartOptions"
+    [labels]="nodeChartLabels"
+    [colors]="nodeChartColors"
+    [data]="nodeChartData">
+  </canvas>
+</div>
+<div style="display: block;">
+  <canvas baseChart width="400" height="200"
+    chartType="line"
+    [options]="jobChartOptions"
+    [labels]="jobChartLabels"
+    [colors]="jobChartColors"
+    [datasets]="jobChartData">
+  </canvas>
+</div>

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { ChartsModule } from 'ng2-charts';
 
 import { DashboardComponent } from './dashboard.component';
 
@@ -13,7 +14,8 @@ const routes: Routes = [{
   declarations: [DashboardComponent],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ChartsModule,
   ],
   exports: [
     RouterModule
