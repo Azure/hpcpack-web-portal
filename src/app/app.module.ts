@@ -51,7 +51,7 @@ const routes: Routes = [{
     },
     {
       path: '',
-      redirectTo: 'nodes',
+      redirectTo: 'dashboard',
       pathMatch: 'full',
     },
   ]

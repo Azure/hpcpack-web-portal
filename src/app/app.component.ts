@@ -28,11 +28,11 @@ export class AppComponent {
   }
 
   readonly navItems = [
-    // {
-    //   link: 'dashboard',
-    //   title: 'Dashboard',
-    //   icon: 'dashboard',
-    // },
+    {
+      link: 'dashboard',
+      title: 'Dashboard',
+      icon: 'dashboard',
+    },
     {
       link: 'nodes',
       title: 'Nodes',
