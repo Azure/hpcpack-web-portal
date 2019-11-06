@@ -1,7 +1,7 @@
 import { Injectable, Optional, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs'
-import { DefaultService, BASE_PATH, Configuration, NodeMetric } from '../api-client'
+import { Observable, Subscriber } from 'rxjs'
+import { DefaultService, BASE_PATH, Configuration, NodeMetric, NodeAvailability, MetricData } from '../api-client'
 import { Node } from '../models/node'
 import { Job } from '../models/job'
 import { ILooper, Looper } from './looper.service'
@@ -18,6 +18,33 @@ export class ApiService extends DefaultService {
     @Optional() configuration: Configuration
   ) {
     super(httpClient, basePath, configuration);
+  }
+
+  repeat<T>(operation: Observable<T>, interval: number): Observable<T> {
+    return new Observable<T>(subscriber => {
+      let looper = Looper.start(
+        operation,
+        {
+          next: (data) => {
+            subscriber.next(data);
+          },
+          error: (err) => {
+          //An error handler here will prevent an error from stopping the loop
+          console.log(err);
+          }
+        },
+        interval
+      );
+      return () => looper.stop();
+    });
+  }
+
+  getClusterNodeAvailabilityInLoop(updateInterval: number): Observable<NodeAvailability> {
+    return this.repeat(this.getClusterNodeAvailability(), updateInterval);
+  }
+
+  getClusterJobMetricsInLoop(updateInterval: number): Observable<MetricData> {
+    return this.repeat(this.getClusterJobMetrics(), updateInterval);
   }
 
   getNodeMetricsInLoop(metric: string, updateInterval: number): Observable<NodeMetric[]> {
