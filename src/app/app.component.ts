@@ -22,6 +22,14 @@ export class AppComponent {
     return this.authService.authenticatedUser != null;
   }
 
+  get appClass(): any {
+    return {
+      small: this.mediaQuery.smallWidth,
+      median: this.mediaQuery.medianWidth,
+      big: this.mediaQuery.bigWidth,
+    };
+  }
+
   logout(): void {
     this.authService.reset();
     this.router.navigate(['/login']);

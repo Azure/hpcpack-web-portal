@@ -6,7 +6,11 @@ export type WidthChangeEventHandler = (q: MediaQueryService) => void;
   providedIn: 'root'
 })
 export class MediaQueryService {
-  private widthQuery: MediaQueryList = window.matchMedia("(max-width: 560px)");
+  private smallWidthQuery: MediaQueryList = window.matchMedia("(max-width: 559px)");
+
+  private medianWidthQuery: MediaQueryList = window.matchMedia("(min-width: 560px) and (max-width: 1023px)");
+
+  private bigWidthQuery: MediaQueryList = window.matchMedia("(min-width: 1024px)");
 
   private handlers: WidthChangeEventHandler[] = [];
 
@@ -18,11 +22,21 @@ export class MediaQueryService {
   }
 
   constructor() {
-    this.widthQuery.addEventListener('change', this.widtchChangeListener);
+    this.smallWidthQuery.addEventListener('change', this.widtchChangeListener);
+    this.medianWidthQuery.addEventListener('change', this.widtchChangeListener);
+    this.bigWidthQuery.addEventListener('change', this.widtchChangeListener);
   }
 
   get smallWidth(): boolean {
-    return this.widthQuery.matches;
+    return this.smallWidthQuery.matches;
+  }
+
+  get medianWidth(): boolean {
+    return this.medianWidthQuery.matches;
+  }
+
+  get bigWidth(): boolean {
+    return this.bigWidthQuery.matches;
   }
 
   addWidthChangeEventHandler(h: WidthChangeEventHandler): void {
