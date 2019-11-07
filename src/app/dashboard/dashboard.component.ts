@@ -71,6 +71,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       data: [],
       label: '',
       steppedLine: 'before',
+      pointRadius: 0,
     },
   ];
 
@@ -86,6 +87,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     tooltips: {
       mode: 'index',
       intersect: false,
+    },
+    scales: {
+      xAxes: [
+        {
+          ticks: {
+            maxTicksLimit: 5,
+            maxRotation: 0,
+          }
+        }
+      ],
     },
   };
 
@@ -121,6 +132,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         data: instance.Values.map(e => e.Value),
         label: instance.InstanceName,
         steppedLine: 'before',
+        pointRadius: 0,
       }));
     });
     this.subscription.add(sub);

@@ -1,0 +1,8 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+:host-context(.app.big, .app.median) .node {
+  width: 50%;
+}
