@@ -5,4 +5,9 @@
 
 :host-context(.app.big, .app.median) .node {
   width: 50%;
+  max-width: 600px;
+}
+
+:host-context(.app.big, .app.median) .job {
+  max-width: 1200px;
 }
