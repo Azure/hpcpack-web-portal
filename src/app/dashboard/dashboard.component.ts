@@ -141,11 +141,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private formatDateToHour(date: Date): string {
-    return `${date.getFullYear()}/${date.getMonth()}/${date.getDay()} ${date.getHours()}`;
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()} ${date.getHours()}`;
   }
 
   private formatDateToHourAndMinute(date: Date): string {
-    return `${date.getFullYear()}/${date.getMonth()}/${date.getDay()} ${date.getHours()}:${date.getMinutes()}`;
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()} ${date.getHours()}:${date.getMinutes()}`;
   }
 
   //Get the first data point in each hour
