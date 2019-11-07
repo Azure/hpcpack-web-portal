@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Label, MultiDataSet, Color } from 'ng2-charts';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Label, MultiDataSet, Color, BaseChartDirective } from 'ng2-charts';
 import { ChartOptions, ChartDataSets } from 'chart.js';
-
-import { ApiService, MetricInstanceData } from '../services/api.service';
 import { Subscription } from 'rxjs';
+import { ApiService, MetricInstanceData } from '../services/api.service';
+import { MediaQueryService, WidthChangeEventHandler } from '../services/media-query.service';
 
 interface DataPoint { Key: string, Value: number };
 
@@ -92,40 +92,56 @@ export class DashboardComponent implements OnInit, OnDestroy {
     },
   ];
 
-  jobChartOptions: ChartOptions = {
-    responsive: true,
-    title: {
-      display: true,
-      text: 'Job Throughput',
-    },
-    legend: {
-      position: 'bottom',
-    },
-    tooltips: {
-      mode: 'index',
-      intersect: false,
-    },
-    scales: {
-      xAxes: [
-        {
-          ticks: {
-            maxTicksLimit: 5,
-            maxRotation: 0,
+  private getJobChartOptions(): ChartOptions {
+    return {
+      responsive: true,
+      aspectRatio: this.mediaQuery.smallWidth ? 1.5 : 3,
+      title: {
+        display: true,
+        text: 'Job Throughput',
+      },
+      legend: {
+        position: 'bottom',
+      },
+      tooltips: {
+        mode: 'index',
+        intersect: false,
+      },
+      scales: {
+        xAxes: [
+          {
+            ticks: {
+              maxTicksLimit: this.mediaQuery.smallWidth ? 3 : 5,
+              maxRotation: 0,
+            }
           }
-        }
-      ],
-    },
-  };
+        ],
+      },
+    };
+  }
+
+  jobChartOptions: ChartOptions = this.getJobChartOptions();
 
   private subscription: Subscription;
 
   private readonly updateInterval: number = 60 * 1000;
 
+  @ViewChild('jobchart', { read: BaseChartDirective, static: false })
+  private jobChart: BaseChartDirective;
+
+  private onWidthChange: WidthChangeEventHandler = (q: MediaQueryService) => {
+    this.jobChart.chart.options = this.getJobChartOptions();
+    //TODO: This doesn't work anyway!
+    this.jobChart.chart.update();
+  }
+
   constructor(
     private api: ApiService,
-  ) { }
+    public mediaQuery: MediaQueryService,
+  ) {}
 
   ngOnInit() {
+    //this.mediaQuery.addWidthChangeEventHandler(this.onWidthChange);
     this.subscription = this.api.getClusterNodeAvailabilityInLoop(this.updateInterval).subscribe(data => {
       this.nodeChartData = [
         [data.Available, data.Total - data.Available]
@@ -161,6 +177,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    //this.mediaQuery.removeWidthChangeEventHandler(this.onWidthChange);
     if (this.subscription) {
       this.subscription.unsubscribe();
       this.subscription = null;
