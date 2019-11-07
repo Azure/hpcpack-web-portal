@@ -7,6 +7,12 @@ import { Subscription } from 'rxjs';
 
 interface DataPoint { Key: string, Value: number };
 
+interface MeticInstanceConfig {
+  name: string,
+  alias: string,
+  color: string,
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -33,38 +39,49 @@ export class DashboardComponent implements OnInit, OnDestroy {
     },
   }
 
-  jobChartLabels: Label[] = [];
-
-  jobChartColors: Color[] = [
+  private readonly jobMetricInstanceConfig: MeticInstanceConfig[] = [
     {
-      borderColor: 'gray',
-      backgroundColor: 'rgba(0,0,0,0)',
+      name: 'Number of configuring jobs',
+      alias: 'Configuring',
+      color: 'lightblue'
     },
     {
-      borderColor: 'lightblue',
-      backgroundColor: 'rgba(0,0,0,0)',
+      name: 'Number of canceled jobs',
+      alias: 'Canceled',
+      color: 'gray'
     },
     {
-      borderColor: 'red',
-      backgroundColor: 'rgba(0,0,0,0)',
+      name: 'Number of failed jobs',
+      alias: 'Failed',
+      color: 'red'
     },
     {
-      borderColor: 'green',
-      backgroundColor: 'rgba(0,0,0,0)',
+      name: 'Number of finished jobs',
+      alias: 'Finished',
+      color: 'green'
     },
     {
-      borderColor: 'yellow',
-      backgroundColor: 'rgba(0,0,0,0)',
+      name: 'Number of queued jobs',
+      alias: 'Queued',
+      color: 'darkslategrey'
     },
     {
-      borderColor: 'blue',
-      backgroundColor: 'rgba(0,0,0,0)',
+      name: 'Number of running jobs',
+      alias: 'Running',
+      color: 'blue'
     },
     {
-      borderColor: 'purple',
-      backgroundColor: 'rgba(0,0,0,0)',
+      name: 'Total number of jobs',
+      alias: 'Total',
+      color: 'purple'
     },
   ];
+
+  private readonly jobMetricInstanceConfigMap: Map<string, number> = new Map(this.jobMetricInstanceConfig.map((e, i) => [e.name, i]));
+
+  readonly jobChartColors: Color[] = this.jobMetricInstanceConfig.map(e => ({ borderColor: e.color, backgroundColor: 'rgba(0,0,0,0)' }));
+
+  jobChartLabels: Label[] = [];
 
   jobChartData: ChartDataSets[] = [
     {
@@ -100,16 +117,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     },
   };
 
-  private readonly jobMetricInstances: { [key: string]: [string, number] } = {
-    'Number of configuring jobs': ['Configuring', 0],
-    'Number of queued jobs':      ['Queued', 1],
-    'Number of running jobs':     ['Running', 2],
-    'Number of finished jobs':    ['Finished', 3],
-    'Number of failed jobs':      ['Failed', 4],
-    'Number of canceled jobs':    ['Canceled', 5],
-    'Total number of jobs':       ['Total', 6],
-  }
-
   private subscription: Subscription;
 
   private readonly updateInterval: number = 60 * 1000;
@@ -140,10 +147,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
       let dataSets: ChartDataSets[] = [];
       for (let instance of data.Instances) {
-        let [name, idx] = this.jobMetricInstances[instance.InstanceName];
+        let idx = this.jobMetricInstanceConfigMap.get(instance.InstanceName);
         dataSets[idx] = {
           data: instance.Values.map(e => e.Value),
-          label: name,
+          label: this.jobMetricInstanceConfig[idx].alias,
           steppedLine: 'before',
           pointRadius: 0,
         }
