@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Label, MultiDataSet, Color } from 'ng2-charts';
 import { ChartOptions, ChartDataSets } from 'chart.js';
 
-import { ApiService } from '../services/api.service';
+import { ApiService, MetricInstanceData } from '../services/api.service';
 import { Subscription } from 'rxjs';
 
 interface DataPoint { Key: string, Value: number };
@@ -100,6 +100,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     },
   };
 
+  private readonly jobMetricInstances: { [key: string]: [string, number] } = {
+    'Number of configuring jobs': ['Configuring', 0],
+    'Number of queued jobs':      ['Queued', 1],
+    'Number of running jobs':     ['Running', 2],
+    'Number of finished jobs':    ['Finished', 3],
+    'Number of failed jobs':      ['Failed', 4],
+    'Number of canceled jobs':    ['Canceled', 5],
+    'Total number of jobs':       ['Total', 6],
+  }
+
   private subscription: Subscription;
 
   private readonly updateInterval: number = 60 * 1000;
@@ -128,12 +138,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
       else {
         this.jobChartLabels = data.Instances[0].Values.map(e => this.formatDateToHourAndMinute(new Date(Date.parse(e.Key))));
       }
-      this.jobChartData = data.Instances.map(instance => ({
-        data: instance.Values.map(e => e.Value),
-        label: instance.InstanceName,
-        steppedLine: 'before',
-        pointRadius: 0,
-      }));
+      let dataSets: ChartDataSets[] = [];
+      for (let instance of data.Instances) {
+        let [name, idx] = this.jobMetricInstances[instance.InstanceName];
+        dataSets[idx] = {
+          data: instance.Values.map(e => e.Value),
+          label: name,
+          steppedLine: 'before',
+          pointRadius: 0,
+        }
+      }
+      this.jobChartData = dataSets;
     });
     this.subscription.add(sub);
   }
@@ -153,7 +168,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private formatDateToHour(date: Date): string {
-    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()} ${date.getHours()}`;
+    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()} ${date.getHours()}:00`;
   }
 
   private formatDateToHourAndMinute(date: Date): string {
