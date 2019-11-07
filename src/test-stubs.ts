@@ -52,3 +52,20 @@ export class ListItemSelectorComponentStub {
 export class MatDialogRefStub<T> {
   close() {}
 }
+
+@Directive({
+  selector: '[baseChart]'
+})
+export class BaseChartDirectiveStub {
+  @Input('chartType') chartType: string;
+
+  @Input('options') options: any;
+
+  @Input('labels') labels: any;
+
+  @Input('colors') colors: any;
+
+  @Input('data') data: any;
+
+  @Input('datasets') datasets: any;
+}
