@@ -22,9 +22,9 @@ export class MediaQueryService {
   }
 
   constructor() {
-    this.smallWidthQuery.addEventListener('change', this.widtchChangeListener);
-    this.medianWidthQuery.addEventListener('change', this.widtchChangeListener);
-    this.bigWidthQuery.addEventListener('change', this.widtchChangeListener);
+    this.smallWidthQuery.addListener(this.widtchChangeListener);
+    this.medianWidthQuery.addListener(this.widtchChangeListener);
+    this.bigWidthQuery.addListener(this.widtchChangeListener);
   }
 
   get smallWidth(): boolean {
