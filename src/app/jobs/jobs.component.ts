@@ -161,7 +161,7 @@ export class JobsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.loading = true;
     //TODO: 1. Get only those for columns? 2. Filter on job owner for user role?
-    let sub = this.api.getJobs(null, Job.properties.join(','), null, null, null, this.dataPageSize, this.continuationToken, 'response').subscribe({
+    let sub = this.api.getJobs(null, Job.properties.join(','), null, null, null, null, null, this.dataPageSize, this.continuationToken, 'response').subscribe({
       next: res => {
         this.loading = false;
         this.continuationToken = res.headers.get('x-ms-continuation-queryId');

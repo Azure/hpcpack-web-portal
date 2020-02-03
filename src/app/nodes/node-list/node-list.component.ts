@@ -155,7 +155,7 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.loading = true;
     //TODO: 1. Get only those for columns?
-    let sub = this.api.getNodes(null, null, null, null, null, this.dataPageSize, this.continuationToken, 'response').subscribe({
+    let sub = this.api.getNodes(null, null, null, null, null, null, null, this.dataPageSize, this.continuationToken, 'response').subscribe({
       next: res => {
         this.loading = false;
         this.continuationToken = res.headers.get('x-ms-continuation-queryId');
