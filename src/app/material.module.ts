@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -37,6 +38,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatIconModule,
     MatTabsModule,
     MatTableModule,
+    MatPaginatorModule,
     MatSortModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
