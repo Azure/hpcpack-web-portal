@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  API_BASE_PATH: 'https://23.101.22.85/hpc'
+  API_BASE_PATH: 'https://52.148.90.210/hpc'
 };
 
 /*
