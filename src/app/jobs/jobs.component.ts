@@ -75,6 +75,10 @@ export class JobsComponent implements OnInit, OnDestroy {
 
   pageIndex: number = 0;
 
+  private get startRow(): number {
+    return this.pageIndex * this.pageSize;
+  }
+
   private updateInterval = 1500;
 
   private updateExpiredIn = 5 * 60 * 1000;
@@ -129,7 +133,7 @@ export class JobsComponent implements OnInit, OnDestroy {
       this.pageDataSub.unsubscribe();
     }
     this.pageLoading = true;
-    this.pageDataSub = this.api.getJobs(null, Job.properties.join(','), null, null, null, null, this.pageIndex, this.pageSize, null, 'response').subscribe({
+    this.pageDataSub = this.api.getJobs(null, Job.properties.join(','), null, null, null, null, this.startRow, this.pageSize, null, 'response').subscribe({
       next: res => {
         this.pageLoading = false;
         this.rowCount = Number(res.headers.get('x-ms-row-count'));
