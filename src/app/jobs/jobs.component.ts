@@ -85,6 +85,10 @@ export class JobsComponent implements OnInit, OnDestroy {
 
   private pageLoading: boolean = false;
 
+  get isLoading(): boolean {
+    return this.pageLoading;
+  }
+
   private get actionListHidden(): boolean {
     return this.userOptions.hideActionList !== undefined ? this.userOptions.hideActionList :
       (this.mediaQuery.smallWidth ? true: false);

@@ -42,11 +42,11 @@
       </table>
     </div>
 
+    <mat-progress-bar *ngIf="isLoading" mode="buffer"></mat-progress-bar>
+
     <mat-paginator [length]="rowCount" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
       [showFirstLastButtons]="true" (page)="onPageChange($event)">
     </mat-paginator>
-
-    <mat-progress-bar *ngIf="isLoading" mode="buffer"></mat-progress-bar>
   </mat-sidenav-content>
 </mat-sidenav-container>
 
