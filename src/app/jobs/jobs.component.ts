@@ -149,9 +149,10 @@ export class JobsComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(e: PageEvent): void {
+    console.log(e);
     this.pageIndex = e.pageIndex;
     this.pageSize = e.pageSize;
-    this.loadData();
+    this.refresh();
   }
 
   onSortChange(e: Sort): void {

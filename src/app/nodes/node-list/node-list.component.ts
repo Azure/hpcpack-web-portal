@@ -146,7 +146,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
     console.log(e);
     this.pageIndex = e.pageIndex;
     this.pageSize = e.pageSize;
-    this.loadData();
+    this.refresh();
   }
 
   onSortChange(e: Sort): void {
