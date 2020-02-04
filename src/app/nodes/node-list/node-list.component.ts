@@ -1,10 +1,9 @@
-import { Component, ElementRef, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort } from '@angular/material/sort';
 import { MatSidenavContainer } from '@angular/material/sidenav'
-import { Subscription, Observable, fromEvent } from 'rxjs'
-import { debounceTime } from 'rxjs/operators'
+import { Subscription } from 'rxjs'
 import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
 import { ApiService } from '../../services/api.service';
@@ -18,7 +17,7 @@ import { CommanderComponent } from '../commander/commander.component'
   templateUrl: './node-list.component.html',
   styleUrls: ['./node-list.component.scss']
 })
-export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
+export class NodeListComponent implements OnInit, OnDestroy {
   readonly columns: ColumnDef[] = [
     { name: 'Availability', label: 'Availability' },
     { name: 'AzureServiceName', label: 'Azure Service Name' },
@@ -62,27 +61,31 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
     return ['Select'].concat(this.selectedColumns);
   }
 
+  rowCount: number;
+
+  readonly pageSizeOptions = [25, 50, 100];
+
+  pageSize: number = this.pageSizeOptions[0];
+
+  pageIndex: number = 0;
+
+  private get startRow(): number {
+    return this.pageIndex * this.pageSize;
+  }
+
   private updateInterval = 1200;
 
   private updateExpiredIn = 36 * 1000;
 
   private subscription: Subscription = new Subscription();
 
-  private continuationToken: string = null;
+  private pageDataSub: Subscription;
 
-  private loading: boolean = false;
+  private pageLoading: boolean = false;
 
   get isLoading(): boolean {
-    return this.loading;
+    return this.pageLoading;
   }
-
-  private allLoaded: boolean = false;
-
-  get canLoadMore(): boolean {
-    return !(this.loading || this.allLoaded);
-  }
-
-  private readonly dataPageSize = 50;
 
   private get actionListHidden(): boolean {
     return this.userOptions.hideActionList !== undefined ? this.userOptions.hideActionList :
@@ -96,9 +99,6 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild(MatSidenavContainer, { static: false })
   private sidenavContainer: MatSidenavContainer;
-
-  @ViewChild('tableContainer', { read: ElementRef, static: false })
-  private tableContainerRef: ElementRef;
 
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
@@ -119,13 +119,39 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.reset();
   }
 
-  ngAfterViewInit(): void {
-    fromEvent<Event>(this.tableContainerRef.nativeElement, 'scroll')
-      .pipe(debounceTime(500))
-      .subscribe(e => this.onTableScroll(e));
+  private loadData(): void {
+    if (this.pageLoading) {
+      this.pageDataSub.unsubscribe();
+    }
+    this.pageLoading = true;
+    this.pageDataSub = this.api.getNodes(null, null, null, null, null, null, this.startRow, this.pageSize, null, 'response').subscribe({
+      next: res => {
+        this.pageLoading = false;
+        this.rowCount = Number(res.headers.get('x-ms-row-count'));
+        let nodes = res.body.map(e => Node.fromProperties(e.Properties));
+        this.dataSource.data = nodes;
+      },
+      error: err => {
+        this.pageLoading = false;
+        console.log(err);
+      }
+    });
+  }
+
+  onPageChange(e: PageEvent): void {
+    console.log(e);
+    this.pageIndex = e.pageIndex;
+    this.pageSize = e.pageSize;
+    this.loadData();
   }
 
   private reset(): void {
+    if (this.pageLoading) {
+      this.pageDataSub.unsubscribe();
+    }
+    this.pageLoading = false;
+    this.pageDataSub = null;
+
     //TODO: Use separate subscriptions for loading and updating and don't unsubscribe the updating one on reset?
     this.subscription.unsubscribe();
     //When a subscription is unsubscribed, new subscription added to it won't work.
@@ -133,54 +159,12 @@ export class NodeListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscription = new Subscription();
     this.selection.clear();
     this.dataSource.data = [];
-    this.continuationToken = null;
-    this.loading = false;
-    this.allLoaded = false;
   }
 
   //TODO: let browser refresh instead?
   refresh(): void {
     this.reset();
-    this.loadMoreData();
-  }
-
-  get loadDataActionText(): string {
-    return this.loading ? 'Loading...' : 'Load More Data';
-  }
-
-  loadMoreData(): void {
-    console.log('Loading more data...');
-    if (!this.canLoadMore) {
-      return;
-    }
-    this.loading = true;
-    //TODO: 1. Get only those for columns?
-    let sub = this.api.getNodes(null, null, null, null, null, null, null, this.dataPageSize, this.continuationToken, 'response').subscribe({
-      next: res => {
-        this.loading = false;
-        this.continuationToken = res.headers.get('x-ms-continuation-queryId');
-        this.allLoaded = (this.continuationToken == null);
-        let nodes = res.body.map(e => Node.fromProperties(e.Properties));
-        this.dataSource.data = this.dataSource.data.concat(nodes);
-      },
-      error: err => {
-        this.loading = false;
-        console.log(err);
-      }
-    });
-    this.subscription.add(sub);
-  }
-
-  onTableScroll(e: Event): void {
-    console.log('Scrolling...');
-    if (!this.canLoadMore) {
-      return;
-    }
-    let target = e.target as Element;
-    let totalScrollableDistance = target.scrollHeight - target.clientHeight;
-    if (totalScrollableDistance > 0 && target.scrollTop / totalScrollableDistance >= 0.8) {
-      this.loadMoreData();
-    }
+    this.loadData();
   }
 
   get anySelected(): boolean {
