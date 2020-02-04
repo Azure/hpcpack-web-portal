@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort } from '@angular/material/sort';
@@ -105,9 +105,6 @@ export class JobsComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSidenavContainer, { static: false })
   private sidenavContainer: MatSidenavContainer;
-
-  @ViewChild('tableContainer', { read: ElementRef, static: false })
-  private tableContainerRef: ElementRef;
 
   @ViewChild(MatSort, { static: true })
   private sort: MatSort;
