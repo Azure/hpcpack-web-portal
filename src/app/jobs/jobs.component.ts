@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatSidenavContainer } from '@angular/material/sidenav'
 import { Subscription, Observable } from 'rxjs'
 import { Job } from '../models/job'
@@ -67,9 +67,13 @@ export class JobsComponent implements OnInit, OnDestroy {
     return ['Select'].concat(this.selectedColumns);
   }
 
+  orderBy: string = "Id";
+
+  asc: boolean = false;
+
   rowCount: number;
 
-  readonly pageSizeOptions = [25, 50, 100];
+  readonly pageSizeOptions = [25, 50, 100, 200, 500];
 
   pageSize: number = this.pageSizeOptions[0];
 
@@ -130,7 +134,7 @@ export class JobsComponent implements OnInit, OnDestroy {
       this.pageDataSub.unsubscribe();
     }
     this.pageLoading = true;
-    this.pageDataSub = this.api.getJobs(null, Job.properties.join(','), null, null, null, null, this.startRow, this.pageSize, null, 'response').subscribe({
+    this.pageDataSub = this.api.getJobs(null, Job.properties.join(','), null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
       next: res => {
         this.pageLoading = false;
         this.rowCount = Number(res.headers.get('x-ms-row-count'));
@@ -148,6 +152,15 @@ export class JobsComponent implements OnInit, OnDestroy {
     this.pageIndex = e.pageIndex;
     this.pageSize = e.pageSize;
     this.loadData();
+  }
+
+  onSortChange(e: Sort): void {
+    console.log(e);
+    this.orderBy = e.active;
+    this.asc = (e.direction == "asc");
+    if (this.pageSize < this.rowCount) {
+      this.refresh();
+    }
   }
 
   private reset(): void {

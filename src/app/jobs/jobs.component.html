@@ -16,7 +16,8 @@
   </mat-sidenav>
   <mat-sidenav-content class="content">
     <div class="table-container" #tableContainer>
-      <table mat-table [dataSource]="dataSource" matSort>
+      <table mat-table [dataSource]="dataSource" matSort [matSortDisableClear]="true" [matSortActive]="orderBy"
+        [matSortDirection]="asc ? 'asc' : 'desc'" (matSortChange)="onSortChange($event)">
         <ng-container matColumnDef="Select">
           <th mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="masterToggle()"
