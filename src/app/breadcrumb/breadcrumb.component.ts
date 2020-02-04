@@ -68,4 +68,13 @@ export class BreadcrumbComponent implements OnInit, OnDestroy  {
 
     return this.getBreadcrumbs(child, url, breadcrumbs);
   }
+
+  getLabel(label: string, params: {[key: string]: string}): string {
+    let result: string = label;
+    for (let key in params) {
+      let value = params[key];
+      result = result.replace(new RegExp(`:${key}\\b`, 'g'), value);
+    }
+    return result;
+  }
 }
