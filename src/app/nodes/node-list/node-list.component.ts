@@ -18,10 +18,7 @@ import { CommanderComponent } from '../commander/commander.component'
   styleUrls: ['./node-list.component.scss']
 })
 export class NodeListComponent implements OnInit, OnDestroy {
-  readonly columns: ColumnDef[] = Node.properties.map(p => {
-    let label = p.replace(/([a-z])([A-Z])/g, '$1 $2');
-    return { name: p, label: label };
-  });
+  readonly columns: ColumnDef[] = Node.properties;
 
   dataSource: MatTableDataSource<Node> = new MatTableDataSource();
 
@@ -163,6 +160,14 @@ export class NodeListComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
+  columnText(row: any, column: string): string {
+    let v = row[column];
+    if (v instanceof Date) {
+      return `${v.getFullYear()}/${v.getMonth() + 1}/${v.getDate()} ${v.getHours()}:${v.getMinutes()}:${v.getSeconds()}`
+    }
+    return v;
+  }
+
   get anySelected(): boolean {
     return this.selection.selected.length > 0;
   }
@@ -188,8 +193,8 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   private updateNodes(nodes: Node[]): void {
-    let pairs: [string, Node][] = nodes.map(n => [n.Id, n]);
-    let idToNode = new Map<string, Node>(pairs);
+    let pairs: [number, Node][] = nodes.map(n => [n.Id, n]);
+    let idToNode = new Map<number, Node>(pairs);
     for (let node of this.dataSource.data) {
       let update = idToNode.get(node.Id);
       if (update) {

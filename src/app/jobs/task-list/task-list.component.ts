@@ -18,10 +18,7 @@ import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelector
   styleUrls: ['./task-list.component.scss']
 })
 export class TaskListComponent implements OnInit, OnDestroy {
-  readonly columns: ColumnDef[] = Task.properties.map(p => {
-    let label = p.replace(/([a-z])([A-Z])/g, '$1 $2');
-    return { name: p, label: label };
-  });
+  readonly columns: ColumnDef[] = Task.properties;
 
   dataSource: MatTableDataSource<Task> = new MatTableDataSource();
 
@@ -137,12 +134,14 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.dataSource.data = [];
   }
 
+  private readonly propertiesToRead = Task.properties.map(p => p.name).join(',');
+
   private loadData(): void {
     if (this.pageLoading) {
       this.pageDataSub.unsubscribe();
     }
     this.pageLoading = true;
-    this.pageDataSub = this.api.getTasks(this.jobId, null, Task.properties.join(','), null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
+    this.pageDataSub = this.api.getTasks(this.jobId, null, this.propertiesToRead, null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
       next: res => {
         this.pageLoading = false;
         this.rowCount = Number(res.headers.get('x-ms-row-count'));
@@ -170,6 +169,14 @@ export class TaskListComponent implements OnInit, OnDestroy {
     if (this.pageSize < this.rowCount) {
       this.refresh();
     }
+  }
+
+  columnText(row: any, column: string): string {
+    let v = row[column];
+    if (v instanceof Date) {
+      return `${v.getFullYear()}/${v.getMonth() + 1}/${v.getDate()} ${v.getHours()}:${v.getMinutes()}:${v.getSeconds()}`
+    }
+    return v;
   }
 
   showColumnSelector(): void {

@@ -36,8 +36,8 @@
         <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
           <td mat-cell *matCellDef="let row">
-            <a *ngIf="column.name == 'Id'; else text" [routerLink]="['.', row['Id']]">{{row['Id']}}</a>
-            <ng-template #text>{{row[column.name]}}</ng-template>
+            <a *ngIf="column.name == 'Id'; else text" [routerLink]="routerLinkToJob(row)">{{columnText(row, column.name)}}</a>
+            <ng-template #text>{{columnText(row, column.name)}}</ng-template>
           </td>
         </ng-container>
 

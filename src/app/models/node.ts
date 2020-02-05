@@ -1,56 +1,60 @@
 import { RestProperty } from '../services/api.service'
 
 export class Node {
-  //TODO: convert string to real type
   Availability: string;
   AzureServiceName: string;
-  CpuSpeed: string; //number;
+  CpuSpeed: number;
   DnsSuffix: string;
   Guid: string;
-  Id: string; //number;
+  Id: number;
   JobType: string;
   Location: string;
-  MemorySize: string; //number;
+  MemorySize: number;
   Name: string;
   NodeGroups: string;
-  NumCores: string; //number;
-  NumSockets: string; //number;
-  OfflineTime: string;
-  OnlineTime: string;
+  NumCores: number;
+  NumSockets: number;
+  OfflineTime: Date;
+  OnlineTime: Date;
   Reachable: boolean;
   State: string;
 
   update(other: Node): void {
-    for (let key of Node.properties) {
-      (this as any)[key] = (other as any)[key];
+    for (let prop of Node.properties) {
+      (this as any)[prop.name] = (other as any)[prop.name];
     }
   }
 
   static readonly properties = [
-    'Availability',
-    'AzureServiceName',
-    'CpuSpeed',
-    'DnsSuffix',
-    'Guid',
-    'Id',
-    'JobType',
-    'Location',
-    'MemorySize',
-    'Name',
-    'NodeGroups',
-    'NumCores',
-    'NumSockets',
-    'OfflineTime',
-    'OnlineTime',
-    'Reachable',
-    'State',
-  ].sort();
+    { name: 'Availability', label: 'Availability', type: String },
+    { name: 'AzureServiceName', label: 'AzureService Name', type: String },
+    { name: 'CpuSpeed', label: 'Cpu Speed', type: Number },
+    { name: 'DnsSuffix', label: 'Dns Suffix', type: String },
+    { name: 'Guid', label: 'Guid', type: String },
+    { name: 'Id', label: 'Id', type: Number },
+    { name: 'JobType', label: 'Job Type', type: String },
+    { name: 'Location', label: 'Location', type: String },
+    { name: 'MemorySize', label: 'Memory Size', type: Number },
+    { name: 'Name', label: 'Name', type: String },
+    { name: 'NodeGroups', label: 'Node Groups', type: String },
+    { name: 'NumCores', label: 'Cores', type: Number },
+    { name: 'NumSockets', label: 'Sockets', type: Number },
+    { name: 'OfflineTime', label: 'Offline Time', type: Date },
+    { name: 'OnlineTime', label: 'Online Time', type: Date },
+    { name: 'Reachable', label: 'Reachable', type: Boolean },
+    { name: 'State', label: 'State', type: String },
+  ];
+
+  static readonly propertyMap = new Map(Node.properties.map(p => [p.name, p]));
 
   static fromProperties(properties: Array<RestProperty>): Node {
     let node = new Node();
-    properties.forEach(prop => {
-      (node as any)[prop.Name] = prop.Value;
-    });
+    for (let prop of properties) {
+      let p = Node.propertyMap.get(prop.Name);
+      if (p && prop.Value !== '') {
+        (node as any)[p.name] = new p.type(prop.Value);
+      }
+    }
     return node;
   }
 }

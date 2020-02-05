@@ -18,10 +18,7 @@ import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelector
   styleUrls: ['./jobs.component.scss']
 })
 export class JobsComponent implements OnInit, OnDestroy {
-  readonly columns: ColumnDef[] = Job.properties.map(p => {
-    let label = p.replace(/([a-z])([A-Z])/g, '$1 $2');
-    return { name: p, label: label };
-  });
+  readonly columns: ColumnDef[] = Job.properties;
 
   dataSource: MatTableDataSource<Job> = new MatTableDataSource();
 
@@ -118,12 +115,14 @@ export class JobsComponent implements OnInit, OnDestroy {
     this.reset();
   }
 
+  private readonly propertiesToRead = Job.properties.map(p => p.name).join(',');
+
   private loadData(): void {
     if (this.pageLoading) {
       this.pageDataSub.unsubscribe();
     }
     this.pageLoading = true;
-    this.pageDataSub = this.api.getJobs(null, Job.properties.join(','), null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
+    this.pageDataSub = this.api.getJobs(null, this.propertiesToRead, null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
       next: res => {
         this.pageLoading = false;
         this.rowCount = Number(res.headers.get('x-ms-row-count'));
@@ -172,6 +171,18 @@ export class JobsComponent implements OnInit, OnDestroy {
   refresh(): void {
     this.reset();
     this.loadData();
+  }
+
+  columnText(row: any, column: string): string {
+    let v = row[column];
+    if (v instanceof Date) {
+      return `${v.getFullYear()}/${v.getMonth() + 1}/${v.getDate()} ${v.getHours()}:${v.getMinutes()}:${v.getSeconds()}`
+    }
+    return v;
+  }
+
+  routerLinkToJob(row: Job): string[] {
+    return ['.', row.Id.toString()];
   }
 
   get anySelected(): boolean {
@@ -225,19 +236,19 @@ export class JobsComponent implements OnInit, OnDestroy {
   }
 
   submitJobs(): void {
-    this.operateOnSelectedJobs(job => this.api.submitJobAndWatch(parseInt(job.Id), this.updateInterval, this.updateExpiredIn));
+    this.operateOnSelectedJobs(job => this.api.submitJobAndWatch(job.Id, this.updateInterval, this.updateExpiredIn));
   }
 
   cancelJobs(): void {
-    this.operateOnSelectedJobs(job => this.api.cancelJobAndWatch(parseInt(job.Id), this.updateInterval, this.updateExpiredIn));
+    this.operateOnSelectedJobs(job => this.api.cancelJobAndWatch(job.Id, this.updateInterval, this.updateExpiredIn));
   }
 
   finishJobs(): void {
-    this.operateOnSelectedJobs(job => this.api.finishJobAndWatch(parseInt(job.Id), this.updateInterval, this.updateExpiredIn));
+    this.operateOnSelectedJobs(job => this.api.finishJobAndWatch(job.Id, this.updateInterval, this.updateExpiredIn));
   }
 
   requeueJobs(): void {
-    this.operateOnSelectedJobs(job => this.api.requeueJobAndWatch(parseInt(job.Id), this.updateInterval, this.updateExpiredIn));
+    this.operateOnSelectedJobs(job => this.api.requeueJobAndWatch(job.Id, this.updateInterval, this.updateExpiredIn));
   }
 
   get isActionListHidden(): boolean {
