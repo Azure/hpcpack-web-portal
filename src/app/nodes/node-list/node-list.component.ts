@@ -38,8 +38,6 @@ export class NodeListComponent implements OnInit, OnDestroy {
     { name: 'State', label: 'State' },
   ];
 
-  private readonly availableColumns: string[] = this.columns.map(c => c.name);
-
   dataSource: MatTableDataSource<Node> = new MatTableDataSource();
 
   selection = new SelectionModel<Node>(true);

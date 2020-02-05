@@ -32,8 +32,6 @@ export class JobsComponent implements OnInit, OnDestroy {
     { name: "Progress", label: "Progress" },
   ];
 
-  private readonly availableColumns: string[] = this.columns.map(c => c.name);
-
   dataSource: MatTableDataSource<Job> = new MatTableDataSource();
 
   selection = new SelectionModel<Job>(true);
