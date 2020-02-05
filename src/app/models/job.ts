@@ -77,7 +77,7 @@ export class Job {
     }
   }
 
-  static properties = [
+  static readonly properties = [
     "Id",
     "Name",
     "Owner",
@@ -142,7 +142,7 @@ export class Job {
     "EstimatedProcessMemory",
     "PlannedCoreCount",
     "TaskExecutionFailureRetryLimit",
-  ]
+  ].sort();
 
   static fromProperties(properties: Array<RestProperty>): Job {
     let job = new Job();

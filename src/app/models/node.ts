@@ -26,7 +26,7 @@ export class Node {
     }
   }
 
-  static properties = [
+  static readonly properties = [
     'Availability',
     'AzureServiceName',
     'CpuSpeed',
@@ -44,7 +44,7 @@ export class Node {
     'OnlineTime',
     'Reachable',
     'State',
-  ]
+  ].sort();
 
   static fromProperties(properties: Array<RestProperty>): Node {
     let node = new Node();

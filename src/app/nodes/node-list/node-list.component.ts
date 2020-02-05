@@ -18,25 +18,10 @@ import { CommanderComponent } from '../commander/commander.component'
   styleUrls: ['./node-list.component.scss']
 })
 export class NodeListComponent implements OnInit, OnDestroy {
-  readonly columns: ColumnDef[] = [
-    { name: 'Availability', label: 'Availability' },
-    { name: 'AzureServiceName', label: 'Azure Service Name' },
-    { name: 'CpuSpeed', label: 'Cpu Speed' },
-    { name: 'DnsSuffix', label: 'Dns Suffix' },
-    { name: 'NodeGroups', label: 'Node Groups' },
-    { name: 'Guid', label: 'Guid' },
-    { name: 'Id', label: 'Id' },
-    { name: 'JobType', label: 'Job Type' },
-    { name: 'Location', label: 'Location' },
-    { name: 'MemorySize', label: 'Memory Size' },
-    { name: 'Name', label: 'Name' },
-    { name: 'NumCores', label: 'Cores' },
-    { name: 'NumSockets', label: 'Sockets' },
-    { name: 'OfflineTime', label: 'Offline at' },
-    { name: 'OnlineTime', label: 'Online at' },
-    { name: 'Reachable', label: 'Reachable' },
-    { name: 'State', label: 'State' },
-  ];
+  readonly columns: ColumnDef[] = Node.properties.map(p => {
+    let label = p.replace(/([a-z])([A-Z])/g, '$1 $2');
+    return { name: p, label: label };
+  });
 
   dataSource: MatTableDataSource<Node> = new MatTableDataSource();
 

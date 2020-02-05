@@ -106,7 +106,7 @@ export class Task {
     "ExecutionFailureRetryCount",
     "AutoRequeueCount",
     "RequestedNodeGroup",
-  ];
+  ].sort();
 
   static fromProperties(properties: Array<RestProperty>): Task {
     let task = new Task();

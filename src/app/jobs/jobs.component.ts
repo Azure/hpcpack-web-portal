@@ -18,19 +18,10 @@ import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelector
   styleUrls: ['./jobs.component.scss']
 })
 export class JobsComponent implements OnInit, OnDestroy {
-  readonly columns: ColumnDef[] = [
-    { name: "Id", label: "Id" },
-    { name: "Name", label: "Name" },
-    { name: "Owner", label: "Owner" },
-    { name: "SubmitTime", label: "Submitted at" },
-    { name: "CreateTime", label: "Created at" },
-    { name: "EndTime", label: "Ended at" },
-    { name: "StartTime", label: "Started at" },
-    { name: "ChangeTime", label: "Changed at" },
-    { name: "State", label: "State" },
-    { name: "ErrorMessage", label: "Error Message" },
-    { name: "Progress", label: "Progress" },
-  ];
+  readonly columns: ColumnDef[] = Job.properties.map(p => {
+    let label = p.replace(/([a-z])([A-Z])/g, '$1 $2');
+    return { name: p, label: label };
+  });
 
   dataSource: MatTableDataSource<Job> = new MatTableDataSource();
 
