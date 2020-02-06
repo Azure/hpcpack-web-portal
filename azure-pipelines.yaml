@@ -48,7 +48,7 @@ stages:
 
     - script: |
         echo "CHROMEWEBDRIVER: $CHROMEWEBDRIVER"
-        npm run ng e2e --protractor-config=e2e/protractor-ci.conf.js --port 4400 --chromeDriver="$CHROMEWEBDRIVER"
+        npm run ng e2e --protractor-config=e2e/protractor-ci.conf.js --chromeDriver="$CHROMEWEBDRIVER" 
       displayName: 'E2E Test'
 
     - script: |
