@@ -47,23 +47,8 @@ stages:
       displayName: 'Install npm Packages'
 
     - script: |
-        npm run ci-test
-      displayName: 'Unit Test'
-
-    - task: PublishTestResults@2
-      inputs:
-        testResultsFiles: 'unit-test-result.xml'
-        failTaskOnFailedTests: true
-      displayName: 'Publish Unit Test Result'
-
-    - task: PublishCodeCoverageResults@1
-      inputs:
-        codeCoverageTool: cobertura
-        summaryFileLocation: coverage/cobertura-coverage.xml
-      displayName: 'Publish Unit Test Code Coverage Result'
-
-    - script: |
-        npm run ci-e2e
+        echo "CHROMEWEBDRIVER: $CHROMEWEBDRIVER"
+        npm run ng e2e --protractor-config=e2e/protractor-ci.conf.js --port 4400 --chromeDriver="$CHROMEWEBDRIVER"
       displayName: 'E2E Test'
 
     - script: |
