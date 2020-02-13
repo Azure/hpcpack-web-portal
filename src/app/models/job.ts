@@ -1,4 +1,5 @@
 import { RestProperty } from '../services/api.service'
+import { convert } from './converter'
 
 export class Job {
   Id: number;
@@ -151,21 +152,6 @@ export class Job {
   static readonly propertyMap = new Map(Job.properties.map(p => [p.name, p]));
 
   static fromProperties(properties: Array<RestProperty>): Job {
-    let job = new Job();
-    for (let prop of properties) {
-      let p = Job.propertyMap.get(prop.Name);
-      if (p && prop.Value !== '') {
-        let value;
-        if (p.type == Date) {
-          value = prop.Value + ' UTC';
-        }
-        else {
-          value = prop.Value;
-        }
-        (job as any)[p.name] = new p.type(value);
-      }
-    }
-    return job;
+    return convert(properties, Job, Job.propertyMap);
   }
 }
-
