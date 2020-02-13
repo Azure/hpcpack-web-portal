@@ -155,7 +155,14 @@ export class Job {
     for (let prop of properties) {
       let p = Job.propertyMap.get(prop.Name);
       if (p && prop.Value !== '') {
-        (job as any)[p.name] = new p.type(prop.Value);
+        let value;
+        if (p.type == Date) {
+          value = prop.Value + ' UTC';
+        }
+        else {
+          value = prop.Value;
+        }
+        (job as any)[p.name] = new p.type(value);
       }
     }
     return job;

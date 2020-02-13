@@ -52,7 +52,14 @@ export class Node {
     for (let prop of properties) {
       let p = Node.propertyMap.get(prop.Name);
       if (p && prop.Value !== '') {
-        (node as any)[p.name] = new p.type(prop.Value);
+        let value;
+        if (p.type == Date) {
+          value = prop.Value + ' UTC';
+        }
+        else {
+          value = prop.Value;
+        }
+        (node as any)[p.name] = new p.type(value);
       }
     }
     return node;

@@ -119,7 +119,14 @@ export class Task {
     for (let prop of properties) {
       let p = Task.propertyMap.get(prop.Name);
       if (p && prop.Value !== '') {
-        (task as any)[p.name] = new p.type(prop.Value);
+        let value;
+        if (p.type == Date) {
+          value = prop.Value + ' UTC';
+        }
+        else {
+          value = prop.Value;
+        }
+        (task as any)[p.name] = new p.type(value);
       }
     }
     return task;
