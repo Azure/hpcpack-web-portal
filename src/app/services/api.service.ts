@@ -4,7 +4,7 @@ import { Observable, Subscriber } from 'rxjs'
 import { DefaultService, BASE_PATH, Configuration, NodeMetric, NodeAvailability, MetricData } from '../api-client'
 import { Node } from '../models/node'
 import { Job } from '../models/job'
-import { ILooper, Looper } from './looper.service'
+import { ILooper, Looper, ObservableCreator } from './looper.service'
 
 export * from '../api-client'
 
@@ -20,7 +20,7 @@ export class ApiService extends DefaultService {
     super(httpClient, basePath, configuration);
   }
 
-  repeat<T>(operation: Observable<T>, interval: number): Observable<T> {
+  repeat<T>(operation: Observable<T> | ObservableCreator<T>, interval: number): Observable<T> {
     return new Observable<T>(subscriber => {
       let looper = Looper.start(
         operation,
@@ -45,6 +45,15 @@ export class ApiService extends DefaultService {
 
   getClusterJobMetricsInLoop(updateInterval: number): Observable<MetricData> {
     return this.repeat(this.getClusterJobMetrics(), updateInterval);
+  }
+
+  getLatestClusterMetricInLoop(metric: string, timeWindow: number, updateInterval: number): Observable<MetricData> {
+    let producer: ObservableCreator<MetricData> = () => {
+      let to = Date.now();
+      let from = to - timeWindow;
+      return this.getClusterMetricHistory(metric, new Date(from), new Date(to));
+    };
+    return this.repeat(producer, updateInterval);
   }
 
   getNodeMetricsInLoop(metric: string, updateInterval: number): Observable<NodeMetric[]> {
