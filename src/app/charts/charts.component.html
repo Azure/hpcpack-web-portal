@@ -1,1 +1,9 @@
-<p>charts works!</p>
+<mat-form-field class="action">
+  <mat-label>{{metricLabel}}</mat-label>
+  <mat-select [(value)]="selectedMetric">
+    <mat-option *ngFor="let metric of metrics" [value]="metric.Name">{{metric.DisplayName}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<button mat-button [disabled]="!selectedMetric" (click)="addChart(selectedMetric)">Add</button>
+
+<div class="charts" #charts></div>
