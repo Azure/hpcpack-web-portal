@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { Label, Color } from 'ng2-charts';
 import { ChartOptions, ChartDataSets } from 'chart.js';
 import { ApiService } from 'src/app/services/api.service';
+import { ClusterMetricService } from 'src/app/services/cluster-metric.service';
 import { MediaQueryService } from 'src/app/services/media-query.service';
 import { DataPoint, sampleLastInEachHour, formatDateToHour, formatDateToHourAndMinute } from 'src/app/utils/metric'
 
@@ -15,6 +16,8 @@ import { DataPoint, sampleLastInEachHour, formatDateToHour, formatDateToHourAndM
 export class ChartComponent implements OnInit, OnDestroy {
   @Input()
   metricName: string;
+
+  private metricDisplayName: string;
 
   @Output()
   onClose = new EventEmitter();
@@ -56,7 +59,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     // aspectRatio: this.mediaQuery.smallWidth ? 1.5 : 3,
     title: {
       display: true,
-      // text: this.metricName, //TODO: Show metric's DisplayName here
+      // text: this.metricDisplayName
     },
     legend: {
       position: 'bottom',
@@ -85,13 +88,14 @@ export class ChartComponent implements OnInit, OnDestroy {
     let maxTicksLimit = this.mediaQuery.smallWidth ? 3 : 5;
     this.chartOptions_.aspectRatio = aspectRatio;
     this.chartOptions_.scales.xAxes[0].ticks.maxTicksLimit = maxTicksLimit;
-    this.chartOptions_.title.text = this.metricName;
+    this.chartOptions_.title.text = this.metricDisplayName;
     return this.chartOptions_;
   }
 
   constructor(
     private fb: FormBuilder,
     private api: ApiService,
+    private metricService: ClusterMetricService,
     private mediaQuery: MediaQueryService,
   ) {
     this.timeWindowInput = this.fb.control(this.timeWindow, [Validators.required, Validators.min(1), Validators.max(50000)]);
@@ -99,6 +103,10 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.metricService.getMetricDefinitions().subscribe(data => {
+      let def = data.find(e => e.Name === this.metricName);
+      this.metricDisplayName = def.DisplayName;
+    });
     this.loadData();
   }
 

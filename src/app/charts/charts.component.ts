@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentFactory, ViewRef } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ApiService, MetricDefinition } from '../services/api.service';
+import { MetricDefinition } from 'src/app/services/api.service';
+import { ClusterMetricService } from 'src/app/services/cluster-metric.service'
 import { ChartComponent } from './chart/chart.component';
 
 @Component({
@@ -26,12 +27,12 @@ export class ChartsComponent implements OnInit, OnDestroy {
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
-    private api: ApiService,
+    private metricService: ClusterMetricService,
   ) { }
 
   ngOnInit() {
     this.chartFactory = this.componentFactoryResolver.resolveComponentFactory(ChartComponent);
-    this.subscription = this.api.getClusterMetricDefintions().subscribe(data => {
+    this.subscription = this.metricService.getMetricDefinitions().subscribe(data => {
       this.metrics = data;
     });
   }
