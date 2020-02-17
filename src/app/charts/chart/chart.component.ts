@@ -112,6 +112,17 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.onClose.emit();
   }
 
+  //TODO: The MetricInstanceDataValues is improperly defined as:
+  // interface MetricInstanceDataValues {
+  //   Key?: string;
+  //   Value?: number;
+  // }
+  //It should really be
+  // interface MetricInstanceDataValue {
+  //   Time?: Date;
+  //   Value?: number;
+  // }
+  // The key point is that the "key" should be of type Date instead of string!
   private loadData(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();

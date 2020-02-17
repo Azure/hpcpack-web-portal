@@ -42,9 +42,9 @@ export function sampleLastInEachHour(values: DataPoint[]): DataPoint[] {
 }
 
 export function formatDateToHour(date: Date): string {
-  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()} ${date.getHours()}:00`;
+  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:00`;
 }
 
 export function formatDateToHourAndMinute(date: Date): string {
-  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()} ${date.getHours()}:${date.getMinutes()}`;
+  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
 }
