@@ -4,13 +4,12 @@
 </mat-form-field>
 <button mat-button (click)="close()">Close</button>
 
-<p>chart: {{metricName}}</p>
-
-
-<!-- canvas baseChart #chart
-  chartType="line"
-  [options]="chartOptions"
-  [labels]="chartLabels"
-  [colors]="chartColors"
-  [datasets]="chartData">
-</canvas -->
+<div class="chart">
+  <canvas baseChart #chart
+    chartType="line"
+    [options]="chartOptions"
+    [labels]="chartLabels"
+    [colors]="chartColors"
+    [datasets]="chartData">
+  </canvas>
+</div>

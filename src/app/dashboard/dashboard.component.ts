@@ -2,10 +2,9 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Label, MultiDataSet, Color, BaseChartDirective } from 'ng2-charts';
 import { ChartOptions, ChartDataSets } from 'chart.js';
 import { Subscription } from 'rxjs';
-import { ApiService, MetricInstanceData } from '../services/api.service';
+import { ApiService } from '../services/api.service';
 import { MediaQueryService, WidthChangeEventHandler } from '../services/media-query.service';
-
-interface DataPoint { Key: string, Value: number };
+import { DataPoint, sampleLastInEachHour, formatDateToHour, formatDateToHourAndMinute } from '../utils/metric'
 
 interface MeticInstanceConfig {
   name: string,
@@ -154,12 +153,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       //When there're data more than 2 hours, reduce it.
       if (data.Instances[0].Values.length > 120) {
         for (let instance of data.Instances) {
-          instance.Values = this.sampleLastInEachHour(instance.Values as DataPoint[]);
+          instance.Values = sampleLastInEachHour(instance.Values as DataPoint[]);
         }
-        this.jobChartLabels = data.Instances[0].Values.map(e => this.formatDateToHour(new Date(Date.parse(e.Key))));
+        this.jobChartLabels = data.Instances[0].Values.map(e => formatDateToHour(new Date(Date.parse(e.Key))));
       }
       else {
-        this.jobChartLabels = data.Instances[0].Values.map(e => this.formatDateToHourAndMinute(new Date(Date.parse(e.Key))));
+        this.jobChartLabels = data.Instances[0].Values.map(e => formatDateToHourAndMinute(new Date(Date.parse(e.Key))));
       }
       let dataSets: ChartDataSets[] = [];
       for (let instance of data.Instances) {
@@ -183,54 +182,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.subscription = null;
     }
   }
-
-  private normalizeByHour(time: string): Date {
-    let t = Date.parse(time);
-    let d = new Date(t);
-    d.setMinutes(0, 0, 0);
-    return d;
-  }
-
-  private formatDateToHour(date: Date): string {
-    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()} ${date.getHours()}:00`;
-  }
-
-  private formatDateToHourAndMinute(date: Date): string {
-    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()} ${date.getHours()}:${date.getMinutes()}`;
-  }
-
-  //Get the first data point in each hour
-  //Elements in values are already ordered by time(Key) ascendingly.
-  private sampleFirstInEachHour(values: DataPoint[]): DataPoint[] {
-    let date: Date = new Date();
-    let result: DataPoint[] = [];
-    for (let v of values) {
-      let d = this.normalizeByHour(v.Key);
-      if (d.getTime() != date.getTime()) {
-        result.push({ Key: v.Key, Value: v.Value });
-        date = d;
-      }
-    }
-    return result;
-  }
-
-  //Get the last data point in each hour
-  //Elements in values are already ordered by time(Key) ascendingly.
-  private sampleLastInEachHour(values: DataPoint[]): DataPoint[] {
-    let value: DataPoint = values[0];
-    let date: Date = this.normalizeByHour(value.Key);
-    let result: DataPoint[] = [];
-    for (let v of values) {
-      let d = this.normalizeByHour(v.Key);
-      if (d.getTime() != date.getTime()) {
-        result.push({ Key: value.Key, Value: value.Value });
-        date = d;
-      }
-      value = v;
-    }
-    let last = values[values.length - 1];
-    result.push({ Key: last.Key, Value: last.Value });
-    return result;
-  }
-
 }
