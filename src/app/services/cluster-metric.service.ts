@@ -17,6 +17,7 @@ export class ClusterMetricService {
     return new Observable<MetricDefinition[]>(subscriber => {
       if (this.metrics) {
         subscriber.next(this.metrics);
+        return;
       }
       this.api.getClusterMetricDefintions().subscribe(
         data => {
