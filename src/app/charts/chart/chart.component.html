@@ -14,6 +14,6 @@
       <mat-label>Time Window(in minute)</mat-label>
       <input type="number" min="1" max="50000" matInput [formControl]="timeWindowInput" (change)="onTimeWindowChange()">
     </mat-form-field>
-    <button mat-button (click)="close()">Clear Chart</button>
+    <button mat-button (click)="onClose()">Clear Chart</button>
   </div>
 </div>

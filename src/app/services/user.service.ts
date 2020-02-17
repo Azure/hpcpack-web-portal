@@ -56,6 +56,9 @@ export class UserService extends LocalStorageService {
       opt = new UserOptions();
       this.userOptions = opt;
     }
+    else {
+      //TODO: Ensure the unserialized object opt is a valid UserOptions object?
+    }
     return opt;
   }
 

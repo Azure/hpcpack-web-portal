@@ -20,13 +20,29 @@ export class ChartComponent implements OnInit, OnDestroy {
   private metricDisplayName: string;
 
   @Output()
-  onClose = new EventEmitter();
+  close = new EventEmitter();
 
   private subscription: Subscription;
 
   private readonly updateInterval: number = 60 * 1000;
 
-  private timeWindow: number = 10;
+  @Input()
+  set timeWindow(value: number) {
+    let oldValue = this.timeWindowInput.value;
+    this.timeWindowInput.setValue(value);
+    if (oldValue !== value) {
+      this.onTimeWindowChange();
+    }
+  }
+
+  get timeWindow(): number {
+    return this.timeWindowValue;
+  }
+
+  @Output()
+  timeWindowChange = new EventEmitter<number>();
+
+  private timeWindowValue: number = 10;
 
   timeWindowInput: FormControl;
 
@@ -98,8 +114,8 @@ export class ChartComponent implements OnInit, OnDestroy {
     private metricService: ClusterMetricService,
     private mediaQuery: MediaQueryService,
   ) {
-    this.timeWindowInput = this.fb.control(this.timeWindow, [Validators.required, Validators.min(1), Validators.max(50000)]);
-    this.timeWindowInput.setValue(this.timeWindow);
+    this.timeWindowInput = this.fb.control(this.timeWindowValue, [Validators.required, Validators.min(1), Validators.max(50000)]);
+    this.timeWindowInput.setValue(this.timeWindowValue);
   }
 
   ngOnInit() {
@@ -116,8 +132,8 @@ export class ChartComponent implements OnInit, OnDestroy {
     }
   }
 
-  close(): void {
-    this.onClose.emit();
+  onClose(): void {
+    this.close.emit();
   }
 
   //TODO: The MetricInstanceDataValues is improperly defined as:
@@ -135,7 +151,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-    this.subscription = this.api.getLatestClusterMetricInLoop(this.metricName, this.timeWindow * 60 * 1000, this.updateInterval).subscribe(data => {
+    this.subscription = this.api.getLatestClusterMetricInLoop(this.metricName, this.timeWindowValue * 60 * 1000, this.updateInterval).subscribe(data => {
       if (data.Instances.length == 0 || data.Instances[0].Values.length == 0) {
         return;
       }
@@ -162,7 +178,8 @@ export class ChartComponent implements OnInit, OnDestroy {
     if (this.timeWindowInput.invalid) {
       return;
     }
-    this.timeWindow = this.timeWindowInput.value;
+    this.timeWindowValue = this.timeWindowInput.value;
     this.loadData();
+    this.timeWindowChange.emit(this.timeWindowValue);
   }
 }
