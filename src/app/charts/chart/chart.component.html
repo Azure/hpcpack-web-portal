@@ -1,15 +1,19 @@
-<mat-form-field>
-  <mat-label>Time Window(in minute)</mat-label>
-  <input type="number" min="1" max="50000" matInput [formControl]="timeWindowInput" (change)="onTimeWindowChange()">
-</mat-form-field>
-<button mat-button (click)="close()">Close</button>
+<div class="content">
+  <div class="chart">
+    <canvas baseChart #chart
+      chartType="line"
+      [options]="chartOptions"
+      [labels]="chartLabels"
+      [colors]="chartColors"
+      [datasets]="chartData">
+    </canvas>
+  </div>
 
-<div class="chart">
-  <canvas baseChart #chart
-    chartType="line"
-    [options]="chartOptions"
-    [labels]="chartLabels"
-    [colors]="chartColors"
-    [datasets]="chartData">
-  </canvas>
+  <div class="control">
+    <mat-form-field>
+      <mat-label>Time Window(in minute)</mat-label>
+      <input type="number" min="1" max="50000" matInput [formControl]="timeWindowInput" (change)="onTimeWindowChange()">
+    </mat-form-field>
+    <button mat-button (click)="close()">Clear Chart</button>
+  </div>
 </div>
