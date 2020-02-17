@@ -8,5 +8,7 @@
     </mat-form-field>
     <button mat-button [disabled]="!selectedMetric" (click)="addChart(selectedMetric)">Add Chart</button>
   </div>
-  <div class="charts" #charts></div>
+  <div class="charts">
+    <ng-template #chart></ng-template>
+  </div>
 </div>

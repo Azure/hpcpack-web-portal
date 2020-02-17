@@ -9,7 +9,7 @@ import { ChartComponent } from './chart/chart.component';
   styleUrls: ['./charts.component.scss']
 })
 export class ChartsComponent implements OnInit, OnDestroy {
-  @ViewChild('charts', { read: ViewContainerRef, static: true })
+  @ViewChild('chart', { read: ViewContainerRef, static: true })
   private chartContainer: ViewContainerRef;
 
   chartFactory: ComponentFactory<ChartComponent>;

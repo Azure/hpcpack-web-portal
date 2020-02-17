@@ -1,7 +1,13 @@
+@media (min-width: 1600px) {
+  :host {
+    width: 50%;
+  }
+}
+
 .content {
   box-sizing: border-box;
   width: 100%;
-  padding: 1em 0;
+  padding: 1em;
 }
 
 .chart {

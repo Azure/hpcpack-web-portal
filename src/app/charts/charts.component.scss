@@ -10,3 +10,14 @@
   flex-direction: row;
   justify-content: center;
 }
+
+.charts {
+  box-sizing: border-box;
+}
+
+@media (min-width: 1600px) {
+  .charts {
+    display: flex;
+    flex-flow: row wrap;
+  }
+}
