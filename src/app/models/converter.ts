@@ -1,8 +1,12 @@
 import { RestProperty } from '../services/api.service'
 
-interface PropertyDefinition {
+export interface TypeConverter<T> {
+  (arg: string): T;
+}
+
+export interface PropertyDefinition {
   name: string;
-  type: new (arg: string) => object;
+  type: TypeConverter<String> | TypeConverter<Number> | TypeConverter<Boolean> | TypeConverter<Date>;
 }
 
 export function convert<T>(properties: Array<RestProperty>, ctor: new () => T, propertyDefinitions: Map<string, PropertyDefinition>): T {
@@ -17,7 +21,12 @@ export function convert<T>(properties: Array<RestProperty>, ctor: new () => T, p
       else {
         value = prop.Value;
       }
-      (obj as any)[p.name] = new p.type(value);
+      //NOTE: Here we "convert" string by T(str), rather than new T(str). This is very important, since
+      //the former gets a "primitive" of type T, while the latter gets an "object" of type T. And, JS
+      //discriminates a "primitive" from an "object", so that T(str) !== new T(str), while T(str) == new T(str)!
+      //If an "object" of T is set as a property of obj, then later it will get trouble when comparing it
+      //with a "primitive". For example, a string litteral will not equal to(===) a string object.
+      (obj as any)[p.name] = p.type(value);
     }
   }
   return obj;
