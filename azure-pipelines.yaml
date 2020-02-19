@@ -10,7 +10,6 @@ trigger:
   branches:
     include:
     - master
-    - release
   paths:
     exclude:
     - README.md
@@ -72,15 +71,15 @@ stages:
 
     - script: |
         npm run build-prd
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: 'Build'
 
     - script: |
         ./make-zip $BUILD_BUILDNUMBER
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: 'Package Build Result'
 
     - publish: 'dist/WebPortal-$(Build.BuildNumber).zip'
       artifact: Package
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: 'Publish Build Result'
