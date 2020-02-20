@@ -9,6 +9,10 @@ export interface NodeOptions {
   hideActionList?: boolean;
 }
 
+export interface NodeGroupOptions {
+  hideActionList?: boolean;
+}
+
 export interface JobOptions {
   selectedColumns?: string[];
   hideActionList?: boolean;
@@ -25,9 +29,11 @@ export interface ChartOption {
 }
 
 //NOTE: ensure all user options that are not leaves in the tree have a proper value.
+//TODO: Implement dynamic getter so that new properties have proper default value in deserialized object?
 export class UserOptions {
   nodeMetricOptions: NodeMetricOptions = { metricRanges: {}};
   nodeOptions: NodeOptions = {};
+  nodeGroupOptions: NodeGroupOptions = {};
   jobOptions: JobOptions = {};
   taskOptions: TaskOptions = {};
   chartOptions: ChartOption[] = [];

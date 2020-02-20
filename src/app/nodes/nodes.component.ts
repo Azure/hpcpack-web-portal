@@ -15,6 +15,10 @@ export class NodesComponent {
     {
       path: 'map',
       name: 'Heat Map'
+    },
+    {
+      path: 'groups',
+      name: 'Groups'
     }
   ];
 

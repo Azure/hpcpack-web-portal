@@ -9,6 +9,7 @@ import { NodesComponent } from './nodes.component'
 import { NodeListComponent } from './node-list/node-list.component';
 import { NodeMapComponent } from './node-map/node-map.component';
 import { CommanderComponent } from './commander/commander.component';
+import { GroupListComponent } from './group-list/group-list.component';
 
 const routes: Routes = [{
   path: '',
@@ -16,6 +17,7 @@ const routes: Routes = [{
   children: [
     { path: 'list', component: NodeListComponent, data: { breadcrumb: "List" }},
     { path: 'map', component: NodeMapComponent, data: { breadcrumb: "Heat Map" }},
+    { path: 'groups', component: GroupListComponent, data: { breadcrumb: "Groups" }},
     { path: '', redirectTo: 'list', pathMatch: 'full' },
   ],
 }];
@@ -26,6 +28,7 @@ const routes: Routes = [{
     NodeListComponent,
     NodeMapComponent,
     CommanderComponent,
+    GroupListComponent,
   ],
   imports: [
     CommonModule,
