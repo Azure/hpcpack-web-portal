@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
 export class NodesComponent {
   readonly navItems = [
     {
-      path: 'list',
+      path: '.',
       name: 'List'
     },
     {

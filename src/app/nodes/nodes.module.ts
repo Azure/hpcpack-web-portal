@@ -15,10 +15,9 @@ const routes: Routes = [{
   path: '',
   component: NodesComponent,
   children: [
-    { path: 'list', component: NodeListComponent, data: { breadcrumb: "List" }},
+    { path: '', component: NodeListComponent, data: { breadcrumb: "List" }},
     { path: 'map', component: NodeMapComponent, data: { breadcrumb: "Heat Map" }},
     { path: 'groups', component: GroupListComponent, data: { breadcrumb: "Groups" }},
-    { path: '', redirectTo: 'list', pathMatch: 'full' },
   ],
 }];
 
