@@ -1,4 +1,4 @@
-<nav mat-tab-nav-bar>
+<nav mat-tab-nav-bar routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
   <a mat-tab-link *ngFor="let item of navItems" [routerLink]="item.path" routerLinkActive
     [routerLinkActiveOptions]="{exact: true}" #rla="routerLinkActive" [active]="rla.isActive">{{item.name}}</a>
 </nav>

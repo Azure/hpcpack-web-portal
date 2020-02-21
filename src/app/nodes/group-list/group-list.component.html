@@ -34,7 +34,10 @@
 
         <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
-          <td mat-cell *matCellDef="let row">{{row[column.name]}}</td>
+          <td mat-cell *matCellDef="let row">
+            <a *ngIf="column.name == 'Name'; else text" [routerLink]="linkToGroupNodes(row)">{{row[column.name]}}</a>
+            <ng-template #text>{{row[column.name]}}</ng-template>
+          </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort, Sort } from '@angular/material/sort';
@@ -87,7 +88,14 @@ export class NodeListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
 
+  private nodeGroup: string;
+
+  get hasFilters(): boolean {
+    return !!this.nodeGroup;
+  }
+
   constructor(
+    private route: ActivatedRoute,
     private mediaQuery: MediaQueryService,
     private api: ApiService,
     private userService: UserService,
@@ -96,11 +104,18 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
-    this.refresh();
+    this.route.paramMap.subscribe(map => {
+      this.nodeGroup = map.get('group');
+      this.refresh();
+    });
   }
 
   ngOnDestroy(): void {
     this.reset();
+  }
+
+  private getNodesInGroup(): void {
+    //this.api.getNodesOfGroup()
   }
 
   private loadData(): void {

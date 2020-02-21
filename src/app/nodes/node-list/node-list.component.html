@@ -46,7 +46,7 @@
 
       <mat-progress-bar *ngIf="isLoading" mode="buffer"></mat-progress-bar>
 
-      <mat-paginator [length]="rowCount" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+      <mat-paginator *ngIf="!hasFilters" [length]="rowCount" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
         [showFirstLastButtons]="true" (page)="onPageChange($event)">
       </mat-paginator>
     </mat-sidenav-content>
