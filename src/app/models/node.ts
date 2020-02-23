@@ -12,7 +12,7 @@ export class Node {
   Location: string;
   MemorySize: number;
   Name: string;
-  NodeGroups: string;
+  NodeGroups: string[];
   NumCores: number;
   NumSockets: number;
   OfflineTime: Date;
@@ -26,6 +26,16 @@ export class Node {
     }
   }
 
+  static toStringArray(value: string): string[] {
+    if (value === undefined) {
+      return undefined;
+    }
+    if (!value) {
+      return [];
+    }
+    return value.split(',');
+  }
+
   static readonly properties = [
     { name: 'Availability', label: 'Availability', type: String },
     { name: 'AzureServiceName', label: 'AzureService Name', type: String },
@@ -37,7 +47,7 @@ export class Node {
     { name: 'Location', label: 'Location', type: String },
     { name: 'MemorySize', label: 'Memory Size', type: Number },
     { name: 'Name', label: 'Name', type: String },
-    { name: 'NodeGroups', label: 'Node Groups', type: String },
+    { name: 'NodeGroups', label: 'Node Groups', type: Node.toStringArray },
     { name: 'NumCores', label: 'Cores', type: Number },
     { name: 'NumSockets', label: 'Sockets', type: Number },
     { name: 'OfflineTime', label: 'Offline Time', type: Date },

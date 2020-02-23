@@ -204,6 +204,9 @@ export class NodeListComponent implements OnInit, OnDestroy {
     if (v instanceof Date) {
       return `${v.getFullYear()}/${v.getMonth() + 1}/${v.getDate()} ${v.getHours()}:${v.getMinutes()}:${v.getSeconds()}`
     }
+    if (v instanceof Array) {
+      return v.join(', ');
+    }
     return v;
   }
 

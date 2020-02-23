@@ -6,7 +6,7 @@ export interface TypeConverter<T> {
 
 export interface PropertyDefinition {
   name: string;
-  type: TypeConverter<String> | TypeConverter<Number> | TypeConverter<Boolean> | TypeConverter<Date>;
+  type: TypeConverter<String> | TypeConverter<String[]> | TypeConverter<Number> | TypeConverter<Boolean> | TypeConverter<Date>;
 }
 
 export function convert<T>(properties: Array<RestProperty>, ctor: new () => T, propertyDefinitions: Map<string, PropertyDefinition>): T {
