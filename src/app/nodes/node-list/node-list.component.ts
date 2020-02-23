@@ -8,11 +8,12 @@ import { Subscription } from 'rxjs'
 import { mergeMap } from 'rxjs/operators';
 import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
-import { ApiService } from '../../services/api.service';
+import { ApiService, NodeGroup, NodeGroupOperation } from '../../services/api.service';
 import { MediaQueryService } from '../../services/media-query.service'
 import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
   from '../../shared-components/column-selector/column-selector.component'
 import { CommanderComponent } from '../commander/commander.component'
+import { GroupSelectorComponent, GroupSeletorItem } from '../group-selector/group-selector.component';
 
 @Component({
   selector: 'app-node-list',
@@ -288,12 +289,82 @@ export class NodeListComponent implements OnInit, OnDestroy {
     return this.actionListHidden ? 'keyboard_arrow_left' : 'keyboard_arrow_right';
   }
 
+  get adminView(): boolean {
+    return this.userService.user.isAdmin;
+  }
+
   runCommand(): void {
     let nodeNames = this.selection.selected.map(node => node.Name);
     let dialogRef = this.dialog.open(CommanderComponent, { data: nodeNames, disableClose: true, minWidth: '50%' });
   }
 
-  get adminView(): boolean {
-    return this.userService.user.isAdmin;
+  manageGroups(): void {
+    let sub = this.api.getNodeGroups().subscribe(data => {
+      let items = this.makeGroupSelectorItems(data);
+      let dialogRef = this.dialog.open(GroupSelectorComponent, { data: items });
+      dialogRef.afterClosed().subscribe((changes: GroupSeletorItem[]) => {
+        if (changes) {
+          this.updateNodesForGroups(changes);
+        }
+      });
+    });
+    this.subscription.add(sub);
+  }
+
+  private makeGroupSelectorItems(groups: NodeGroup[]): GroupSeletorItem[] {
+    let groupCount = new Map<string, number>(groups.map(g => [g.Name, 0]));
+    for (let node of this.selection.selected) {
+      for (let g of node.NodeGroups) {
+        let v = groupCount.get(g);
+        if (v !== undefined) {
+          groupCount.set(g, v + 1);
+        }
+      }
+    }
+    let total = this.selection.selected.length;
+    let counts = Array.from(groupCount.values());
+    let items: GroupSeletorItem[] = [];
+    for (let i = 0; i < groups.length; i++) {
+      items.push({
+        name: groups[i].Name,
+        selected: counts[i] == total,
+        disabled: groups[i].Managed
+      });
+    }
+    return items;
+  }
+
+  private updateNodesForGroups(changes: GroupSeletorItem[]): void {
+    let nodes = this.selection.selected.map(n => n); //Shallow clone selected nodes to "lock" the changed nodes
+    let nodeNames = this.selection.selected.map(n => n.Name);
+    for (let group of changes) {
+      let op: NodeGroupOperation = {
+        GroupName: group.name,
+        Operation: group.selected ? 'add' : 'remove',
+        NodeNames: nodeNames
+      };
+      //TODO: Multiple concurrent updates are likely to fail. Fix it!
+      this.api.moveNodesOfGroup(group.name, null, op).subscribe(
+        _ => {
+        },
+        err => {
+          console.log(err);
+        }
+      );
+      //If anything goes wrong, then user has to "refresh data" to get consistent with server
+      for (let node of nodes) {
+        let idx = node.NodeGroups.indexOf(group.name);
+        if (group.selected) {
+          if (idx < 0) {
+            node.NodeGroups.push(group.name);
+          }
+        }
+        else {
+          if (idx >= 0) {
+            node.NodeGroups.splice(idx, 1);
+          }
+        }
+      }
+    }
   }
 }

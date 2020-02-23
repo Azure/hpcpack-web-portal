@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>
+  Select Groups for Nodes
+</h2>
+<mat-dialog-content>
+  <mat-selection-list #selector>
+    <mat-list-option *ngFor="let item of groupItems" [disabled]="item.disabled" [selected]="item.selected">
+      {{item.name}}
+    </mat-list-option>
+  </mat-selection-list>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="undefined">Cancel</button>
+  <button mat-button (click)="closeDialog()">OK</button>
+</mat-dialog-actions>

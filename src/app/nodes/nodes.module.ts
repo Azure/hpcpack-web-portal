@@ -10,6 +10,7 @@ import { NodeListComponent } from './node-list/node-list.component';
 import { NodeMapComponent } from './node-map/node-map.component';
 import { CommanderComponent } from './commander/commander.component';
 import { GroupListComponent } from './group-list/group-list.component';
+import { GroupSelectorComponent } from './group-selector/group-selector.component';
 
 const routes: Routes = [{
   path: '',
@@ -35,6 +36,7 @@ const routes: Routes = [{
     NodeMapComponent,
     CommanderComponent,
     GroupListComponent,
+    GroupSelectorComponent,
   ],
   imports: [
     CommonModule,
@@ -43,6 +45,9 @@ const routes: Routes = [{
     MaterialModule,
     SharedComponents,
   ],
-  entryComponents: [CommanderComponent],
+  entryComponents: [
+    CommanderComponent,
+    GroupSelectorComponent
+  ],
 })
 export class NodesModule { }
