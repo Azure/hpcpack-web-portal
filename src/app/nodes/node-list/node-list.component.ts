@@ -5,6 +5,7 @@ import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatSidenavContainer } from '@angular/material/sidenav'
 import { Subscription } from 'rxjs'
+import { mergeMap } from 'rxjs/operators';
 import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
 import { ApiService } from '../../services/api.service';
@@ -64,12 +65,12 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription = new Subscription();
 
-  private pageDataSub: Subscription;
+  private dataSubscription: Subscription;
 
-  private pageLoading: boolean = false;
+  private loadingData: boolean = false;
 
   get isLoading(): boolean {
-    return this.pageLoading;
+    return this.loadingData;
   }
 
   private get actionListHidden(): boolean {
@@ -90,7 +91,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   private nodeGroup: string;
 
-  get hasFilters(): boolean {
+  get noPagination(): boolean {
     return !!this.nodeGroup;
   }
 
@@ -115,26 +116,49 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   private getNodesInGroup(): void {
-    //this.api.getNodesOfGroup()
+    this.loadingData = true;
+    this.dataSubscription = this.api.getNodesOfGroup(this.nodeGroup).pipe(
+      mergeMap(names => this.api.getNodes(null, names.join(',')))
+    ).subscribe(
+      data => {
+        this.loadingData = false;
+        this.rowCount = data.length;
+        let nodes = data.map(e => Node.fromProperties(e.Properties));
+        this.dataSource.data = nodes;
+      },
+      error => {
+        this.loadingData = false;
+        console.log(error);
+      }
+    );
   }
 
-  private loadData(): void {
-    if (this.pageLoading) {
-      this.pageDataSub.unsubscribe();
+  private getNodes(): void {
+    if (this.loadingData) {
+      this.dataSubscription.unsubscribe();
     }
-    this.pageLoading = true;
-    this.pageDataSub = this.api.getNodes(null, null, null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
+    this.loadingData = true;
+    this.dataSubscription = this.api.getNodes(null, null, null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
       next: res => {
-        this.pageLoading = false;
+        this.loadingData = false;
         this.rowCount = Number(res.headers.get('x-ms-row-count'));
         let nodes = res.body.map(e => Node.fromProperties(e.Properties));
         this.dataSource.data = nodes;
       },
       error: err => {
-        this.pageLoading = false;
+        this.loadingData = false;
         console.log(err);
       }
     });
+  }
+
+  private loadData(): void {
+    if (this.nodeGroup) {
+      this.getNodesInGroup();
+    }
+    else {
+      this.getNodes();
+    }
   }
 
   onPageChange(e: PageEvent): void {
@@ -148,17 +172,17 @@ export class NodeListComponent implements OnInit, OnDestroy {
     console.log(e);
     this.orderBy = e.active;
     this.asc = (e.direction == "asc");
-    if (this.pageSize < this.rowCount) {
+    if (!this.noPagination && this.pageSize < this.rowCount) {
       this.refresh();
     }
   }
 
   private reset(): void {
-    if (this.pageLoading) {
-      this.pageDataSub.unsubscribe();
+    if (this.loadingData) {
+      this.dataSubscription.unsubscribe();
     }
-    this.pageLoading = false;
-    this.pageDataSub = null;
+    this.loadingData = false;
+    this.dataSubscription = null;
 
     //TODO: Use separate subscriptions for loading and updating and don't unsubscribe the updating one on reset?
     this.subscription.unsubscribe();
