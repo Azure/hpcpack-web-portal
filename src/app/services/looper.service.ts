@@ -146,6 +146,7 @@ export class Looper<T> implements ILooper<T> {
   }
 }
 
+//TODO: Do not name it after a Service and move it out of the "services" dir.
 @Injectable({
   providedIn: 'root'
 })

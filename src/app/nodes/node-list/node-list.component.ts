@@ -4,12 +4,13 @@ import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatSidenavContainer } from '@angular/material/sidenav'
-import { Subscription } from 'rxjs'
+import { Subscription, Observable } from 'rxjs'
 import { mergeMap } from 'rxjs/operators';
 import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
 import { ApiService, NodeGroup, NodeGroupOperation } from '../../services/api.service';
 import { MediaQueryService } from '../../services/media-query.service'
+import { Looper, ILooper } from 'src/app/services/looper.service';
 import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
   from '../../shared-components/column-selector/column-selector.component'
 import { CommanderComponent } from '../commander/commander.component'
@@ -303,9 +304,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
       let items = this.makeGroupSelectorItems(data);
       let dialogRef = this.dialog.open(GroupSelectorComponent, { data: items });
       dialogRef.afterClosed().subscribe((changes: GroupSeletorItem[]) => {
-        if (changes) {
-          this.updateNodesForGroups(changes);
-        }
+        this.updateNodesForGroups(changes);
       });
     });
     this.subscription.add(sub);
@@ -334,23 +333,24 @@ export class NodeListComponent implements OnInit, OnDestroy {
     return items;
   }
 
+  //TODO: Make a node group service to handle all node group changes, since it's error-prone
+  //for the timing of concurrent updates.
   private updateNodesForGroups(changes: GroupSeletorItem[]): void {
+    if (!changes) {
+      return;
+    }
     let nodes = this.selection.selected.map(n => n); //Shallow clone selected nodes to "lock" the changed nodes
     let nodeNames = this.selection.selected.map(n => n.Name);
+    let updates: Observable<any>[] = [];
     for (let group of changes) {
       let op: NodeGroupOperation = {
         GroupName: group.name,
         Operation: group.selected ? 'add' : 'remove',
         NodeNames: nodeNames
       };
-      //TODO: Multiple concurrent updates are likely to fail. Fix it!
-      this.api.moveNodesOfGroup(group.name, null, op).subscribe(
-        _ => {
-        },
-        err => {
-          console.log(err);
-        }
-      );
+      //Prepare update operation to do later
+      updates.push(this.api.moveNodesOfGroup(op.GroupName, null, op));
+      //Update UI instantly. NOTE:
       //If anything goes wrong, then user has to "refresh data" to get consistent with server
       for (let node of nodes) {
         let idx = node.NodeGroups.indexOf(group.name);
@@ -366,5 +366,42 @@ export class NodeListComponent implements OnInit, OnDestroy {
         }
       }
     }
+    //Make one update after another, because multiple concurrent updates on node groups are likely to fail.
+    //Still, a node group service is preferred since there may be multiple concurrent loopers like this.
+    let first = updates.shift();
+    let nextOrStop = (looper: ILooper<any>) => {
+      let next = updates.shift();
+      if (next) {
+        looper.observable = next;
+      }
+      else {
+        looper.stop();
+      }
+    };
+    let retries = new Map<Object, number>();
+    let retryOrSkip = (error: any, looper: ILooper<any>) => {
+      let v = retries.get(looper.observable);
+      if (v === undefined) {
+        v = 0;
+      }
+      if (v < 3) {
+        v++;
+        retries.set(looper.observable, v);
+      }
+      else {
+        console.log(error);
+        //Skip to the next
+        nextOrStop(looper);
+      }
+    }
+    Looper.start(first,
+      {
+        next: (_, looper) => {
+          nextOrStop(looper);
+        },
+        error: retryOrSkip
+      },
+      0
+    );
   }
 }
