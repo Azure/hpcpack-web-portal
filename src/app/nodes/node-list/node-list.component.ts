@@ -10,7 +10,7 @@ import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
 import { ApiService, NodeGroup, NodeGroupOperation } from '../../services/api.service';
 import { MediaQueryService } from '../../services/media-query.service'
-import { Looper, ILooper } from 'src/app/services/looper.service';
+import { oneAfterAnother } from 'src/app/utils/looper';
 import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
   from '../../shared-components/column-selector/column-selector.component'
 import { CommanderComponent } from '../commander/commander.component'
@@ -368,40 +368,6 @@ export class NodeListComponent implements OnInit, OnDestroy {
     }
     //Make one update after another, because multiple concurrent updates on node groups are likely to fail.
     //Still, a node group service is preferred since there may be multiple concurrent loopers like this.
-    let first = updates.shift();
-    let nextOrStop = (looper: ILooper<any>) => {
-      let next = updates.shift();
-      if (next) {
-        looper.observable = next;
-      }
-      else {
-        looper.stop();
-      }
-    };
-    let retries = new Map<Object, number>();
-    let retryOrSkip = (error: any, looper: ILooper<any>) => {
-      let v = retries.get(looper.observable);
-      if (v === undefined) {
-        v = 0;
-      }
-      if (v < 3) {
-        v++;
-        retries.set(looper.observable, v);
-      }
-      else {
-        console.log(error);
-        //Skip to the next
-        nextOrStop(looper);
-      }
-    }
-    Looper.start(first,
-      {
-        next: (_, looper) => {
-          nextOrStop(looper);
-        },
-        error: retryOrSkip
-      },
-      0
-    );
+    oneAfterAnother(updates, 3);
   }
 }
