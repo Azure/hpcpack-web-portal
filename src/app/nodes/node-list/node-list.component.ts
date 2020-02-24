@@ -163,6 +163,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
     }
   }
 
+  //TODO: change URL accordingly?
   onPageChange(e: PageEvent): void {
     console.log(e);
     this.pageIndex = e.pageIndex;
@@ -170,6 +171,8 @@ export class NodeListComponent implements OnInit, OnDestroy {
     this.refresh();
   }
 
+
+  //TODO: change URL accordingly?
   onSortChange(e: Sort): void {
     console.log(e);
     this.orderBy = e.active;

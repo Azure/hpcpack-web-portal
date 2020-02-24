@@ -4,6 +4,7 @@ export interface NodeMetricOptions {
   blockSize?: number;
 }
 
+//TODO: Save page size and page sort. So do JobOptions and TaskOptions.
 export interface NodeOptions {
   selectedColumns?: string[];
   hideActionList?: boolean;

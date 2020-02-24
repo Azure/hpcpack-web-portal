@@ -1,12 +1,16 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatDialog, MatSidenavContainer, MatSort } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
+import { Observable } from 'rxjs';
 import { ColumnDef } from 'src/app/shared-components/column-selector/column-selector.component';
 import { NodeGroup } from 'src/app/api-client';
 import { MediaQueryService } from 'src/app/services/media-query.service';
 import { ApiService } from 'src/app/services/api.service';
 import { UserService } from 'src/app/services/user.service';
+import { MesssageService } from 'src/app/services/messsage.service';
 import { NodeGroupOptions } from 'src/app/models/user-options';
+import { oneAfterAnother } from 'src/app/utils/looper';
+import { GroupEditorComponent } from '../group-editor/group-editor.component';
 
 @Component({
   selector: 'app-group-list',
@@ -40,6 +44,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
     private mediaQuery: MediaQueryService,
     private api: ApiService,
     private userService: UserService,
+    private messsageService: MesssageService,
     private dialog: MatDialog,
   ) { }
 
@@ -68,12 +73,76 @@ export class GroupListComponent implements OnInit, OnDestroy {
   }
 
   newGroup(): void {
+    let dialogRef = this.dialog.open(GroupEditorComponent);
+    dialogRef.afterClosed().subscribe((result: NodeGroup) => {
+      if (!result) {
+        return;
+      }
+      this.api.createNodeGroup(null, result).subscribe(
+        group => {
+          //NOTE: Simply this.dataSource.data.push(group) doesn't update UI.
+          let groups = this.dataSource.data.concat([group]);
+          this.dataSource.data = groups;
+        },
+        error => {
+          let errMsg = `Failed creating group "${result.Name}"!`;
+          try {
+            //TODO: Extract key part of details, not including too much details like call stack.
+            let details = error.error.Message;
+            errMsg += '\n';
+            errMsg += details;
+          }
+          catch {
+            console.error(error);
+          }
+          this.messsageService.showError(errMsg);
+        }
+      );
+    });
   }
 
   editGroup(): void {
+    let group = this.selection.selected[0];
+    let dialogRef = this.dialog.open(GroupEditorComponent, { data: group });
+    dialogRef.afterClosed().subscribe((result: NodeGroup) => {
+      if (!result) {
+        return;
+      }
+      this.api.updateNodeGroup(group.Name, null, result).subscribe(
+        update => {
+          group.Name = update.Name;
+          group.Description = update.Description;
+        },
+        error => {
+          let errMsg = `Failed editing group "${result.Name}"!`;
+          try {
+            let details = error.error.Message;
+            errMsg += '\n';
+            errMsg += details;
+          }
+          catch {
+            console.error(error);
+          }
+          this.messsageService.showError(errMsg);
+        }
+      )
+    });
   }
 
   deleteGroups(): void {
+    this.messsageService.confirm('Are you sure to delete the selected groups?').subscribe(ok => {
+      if (ok) {
+        let deletes: Observable<any>[] = [];
+        for (let g of this.selection.selected) {
+          deletes.push(this.api.deleteNodeGroup(g.Name));
+        }
+        oneAfterAnother(deletes, 3);
+        let deleteSet = new Set<NodeGroup>(this.selection.selected);
+        let newGroups = this.dataSource.data.filter(e => !deleteSet.has(e));
+        this.dataSource.data = newGroups;
+        this.selection.clear();
+      }
+    });
   }
 
   get canEdit(): boolean {

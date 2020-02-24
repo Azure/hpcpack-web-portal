@@ -11,6 +11,7 @@ import { NodeMapComponent } from './node-map/node-map.component';
 import { CommanderComponent } from './commander/commander.component';
 import { GroupListComponent } from './group-list/group-list.component';
 import { GroupSelectorComponent } from './group-selector/group-selector.component';
+import { GroupEditorComponent } from './group-editor/group-editor.component';
 
 const routes: Routes = [{
   path: '',
@@ -37,6 +38,7 @@ const routes: Routes = [{
     CommanderComponent,
     GroupListComponent,
     GroupSelectorComponent,
+    GroupEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -47,7 +49,8 @@ const routes: Routes = [{
   ],
   entryComponents: [
     CommanderComponent,
-    GroupSelectorComponent
+    GroupSelectorComponent,
+    GroupEditorComponent,
   ],
 })
 export class NodesModule { }
