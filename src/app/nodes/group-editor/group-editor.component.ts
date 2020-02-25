@@ -26,8 +26,7 @@ export class GroupEditorComponent implements OnInit {
       this.edit = true;
     }
     this.formGroup = this.fb.group({
-      //TODO: validate against blank value
-      name: [this.group.Name, Validators.required],
+      name: [this.group.Name, [Validators.required, Validators.pattern(/.*\S+.*/)]],
       description: [this.group.Description],
     });
   }
@@ -40,7 +39,7 @@ export class GroupEditorComponent implements OnInit {
   }
 
   get result(): NodeGroup {
-    let g: NodeGroup = { Name: this.formGroup.value.name, Description: this.formGroup.value.description };
+    let g: NodeGroup = { Name: this.formGroup.value.name.trim(), Description: this.formGroup.value.description.trim() };
     if (!this.edit || g.Name != this.group.Name || g.Description != this.group.Description)
       return g;
     return undefined;
