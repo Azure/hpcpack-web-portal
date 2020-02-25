@@ -38,8 +38,20 @@ export class GroupEditorComponent implements OnInit {
     return this.edit ? 'Edit Group' : 'New Group';
   }
 
+  private trimInput(str: string): string {
+    let result: string;
+    try {
+      result = str.trim();
+    }
+    catch {}
+    return result;
+  }
+
   get result(): NodeGroup {
-    let g: NodeGroup = { Name: this.formGroup.value.name.trim(), Description: this.formGroup.value.description.trim() };
+    let g: NodeGroup = {
+      Name: this.trimInput(this.formGroup.value.name),
+      Description: this.trimInput(this.formGroup.value.description)
+    };
     if (!this.edit || g.Name != this.group.Name || g.Description != this.group.Description)
       return g;
     return undefined;
