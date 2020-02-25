@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ReactiveFormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogRefStub } from 'src/test-stubs';
 import { GroupEditorComponent } from './group-editor.component';
+import { MaterialModule } from 'src/app/material.module';
+
 
 describe('GroupEditorComponent', () => {
   let component: GroupEditorComponent;
@@ -8,7 +13,16 @@ describe('GroupEditorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GroupEditorComponent ]
+      imports: [
+        NoopAnimationsModule,
+        ReactiveFormsModule,
+        MaterialModule
+      ],
+      declarations: [ GroupEditorComponent ],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: null },
+        { provide: MatDialogRef, useClass: MatDialogRefStub },
+      ]
     })
     .compileComponents();
   }));

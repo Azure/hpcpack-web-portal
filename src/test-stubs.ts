@@ -23,6 +23,10 @@ export class RouterLinkDirectiveStub {
   exportAs: 'routerLinkActive'
 })
 export class RouterLinkActiveDirectiveStub {
+  @Input()
+  routerLinkActiveOptions: {
+    exact: boolean;
+  }
 }
 
 const ngStubs = [

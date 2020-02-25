@@ -5,6 +5,7 @@ import { MaterialModule } from '../../material.module'
 import { ApiService } from '../../services/api.service';
 import { UserService } from '../../services/user.service'
 import { NodeListComponent } from './node-list.component';
+import { ActivatedRoute } from '@angular/router';
 
 describe('NodeListComponent', () => {
   let component: NodeListComponent;
@@ -15,6 +16,7 @@ describe('NodeListComponent', () => {
       imports: [ NoopAnimationsModule, MaterialModule ],
       declarations: [ NodeListComponent ],
       providers: [
+        { provide: ActivatedRoute, useValue: {} },
         { provide: UserService, useValue: { userOptions: { nodeOptions: {} } } },
         { provide: ApiService, useValue: {} },
       ]
