@@ -72,6 +72,19 @@ export class GroupListComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
+  getErrorDetails(error: any): string {
+    let result: string;
+    try {
+      let msg: string = error.error.Message;
+      let match = msg.match(/Exception:\s*(.*)/i);
+      result = match[1];
+    }
+    catch {
+      console.error(error);
+    }
+    return result;
+  }
+
   newGroup(): void {
     let dialogRef = this.dialog.open(GroupEditorComponent);
     dialogRef.afterClosed().subscribe((result: NodeGroup) => {
@@ -85,16 +98,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
           this.dataSource.data = groups;
         },
         error => {
-          let errMsg = `Failed creating group "${result.Name}"!`;
-          try {
-            //TODO: Extract key part of details, not including too much details like call stack.
-            let details = error.error.Message;
-            errMsg += '\n';
-            errMsg += details;
-          }
-          catch {
-            console.error(error);
-          }
+          let errMsg = `Failed creating group "${result.Name}"! ${this.getErrorDetails(error)}`;
           this.messsageService.showError(errMsg);
         }
       );
@@ -114,15 +118,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
           group.Description = update.Description;
         },
         error => {
-          let errMsg = `Failed editing group "${result.Name}"!`;
-          try {
-            let details = error.error.Message;
-            errMsg += '\n';
-            errMsg += details;
-          }
-          catch {
-            console.error(error);
-          }
+          let errMsg = `Failed editing group "${result.Name}"! ${this.getErrorDetails(error)}`;
           this.messsageService.showError(errMsg);
         }
       )
