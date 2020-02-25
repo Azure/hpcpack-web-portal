@@ -20,8 +20,16 @@ export class MesssageComponent implements OnInit {
   ngOnInit() {
   }
 
+  get styleClass(): string {
+    return this.options.type;
+  }
+
   get title(): string {
     return this.options.type == 'error' ? 'Error' : 'Confirmation';
+  }
+
+  get icon(): string {
+    return this.options.type == 'error' ? 'error_outline' : 'notifications_none';
   }
 
   get message(): string {

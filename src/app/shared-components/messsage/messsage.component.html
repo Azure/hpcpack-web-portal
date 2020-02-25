@@ -1,5 +1,7 @@
 <h2 mat-dialog-title>
-  {{title}}
+  <div class="title" [ngClass]="styleClass">
+    <span>{{title}}</span><i class="material-icons icon">{{icon}}</i>
+  </div>
 </h2>
 <mat-dialog-content>
   {{message}}
