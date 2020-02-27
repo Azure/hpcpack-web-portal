@@ -16,17 +16,18 @@ export function convert<T>(properties: Array<RestProperty>, ctor: new () => T, p
     if (p && prop.Value !== '') {
       let value;
       if (p.type == Date) {
-        value = prop.Value + ' UTC';
+        //NOTE: Date("string value") doesn't convert input into a Date.
+        value = new Date(prop.Value + ' UTC');
       }
       else {
-        value = prop.Value;
+        //NOTE: Here we "convert" string by T(str), rather than new T(str). This is very important, since
+        //the former gets a "primitive" of type T, while the latter gets an "object" of type T. And, JS
+        //discriminates a "primitive" from an "object", so that T(str) !== new T(str), while T(str) == new T(str)!
+        //If an "object" of T is set as a property of obj, then later it will get trouble when comparing it
+        //with a "primitive". For example, a string litteral will not equal to(===) a string object.
+        value = p.type(prop.Value);
       }
-      //NOTE: Here we "convert" string by T(str), rather than new T(str). This is very important, since
-      //the former gets a "primitive" of type T, while the latter gets an "object" of type T. And, JS
-      //discriminates a "primitive" from an "object", so that T(str) !== new T(str), while T(str) == new T(str)!
-      //If an "object" of T is set as a property of obj, then later it will get trouble when comparing it
-      //with a "primitive". For example, a string litteral will not equal to(===) a string object.
-      (obj as any)[p.name] = p.type(value);
+      (obj as any)[p.name] = value;
     }
   }
   return obj;
