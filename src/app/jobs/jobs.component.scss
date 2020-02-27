@@ -36,15 +36,24 @@ for why a table container is required and why the table has to be absolute-posit
   overflow: auto;
   width: 100%;
   position: relative;
-}
 
-table {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
+  table {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+
+    td.mat-cell, th.mat-header-cell {
+      padding: 0 2px;
+    }
+
+    td.mat-cell:first-of-type, th.mat-header-cell:first-of-type {
+      padding-left: 24px;
+      padding-right: 0;
+    }
+  }
 }
 
 .mat-column-Select mat-checkbox {
