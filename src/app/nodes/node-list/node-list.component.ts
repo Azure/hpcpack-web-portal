@@ -45,15 +45,57 @@ export class NodeListComponent implements OnInit, OnDestroy {
     return ['Select'].concat(this.selectedColumns);
   }
 
-  orderBy: string = "Name";
+  private orderByValue: string;
 
-  asc: boolean = true;
+  get orderBy(): string {
+    if (this.orderByValue === undefined) {
+      this.orderByValue = this.userOptions.orderBy || 'Name';
+    }
+    return this.orderByValue;
+  }
+
+  set orderBy(value: string) {
+    this.orderByValue = value;
+    this.userOptions.orderBy = value;
+    this.userService.saveUserOptions();
+  }
+
+  private ascValue: boolean;
+
+  get asc(): boolean {
+    if (this.ascValue === undefined) {
+      this.ascValue = this.userOptions.orderAsc;
+      if (this.ascValue === undefined) {
+        this.ascValue = true;
+      }
+    }
+    return this.ascValue;
+  }
+
+  set asc(value: boolean) {
+    this.ascValue = value;
+    this.userOptions.orderAsc = value;
+    this.userService.saveUserOptions();
+  }
 
   rowCount: number;
 
   readonly pageSizeOptions = [25, 50, 100, 200, 500];
 
-  pageSize: number = this.pageSizeOptions[0];
+  private pageSizeValue: number;
+
+  get pageSize(): number {
+    if (this.pageSizeValue === undefined) {
+      this.pageSizeValue = this.userOptions.pageSize || this.pageSizeOptions[0];
+    }
+    return this.pageSizeValue;
+  }
+
+  set pageSize(value: number) {
+    this.pageSizeValue = value;
+    this.userOptions.pageSize = value;
+    this.userService.saveUserOptions();
+  }
 
   pageIndex: number = 0;
 
