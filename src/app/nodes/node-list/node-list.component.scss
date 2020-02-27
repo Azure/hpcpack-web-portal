@@ -72,6 +72,10 @@ for why a table container is required and why the table has to be absolute-posit
       padding-left: 24px;
       padding-right: 0;
     }
+
+    .group-link + .group-link:before {
+      content: ', '
+    }
   }
 }
 
