@@ -1,54 +1,65 @@
-<mat-sidenav-container class="container">
-    <mat-sidenav mode="side" opened="true" position="end">
-      <div class="side-nav">
-        <div class="side-nav-btn">
-          <button mat-icon-button disableRipple="true" (click)="toggleActionList()"><mat-icon>{{toggleActionListIcon}}</mat-icon></button>
+<div class="column">
+  <div class="header">
+    <div class="filter" *ngIf="nodeGroup">
+      <span>In Group {{nodeGroup}}</span>
+    </div>
+  </div>
+  <div class="body">
+    <mat-sidenav-container class="container">
+      <mat-sidenav mode="side" opened="true" position="end">
+        <div class="side-nav">
+          <div class="side-nav-btn">
+            <button mat-icon-button disableRipple="true" (click)="toggleActionList()"><mat-icon>{{toggleActionListIcon}}</mat-icon></button>
+          </div>
+          <mat-list [ngClass]="{'hidden': isActionListHidden}">
+            <mat-list-item><button mat-button (click)="showColumnSelector()">Select Columns...</button></mat-list-item>
+            <mat-list-item><button mat-button (click)="refresh()">Refresh Data</button></mat-list-item>
+            <ng-container *ngIf="adminView">
+              <mat-list-item><button mat-button [disabled]="!anySelected" (click)="bringOnline()">Bring Online</button></mat-list-item>
+              <mat-list-item><button mat-button [disabled]="!anySelected" (click)="takeOffline()">Take Offline</button></mat-list-item>
+              <mat-list-item><button mat-button [disabled]="!anySelected" (click)="runCommand()">Run Command...</button></mat-list-item>
+              <mat-list-item><button mat-button [disabled]="!anySelected" (click)="manageGroups()">Manage Groups...</button></mat-list-item>
+            </ng-container>
+          </mat-list>
         </div>
-        <mat-list [ngClass]="{'hidden': isActionListHidden}">
-          <mat-list-item><button mat-button (click)="showColumnSelector()">Select Columns...</button></mat-list-item>
-          <mat-list-item><button mat-button (click)="refresh()">Refresh Data</button></mat-list-item>
-          <ng-container *ngIf="adminView">
-            <mat-list-item><button mat-button [disabled]="!anySelected" (click)="bringOnline()">Bring Online</button></mat-list-item>
-            <mat-list-item><button mat-button [disabled]="!anySelected" (click)="takeOffline()">Take Offline</button></mat-list-item>
-            <mat-list-item><button mat-button [disabled]="!anySelected" (click)="runCommand()">Run Command...</button></mat-list-item>
-            <mat-list-item><button mat-button [disabled]="!anySelected" (click)="manageGroups()">Manage Groups...</button></mat-list-item>
-          </ng-container>
-        </mat-list>
-      </div>
-    </mat-sidenav>
-    <mat-sidenav-content class="content">
-      <div class="table-container" #tableContainer>
-        <table mat-table [dataSource]="dataSource" matSort [matSortDisableClear]="true" [matSortActive]="orderBy"
-          [matSortDirection]="asc ? 'asc' : 'desc'" (matSortChange)="onSortChange($event)">
-          <ng-container matColumnDef="Select">
-            <th mat-header-cell *matHeaderCellDef>
-              <mat-checkbox (change)="masterToggle()"
-                            [checked]="masterChecked"
-                            [indeterminate]="masterIndeterminate">
-              </mat-checkbox>
-            </th>
-            <td mat-cell *matCellDef="let node">
-              <mat-checkbox (click)="$event.stopPropagation()"
-                            (change)="selection.toggle(node)"
-                            [checked]="selection.isSelected(node)">
-              </mat-checkbox>
-            </td>
-          </ng-container>
+      </mat-sidenav>
+      <mat-sidenav-content class="content">
+        <div class="table-container" #tableContainer>
+          <table mat-table [dataSource]="dataSource" matSort [matSortDisableClear]="true" [matSortActive]="orderBy"
+            [matSortDirection]="asc ? 'asc' : 'desc'" (matSortChange)="onSortChange($event)">
+            <ng-container matColumnDef="Select">
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="masterToggle()"
+                              [checked]="masterChecked"
+                              [indeterminate]="masterIndeterminate">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let node">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                              (change)="selection.toggle(node)"
+                              [checked]="selection.isSelected(node)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
 
-          <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
-            <td mat-cell *matCellDef="let node">{{columnText(node, column.name)}}</td>
-          </ng-container>
+            <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
+              <td mat-cell *matCellDef="let node">{{columnText(node, column.name)}}</td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      </div>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
 
-      <mat-progress-bar *ngIf="isLoading" mode="buffer"></mat-progress-bar>
+        <mat-progress-bar *ngIf="isLoading" mode="buffer"></mat-progress-bar>
 
-      <mat-paginator *ngIf="!noPagination" [length]="rowCount" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-        [showFirstLastButtons]="true" (page)="onPageChange($event)">
-      </mat-paginator>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+        <mat-paginator *ngIf="!noPagination" [length]="rowCount" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true" (page)="onPageChange($event)">
+        </mat-paginator>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+</div>
+
+

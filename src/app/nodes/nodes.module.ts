@@ -19,14 +19,7 @@ const routes: Routes = [{
   children: [
     { path: '', component: NodeListComponent, data: { breadcrumb: "List" }},
     { path: 'map', component: NodeMapComponent, data: { breadcrumb: "Heat Map" }},
-    {
-      path: 'groups',
-      data: { breadcrumb: "Groups" },
-      children: [
-        { path: '', component: GroupListComponent },
-        { path: ':group', component: NodeListComponent, data: { breadcrumb: ":group" } }
-      ]
-    },
+    { path: 'groups', component: GroupListComponent, data: { breadcrumb: "Groups" }},
   ],
 }];
 

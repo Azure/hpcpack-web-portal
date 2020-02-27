@@ -149,7 +149,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
-    this.route.paramMap.subscribe(map => {
+    this.route.queryParamMap.subscribe(map => {
       this.nodeGroup = map.get('group');
       this.refresh();
     });

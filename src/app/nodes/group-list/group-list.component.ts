@@ -209,8 +209,4 @@ export class GroupListComponent implements OnInit, OnDestroy {
   get adminView(): boolean {
     return this.userService.user.isAdmin;
   }
-
-  linkToGroupNodes(group: NodeGroup): string[] {
-    return ['.', group.Name];
-  }
 }
