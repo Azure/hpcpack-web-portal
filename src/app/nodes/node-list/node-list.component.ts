@@ -28,7 +28,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   selection = new SelectionModel<Node>(true);
 
-  private static readonly defaultSelectedColumns = ['Id', 'Name', 'State', 'Reachable', 'NodeGroups'];
+  private static readonly defaultSelectedColumns = ['Name', 'State', 'Reachable', 'NodeGroups'];
 
   private userOptions = this.userService.userOptions.nodeOptions;
 
@@ -45,9 +45,9 @@ export class NodeListComponent implements OnInit, OnDestroy {
     return ['Select'].concat(this.selectedColumns);
   }
 
-  orderBy: string = "Id";
+  orderBy: string = "Name";
 
-  asc: boolean = false;
+  asc: boolean = true;
 
   rowCount: number;
 
