@@ -9,7 +9,12 @@ export class RouterOutletComponentStub {}
   selector: '[routerLink]'
 })
 export class RouterLinkDirectiveStub {
-  @Input('routerLink') linkParams: any;
+  @Input('routerLink')
+  linkParams: any;
+
+  @Input()
+  queryParams: any;
+
   navigatedTo: any = null;
 
   @HostListener('click')

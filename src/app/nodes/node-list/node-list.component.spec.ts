@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations'
 
+import { RouterLinkDirectiveStub } from 'src/test-stubs';
 import { MaterialModule } from '../../material.module'
 import { ApiService } from '../../services/api.service';
 import { UserService } from '../../services/user.service'
@@ -14,7 +15,10 @@ describe('NodeListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ NoopAnimationsModule, MaterialModule ],
-      declarations: [ NodeListComponent ],
+      declarations: [
+        RouterLinkDirectiveStub,
+        NodeListComponent,
+      ],
       providers: [
         { provide: ActivatedRoute, useValue: {} },
         { provide: UserService, useValue: { userOptions: { nodeOptions: {} } } },
