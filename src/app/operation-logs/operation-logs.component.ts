@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { ColumnDef, ColumnSelectorInput, ColumnSelectorComponent, ColumnSelectorResult }
   from '../shared-components/column-selector/column-selector.component';
 import { CollapsablePanelOptions } from '../shared-components/collapsable-panel/collapsable-panel.component';
-import { OperationLog } from '../api-client';
+import { OperationLog } from '../models/operation-log';
 import { ApiService } from '../services/api.service';
 import { UserService } from '../services/user.service';
 import { LogOptions } from '../models/user-options';
@@ -15,14 +15,7 @@ import { LogOptions } from '../models/user-options';
   styleUrls: ['./operation-logs.component.scss']
 })
 export class OperationLogsComponent implements OnInit, OnDestroy {
-  readonly columns: ColumnDef[] = [
-    { name: 'Id', label: 'ID' },
-    { name: 'Name', label: 'Name' },
-    { name: 'State', label: 'State' },
-    { name: 'Operator', label: 'Operator' },
-    //{ name: 'Node', label: 'Node' },
-    { name: 'UpdateTime', label: 'Update Time' },
-  ]
+  readonly columns: ColumnDef[] = OperationLog.properties;
 
   private readonly defaultSelectedColumns = ['UpdateTime', 'State', 'Name'];
 
@@ -94,7 +87,7 @@ export class OperationLogsComponent implements OnInit, OnDestroy {
     this.dataSubscription = this.api.getClusterOperations().subscribe({
       next: res => {
         this.loadingData = false;
-        this.dataSource.data = res;
+        this.dataSource.data = res.map(e => OperationLog.fromJson(e));
       },
       error: err => {
         this.loadingData = false;
