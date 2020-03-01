@@ -119,7 +119,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
 
-  private nodeGroup: string;
+  nodeGroup: string;
 
   get noPagination(): boolean {
     return !!this.nodeGroup;
