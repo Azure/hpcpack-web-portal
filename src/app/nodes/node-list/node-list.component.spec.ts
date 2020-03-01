@@ -7,6 +7,7 @@ import { ApiService } from '../../services/api.service';
 import { UserService } from '../../services/user.service'
 import { NodeListComponent } from './node-list.component';
 import { ActivatedRoute } from '@angular/router';
+import { SharedComponents } from 'src/app/shared-components/shared-components.module';
 
 describe('NodeListComponent', () => {
   let component: NodeListComponent;
@@ -14,7 +15,11 @@ describe('NodeListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ NoopAnimationsModule, MaterialModule ],
+      imports: [
+        NoopAnimationsModule,
+        MaterialModule,
+        SharedComponents,
+      ],
       declarations: [
         RouterLinkDirectiveStub,
         NodeListComponent,

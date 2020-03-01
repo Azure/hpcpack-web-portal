@@ -3,16 +3,15 @@ import { ActivatedRoute } from '@angular/router';
 import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort, Sort } from '@angular/material/sort';
-import { MatSidenavContainer } from '@angular/material/sidenav'
 import { Subscription, Observable } from 'rxjs'
 import { mergeMap } from 'rxjs/operators';
 import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
 import { ApiService, NodeGroup, NodeGroupOperation } from '../../services/api.service';
-import { MediaQueryService } from '../../services/media-query.service'
 import { oneAfterAnother } from 'src/app/utils/looper';
 import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
   from '../../shared-components/column-selector/column-selector.component'
+import { CollapsablePanelOptions } from 'src/app/shared-components/collapsable-panel/collapsable-panel.component';
 import { CommanderComponent } from '../commander/commander.component'
 import { GroupSelectorComponent, GroupSeletorItem } from '../group-selector/group-selector.component';
 
@@ -117,19 +116,6 @@ export class NodeListComponent implements OnInit, OnDestroy {
     return this.loadingData;
   }
 
-  private get actionListHidden(): boolean {
-    return this.userOptions.hideActionList !== undefined ? this.userOptions.hideActionList :
-      (this.mediaQuery.smallWidth ? true: false);
-  }
-
-  private set actionListHidden(val: boolean) {
-    this.userOptions.hideActionList = val;
-    this.userService.saveUserOptions();
-  }
-
-  @ViewChild(MatSidenavContainer, { static: false })
-  private sidenavContainer: MatSidenavContainer;
-
   @ViewChild(MatSort, {static: true})
   private sort: MatSort;
 
@@ -139,13 +125,16 @@ export class NodeListComponent implements OnInit, OnDestroy {
     return !!this.nodeGroup;
   }
 
+  panelOptions: CollapsablePanelOptions;
+
   constructor(
     private route: ActivatedRoute,
-    private mediaQuery: MediaQueryService,
     private api: ApiService,
     private userService: UserService,
     private dialog: MatDialog,
-  ) {}
+  ) {
+    this.panelOptions = new CollapsablePanelOptions(this.userService, this.userOptions);
+  }
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
@@ -320,19 +309,6 @@ export class NodeListComponent implements OnInit, OnDestroy {
         this.selectedColumns = result.selected;
       }
     });
-  }
-
-  get isActionListHidden(): boolean {
-    return this.actionListHidden;
-  }
-
-  toggleActionList(): void {
-    this.actionListHidden = !this.actionListHidden;
-    setTimeout(() => this.sidenavContainer.updateContentMargins(), 0);
-  }
-
-  get toggleActionListIcon(): string {
-    return this.actionListHidden ? 'keyboard_arrow_left' : 'keyboard_arrow_right';
   }
 
   get adminView(): boolean {

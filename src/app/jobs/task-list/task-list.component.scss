@@ -2,30 +2,6 @@
   height: 100%;
 }
 
-.side-nav {
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-}
-
-.side-nav-btn button {
-  height: 100%;
-}
-
-.side-nav mat-list {
-  margin-left: -1.5em;
-}
-
-.hidden {
-  display: none;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
 /*
 See https://stackoverflow.com/questions/41421512/why-does-flex-box-work-with-a-div-but-not-a-table
 for why a table container is required and why the table has to be absolute-positioning relative to its container.

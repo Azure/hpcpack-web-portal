@@ -2,16 +2,14 @@ import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort, Sort } from '@angular/material/sort';
-import { MatSidenavContainer } from '@angular/material/sidenav'
 import { Subscription, Observable } from 'rxjs'
 import { Job } from '../models/job'
 import { UserService } from '../services/user.service'
 import { ApiService } from '../services/api.service';
-import { MediaQueryService } from '../services/media-query.service'
 import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
   from '../shared-components/column-selector/column-selector.component'
+import { CollapsablePanelOptions } from '../shared-components/collapsable-panel/collapsable-panel.component';
 
-//TODO: A table component with "scroll to load" and "side action panel"?
 @Component({
   selector: 'app-jobs',
   templateUrl: './jobs.component.html',
@@ -125,28 +123,18 @@ export class JobsComponent implements OnInit, OnDestroy {
     return this.pageLoading;
   }
 
-  private get actionListHidden(): boolean {
-    return this.userOptions.hideActionList !== undefined ? this.userOptions.hideActionList :
-      (this.mediaQuery.smallWidth ? true: false);
-  }
-
-  private set actionListHidden(val: boolean) {
-    this.userOptions.hideActionList = val;
-    this.userService.saveUserOptions();
-  }
-
-  @ViewChild(MatSidenavContainer, { static: false })
-  private sidenavContainer: MatSidenavContainer;
-
   @ViewChild(MatSort, { static: true })
   private sort: MatSort;
 
+  panelOptions: CollapsablePanelOptions;
+
   constructor(
-    private mediaQuery: MediaQueryService,
     private api: ApiService,
     private userService: UserService,
     private dialog: MatDialog,
-  ) {}
+  ) {
+    this.panelOptions = new CollapsablePanelOptions(this.userService, this.userOptions);
+  }
 
   ngOnInit() {
     this.dataSource.sort = this.sort;
@@ -291,18 +279,5 @@ export class JobsComponent implements OnInit, OnDestroy {
 
   requeueJobs(): void {
     this.operateOnSelectedJobs(job => this.api.requeueJobAndWatch(job.Id, this.updateInterval, this.updateExpiredIn));
-  }
-
-  get isActionListHidden(): boolean {
-    return this.actionListHidden;
-  }
-
-  toggleActionList(): void {
-    this.actionListHidden = !this.actionListHidden;
-    setTimeout(() => this.sidenavContainer.updateContentMargins(), 0);
-  }
-
-  get toggleActionListIcon(): string {
-    return this.actionListHidden ? 'keyboard_arrow_left' : 'keyboard_arrow_right';
   }
 }

@@ -5,12 +5,14 @@ import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.co
 import { ListItemSelectorComponent } from './list-item-selector/list-item-selector.component'
 import { ColumnSelectorComponent } from './column-selector/column-selector.component'
 import { MesssageComponent } from './messsage/messsage.component';
+import { CollapsablePanelComponent } from './collapsable-panel/collapsable-panel.component';
 
 const components = [
   ProgressSpinnerComponent,
   ListItemSelectorComponent,
   ColumnSelectorComponent,
   MesssageComponent,
+  CollapsablePanelComponent,
 ];
 
 @NgModule({

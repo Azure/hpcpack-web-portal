@@ -6,6 +6,7 @@ import { UserService } from 'src/app/services/user.service';
 import { ApiService } from 'src/app/services/api.service';
 import { RouterLinkDirectiveStub } from 'src/test-stubs';
 import { GroupListComponent } from './group-list.component';
+import { SharedComponents } from 'src/app/shared-components/shared-components.module';
 
 
 describe('GroupListComponent', () => {
@@ -16,7 +17,8 @@ describe('GroupListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
-        MaterialModule
+        MaterialModule,
+        SharedComponents,
       ],
       declarations: [
         RouterLinkDirectiveStub,

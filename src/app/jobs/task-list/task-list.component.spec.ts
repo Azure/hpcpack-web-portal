@@ -5,6 +5,7 @@ import { MaterialModule } from '../../material.module';
 import { ApiService } from '../../services/api.service';
 import { UserService } from '../../services/user.service';
 import { TaskListComponent } from './task-list.component';
+import { SharedComponents } from 'src/app/shared-components/shared-components.module';
 
 describe('TaskListComponent', () => {
   let component: TaskListComponent;
@@ -12,7 +13,11 @@ describe('TaskListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ NoopAnimationsModule, MaterialModule ],
+      imports: [
+        NoopAnimationsModule,
+        MaterialModule,
+        SharedComponents,
+      ],
       declarations: [ TaskListComponent ],
       providers: [
         { provide: UserService, useValue: { userOptions: { taskOptions: {} } } },

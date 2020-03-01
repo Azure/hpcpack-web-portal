@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatDialog, MatSidenavContainer, MatSort } from '@angular/material';
+import { MatTableDataSource, MatDialog, MatSort } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Observable } from 'rxjs';
 import { ColumnDef } from 'src/app/shared-components/column-selector/column-selector.component';
+import { CollapsablePanelOptions } from 'src/app/shared-components/collapsable-panel/collapsable-panel.component';
 import { NodeGroup } from 'src/app/api-client';
-import { MediaQueryService } from 'src/app/services/media-query.service';
 import { ApiService } from 'src/app/services/api.service';
 import { UserService } from 'src/app/services/user.service';
 import { MesssageService } from 'src/app/services/messsage.service';
@@ -34,25 +34,25 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
   private userOptions: NodeGroupOptions;
 
-  @ViewChild(MatSidenavContainer, { static: true })
-  private sidenavContainer: MatSidenavContainer;
-
   @ViewChild(MatSort, { static: true })
   private sort: MatSort;
 
+  panelOptions: CollapsablePanelOptions;
+
   constructor(
-    private mediaQuery: MediaQueryService,
     private api: ApiService,
     private userService: UserService,
     private messsageService: MesssageService,
     private dialog: MatDialog,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     if (!this.userService.userOptions.nodeGroupOptions) {
       this.userService.userOptions.nodeGroupOptions = {}
     }
     this.userOptions = this.userService.userOptions.nodeGroupOptions;
+    this.panelOptions = new CollapsablePanelOptions(this.userService, this.userOptions);
     this.dataSource.sort = this.sort;
     this.loadData();
   }
@@ -181,29 +181,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
     this.allSelected ?
       this.selection.clear() :
       this.dataSource.data.forEach(node => this.selection.select(node));
-  }
-
-  private get actionListHidden(): boolean {
-    return this.userOptions.hideActionList !== undefined ? this.userOptions.hideActionList :
-      (this.mediaQuery.smallWidth ? true: false);
-  }
-
-  private set actionListHidden(val: boolean) {
-    this.userOptions.hideActionList = val;
-    this.userService.saveUserOptions();
-  }
-
-  get isActionListHidden(): boolean {
-    return this.actionListHidden;
-  }
-
-  toggleActionList(): void {
-    this.actionListHidden = !this.actionListHidden;
-    setTimeout(() => this.sidenavContainer.updateContentMargins(), 0);
-  }
-
-  get toggleActionListIcon(): string {
-    return this.actionListHidden ? 'keyboard_arrow_left' : 'keyboard_arrow_right';
   }
 
   get adminView(): boolean {

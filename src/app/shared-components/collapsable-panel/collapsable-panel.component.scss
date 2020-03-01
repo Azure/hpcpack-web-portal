@@ -1,0 +1,27 @@
+.container {
+  height: 100%;
+}
+
+.side-nav {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.side-nav-btn button {
+  height: 100%;
+}
+
+.side-nav-content {
+  margin-left: -1.5em;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}

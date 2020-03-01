@@ -1,0 +1,15 @@
+<mat-sidenav-container class="container">
+  <mat-sidenav mode="side" opened="true" position="end">
+    <div class="side-nav">
+      <div class="side-nav-btn">
+        <button mat-icon-button disableRipple="true" (click)="toggleActionList()"><mat-icon>{{toggleActionListIcon}}</mat-icon></button>
+      </div>
+      <div class="side-nav-content" [ngClass]="{'hidden': actionListHidden}">
+        <ng-container *ngTemplateOutlet="sideTemplate"></ng-container>
+      </div>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content class="content">
+    <ng-container *ngTemplateOutlet="mainTemplate"></ng-container>
+  </mat-sidenav-content>
+</mat-sidenav-container>

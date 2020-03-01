@@ -5,6 +5,7 @@ import { MaterialModule } from '../material.module';
 import { ApiService } from '../services/api.service';
 import { UserService } from '../services/user.service';
 import { JobsComponent } from './jobs.component';
+import { SharedComponents } from '../shared-components/shared-components.module';
 
 describe('JobsComponent', () => {
   let component: JobsComponent;
@@ -12,7 +13,11 @@ describe('JobsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ NoopAnimationsModule, MaterialModule ],
+      imports: [
+        NoopAnimationsModule,
+        MaterialModule,
+        SharedComponents,
+      ],
       declarations: [ RouterLinkDirectiveStub, JobsComponent ],
       providers: [
         { provide: UserService, useValue: { userOptions: { jobOptions: {} } } },

@@ -1,20 +1,16 @@
-<mat-sidenav-container class="container">
-  <mat-sidenav mode="side" opened="true" position="end">
-    <div class="side-nav">
-      <div class="side-nav-btn">
-        <button mat-icon-button disableRipple="true" (click)="toggleActionList()"><mat-icon>{{toggleActionListIcon}}</mat-icon></button>
-      </div>
-      <mat-list [ngClass]="{'hidden': isActionListHidden}">
-        <mat-list-item><button mat-button (click)="showColumnSelector()">Select Columns...</button></mat-list-item>
-        <mat-list-item><button mat-button (click)="refresh()">Refresh Data</button></mat-list-item>
-        <mat-list-item><button mat-button [disabled]="!anySelected" (click)="submitJobs()">Submit</button></mat-list-item>
-        <mat-list-item><button mat-button [disabled]="!anySelected" (click)="cancelJobs()">Cancel</button></mat-list-item>
-        <mat-list-item><button mat-button [disabled]="!anySelected" (click)="finishJobs()">Finish</button></mat-list-item>
-        <mat-list-item><button mat-button [disabled]="!anySelected" (click)="requeueJobs()">Requeue</button></mat-list-item>
-      </mat-list>
-    </div>
-  </mat-sidenav>
-  <mat-sidenav-content class="content">
+<app-collapsable-panel [options]="panelOptions" class="container">
+  <ng-template #side>
+    <mat-list>
+      <mat-list-item><button mat-button (click)="showColumnSelector()">Select Columns...</button></mat-list-item>
+      <mat-list-item><button mat-button (click)="refresh()">Refresh Data</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!anySelected" (click)="submitJobs()">Submit</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!anySelected" (click)="cancelJobs()">Cancel</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!anySelected" (click)="finishJobs()">Finish</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!anySelected" (click)="requeueJobs()">Requeue</button></mat-list-item>
+    </mat-list>
+  </ng-template>
+
+  <ng-template #main>
     <div class="table-container" #tableContainer>
       <table mat-table [dataSource]="dataSource" matSort [matSortDisableClear]="true" [matSortActive]="orderBy"
         [matSortDirection]="asc ? 'asc' : 'desc'" (matSortChange)="onSortChange($event)">
@@ -51,6 +47,6 @@
     <mat-paginator [length]="rowCount" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
       [showFirstLastButtons]="true" (page)="onPageChange($event)">
     </mat-paginator>
-  </mat-sidenav-content>
-</mat-sidenav-container>
 
+  </ng-template>
+</app-collapsable-panel>
