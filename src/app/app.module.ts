@@ -18,7 +18,7 @@ import { MediaQueryService } from './services/media-query.service'
 import { ClusterMetricService } from './services/cluster-metric.service'
 import { MesssageService } from './services/messsage.service';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
-import { SharedComponents } from './shared-components/shared-components.module'
+import { SharedComponentsModule } from './shared-components/shared-components.module'
 
 const routes: Routes = [{
   path: '',
@@ -72,7 +72,7 @@ const routes: Routes = [{
     HttpClientModule,
     RouterModule.forRoot(routes),
     MaterialModule,
-    SharedComponents,
+    SharedComponentsModule,
   ],
   providers: [
     AuthService,

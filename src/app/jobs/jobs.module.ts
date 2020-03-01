@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { MaterialModule } from '../material.module'
-import { SharedComponents } from '../shared-components/shared-components.module'
+import { SharedComponentsModule } from '../shared-components/shared-components.module'
 import { JobsComponent } from './jobs.component';
 import { TaskListComponent } from './task-list/task-list.component';
 
@@ -21,7 +21,7 @@ const routes: Routes = [{
     CommonModule,
     RouterModule.forChild(routes),
     MaterialModule,
-    SharedComponents,
+    SharedComponentsModule,
   ]
 })
 export class JobsModule { }

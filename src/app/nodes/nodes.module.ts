@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from '../material.module'
-import { SharedComponents } from '../shared-components/shared-components.module'
+import { SharedComponentsModule } from '../shared-components/shared-components.module'
 import { NodesComponent } from './nodes.component'
 import { NodeListComponent } from './node-list/node-list.component';
 import { NodeMapComponent } from './node-map/node-map.component';
@@ -38,7 +38,7 @@ const routes: Routes = [{
     RouterModule.forChild(routes),
     ReactiveFormsModule,
     MaterialModule,
-    SharedComponents,
+    SharedComponentsModule,
   ],
   entryComponents: [
     CommanderComponent,

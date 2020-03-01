@@ -5,7 +5,7 @@ import { MaterialModule } from '../material.module';
 import { ApiService } from '../services/api.service';
 import { UserService } from '../services/user.service';
 import { JobsComponent } from './jobs.component';
-import { SharedComponents } from '../shared-components/shared-components.module';
+import { SharedComponentsModule } from '../shared-components/shared-components.module';
 
 describe('JobsComponent', () => {
   let component: JobsComponent;
@@ -16,7 +16,7 @@ describe('JobsComponent', () => {
       imports: [
         NoopAnimationsModule,
         MaterialModule,
-        SharedComponents,
+        SharedComponentsModule,
       ],
       declarations: [ RouterLinkDirectiveStub, JobsComponent ],
       providers: [

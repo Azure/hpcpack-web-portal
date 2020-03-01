@@ -7,7 +7,7 @@ import { ApiService } from '../../services/api.service';
 import { UserService } from '../../services/user.service'
 import { NodeListComponent } from './node-list.component';
 import { ActivatedRoute } from '@angular/router';
-import { SharedComponents } from 'src/app/shared-components/shared-components.module';
+import { SharedComponentsModule } from 'src/app/shared-components/shared-components.module';
 
 describe('NodeListComponent', () => {
   let component: NodeListComponent;
@@ -18,7 +18,7 @@ describe('NodeListComponent', () => {
       imports: [
         NoopAnimationsModule,
         MaterialModule,
-        SharedComponents,
+        SharedComponentsModule,
       ],
       declarations: [
         RouterLinkDirectiveStub,
