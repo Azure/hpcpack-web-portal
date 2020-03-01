@@ -48,6 +48,12 @@ const routes: Routes = [{
       data: { breadcrumb: "Charts" }
     },
     {
+      path: 'logs',
+      loadChildren: () => import('./operation-logs/operation-logs.module').then(mod => mod.OperationLogsModule),
+      canLoad: [AuthGuardService],
+      data: { breadcrumb: "Operation Logs" }
+    },
+    {
       path: 'login',
       component: LoginComponent
     },

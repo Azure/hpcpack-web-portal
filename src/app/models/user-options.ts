@@ -32,6 +32,11 @@ export interface TaskOptions {
   pageSize?: number;
 }
 
+export interface LogOptions {
+  selectedColumns?: string[];
+  hideActionList?: boolean;
+}
+
 export interface ChartOption {
   name: string;
   timeWindow: number;
@@ -46,4 +51,5 @@ export class UserOptions {
   jobOptions: JobOptions = {};
   taskOptions: TaskOptions = {};
   chartOptions: ChartOption[] = [];
+  logOptions: LogOptions = {};
 }

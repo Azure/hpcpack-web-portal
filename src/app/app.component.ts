@@ -1,7 +1,14 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
+import { UserService } from './services/user.service';
 import { MediaQueryService } from './services/media-query.service'
+
+interface NavItem {
+  link: string;
+  title: string;
+  icon: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -12,6 +19,7 @@ export class AppComponent {
   constructor(
     public mediaQuery: MediaQueryService,
     private authService: AuthService,
+    private userService: UserService,
     private router: Router) {}
 
   get username(): string {
@@ -35,7 +43,7 @@ export class AppComponent {
     this.router.navigate(['/login']);
   }
 
-  readonly navItems = [
+  private readonly userNavItems: NavItem[] = [
     {
       link: 'dashboard',
       title: 'Dashboard',
@@ -57,4 +65,17 @@ export class AppComponent {
       icon: 'bar_chart',
     },
   ];
+
+  private readonly adminNavItems: NavItem[] = [
+    {
+      link: 'logs',
+      title: 'Logs',
+      icon: 'list_alt',
+    },
+  ];
+
+  get navItems(): NavItem[] {
+    return this.userService.user.isAdmin ? this.userNavItems.concat(this.adminNavItems) : this.userNavItems;
+  }
+
 }
