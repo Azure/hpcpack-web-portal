@@ -123,8 +123,14 @@ export class JobsComponent implements OnInit, OnDestroy {
     return this.pageLoading;
   }
 
-  @ViewChild(MatSort, { static: true })
-  private sort: MatSort;
+  @ViewChild(MatSort, { static: false })
+  set sort(value: MatSort) {
+    if (value) {
+    //NOTE: Only when ngAfterViewInit() then there will be a value for MatSort, since it's inside
+    //a <ng-template> now(and the <ng-template> is controlled by a <app-collapsable-panel>).
+    this.dataSource.sort = value;
+    }
+  };
 
   panelOptions: CollapsablePanelOptions;
 
@@ -137,7 +143,6 @@ export class JobsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.dataSource.sort = this.sort;
     this.refresh();
   }
 

@@ -34,8 +34,14 @@ export class GroupListComponent implements OnInit, OnDestroy {
 
   private userOptions: NodeGroupOptions;
 
-  @ViewChild(MatSort, { static: true })
-  private sort: MatSort;
+  @ViewChild(MatSort, { static: false })
+  set sort(value: MatSort) {
+    if (value) {
+    //NOTE: Only when ngAfterViewInit() then there will be a value for MatSort, since it's inside
+    //a <ng-template> now(and the <ng-template> is controlled by a <app-collapsable-panel>).
+    this.dataSource.sort = value;
+    }
+  };
 
   panelOptions: CollapsablePanelOptions;
 
@@ -53,7 +59,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
     }
     this.userOptions = this.userService.userOptions.nodeGroupOptions;
     this.panelOptions = new CollapsablePanelOptions(this.userService, this.userOptions);
-    this.dataSource.sort = this.sort;
     this.loadData();
   }
 

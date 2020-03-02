@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatDialog } from '@angular/material';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatDialog, MatSort } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { ColumnDef, ColumnSelectorInput, ColumnSelectorComponent, ColumnSelectorResult }
   from '../shared-components/column-selector/column-selector.component';
@@ -53,6 +53,15 @@ export class OperationLogsComponent implements OnInit, OnDestroy {
   nodes: string[];
 
   panelOptions: CollapsablePanelOptions;
+
+  @ViewChild(MatSort, { static: false })
+  set sort(value: MatSort) {
+    if (value) {
+    //NOTE: Only when ngAfterViewInit() then there will be a value for MatSort, since it's inside
+    //a <ng-template> now(and the <ng-template> is controlled by a <app-collapsable-panel>).
+    this.dataSource.sort = value;
+    }
+  };
 
   constructor(
     private api: ApiService,

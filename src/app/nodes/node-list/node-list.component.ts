@@ -116,8 +116,14 @@ export class NodeListComponent implements OnInit, OnDestroy {
     return this.loadingData;
   }
 
-  @ViewChild(MatSort, {static: true})
-  private sort: MatSort;
+  @ViewChild(MatSort, { static: false })
+  set sort(value: MatSort) {
+    if (value) {
+    //NOTE: Only when ngAfterViewInit() then there will be a value for MatSort, since it's inside
+    //a <ng-template> now(and the <ng-template> is controlled by a <app-collapsable-panel>).
+    this.dataSource.sort = value;
+    }
+  };
 
   nodeGroup: string;
 
@@ -137,7 +143,6 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dataSource.sort = this.sort;
     this.route.queryParamMap.subscribe(map => {
       this.nodeGroup = map.get('group');
       this.refresh();
