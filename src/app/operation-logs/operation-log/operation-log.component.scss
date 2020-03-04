@@ -46,6 +46,21 @@ for why a table container is required and why the table has to be absolute-posit
   }
 }
 
+.nav-icon {
+  &.info {
+    color: #98d4e8;
+  }
+  &.error {
+    color: #ec506b;
+  }
+  &.warning {
+    color: #ecad0f;
+  }
+  &.trace {
+    color: #d1d1d1;
+  }
+}
+
 mat-progress-bar {
   margin: 1em 0;
 }

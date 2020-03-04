@@ -7,7 +7,7 @@
     <table mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="Type">
         <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let row"><i class="material-icons nav-icon">{{columnIcon(row)}}</i></td>
+        <td mat-cell *matCellDef="let row"><i class="material-icons nav-icon" [ngClass]="iconClass(row)">{{columnIcon(row)}}</i></td>
       </ng-container>
 
       <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">

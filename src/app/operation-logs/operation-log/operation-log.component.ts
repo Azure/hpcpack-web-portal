@@ -109,6 +109,27 @@ export class OperationLogComponent implements OnInit, OnDestroy {
     return res;
   }
 
+  iconClass(row: OperationLogEntry): string {
+    let res: string;
+    switch (row.Severity) {
+      case 'Information':
+        res = 'info';
+        break;
+      case 'Error':
+        res = 'error';
+        break;
+      case 'Warning':
+        res = 'warning';
+        break;
+      case 'Trace':
+        res = 'trace';
+        break;
+      default:
+        console.error(`Unkown type "${row.Severity}"!`)
+    }
+    return res;
+  }
+
   get title(): string {
     return this.log.Name;
   }
