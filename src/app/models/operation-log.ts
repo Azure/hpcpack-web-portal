@@ -1,4 +1,25 @@
-import { OperationLog as IOperationLog } from '../api-client'
+import { OperationLog as IOperationLog, OperationLogEntry as IOperationLogEntry } from '../api-client'
+import { convert2 } from './converter'
+
+export { OperationLog as IOperationLog, OperationLogEntry as IOperationLogEntry } from '../api-client'
+
+export class OperationLogEntry implements IOperationLogEntry {
+  static readonly properties = [
+    { name: 'Message', label: 'Message', type: String },
+    { name: 'Severity', label: 'Severity', type: String },
+    { name: 'Source', label: 'Source', type: String },
+    { name: 'CreateTime', label: 'Create Time', type: Date },
+  ].sort((a, b) => {
+    if (a.label == b.label) {
+      return 0;
+    }
+    return a.label < b.label ? -1 : 1;
+  });
+
+  static fromJson(object: any): OperationLogEntry {
+    return convert2(object, OperationLogEntry, OperationLogEntry.properties);
+  }
+}
 
 export class OperationLog implements IOperationLog {
   static readonly properties = [
@@ -7,6 +28,7 @@ export class OperationLog implements IOperationLog {
     { name: 'State', label: 'State', type: String },
     { name: 'Operator', label: 'Operator', type: String },
     { name: 'UpdateTime', label: 'Update Time', type: Date },
+    { name: 'Entries', label: 'Entries', type: OperationLog.toEntries },
   ].sort((a, b) => {
     if (a.label == b.label) {
       return 0;
@@ -14,17 +36,14 @@ export class OperationLog implements IOperationLog {
     return a.label < b.label ? -1 : 1;
   });
 
-  static fromJson(input: any): OperationLog {
-    let obj = new OperationLog();
-    for (let p of OperationLog.properties) {
-      if (p.type == Date) {
-        (obj as any)[p.name] = new Date(input[p.name])
-      }
-      else {
-        //String is assumed
-        (obj as any)[p.name] = input[p.name];
-      }
+  static toEntries(input: any[]): OperationLogEntry[] {
+    if (!input) {
+      return null;
     }
-    return obj;
+    return input.map(e => OperationLogEntry.fromJson(e));
+  }
+
+  static fromJson(object: any): OperationLog {
+    return convert2(object, OperationLog, OperationLog.properties);
   }
 }

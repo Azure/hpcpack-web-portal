@@ -15,7 +15,7 @@ import { LogOptions } from '../models/user-options';
   styleUrls: ['./operation-logs.component.scss']
 })
 export class OperationLogsComponent implements OnInit, OnDestroy {
-  readonly columns: ColumnDef[] = OperationLog.properties;
+  readonly columns: ColumnDef[] = OperationLog.properties.filter(e => e.name !== 'Entries');
 
   private readonly defaultSelectedColumns = ['UpdateTime', 'State', 'Name'];
 

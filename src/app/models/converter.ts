@@ -9,6 +9,7 @@ export interface PropertyDefinition {
   type: TypeConverter<String> | TypeConverter<String[]> | TypeConverter<Number> | TypeConverter<Boolean> | TypeConverter<Date>;
 }
 
+//Convert node/job/task properties to Node/Job/Task object
 export function convert<T>(properties: Array<RestProperty>, ctor: new () => T, propertyDefinitions: Map<string, PropertyDefinition>): T {
   let obj = new ctor();
   for (let prop of properties) {
@@ -31,4 +32,31 @@ export function convert<T>(properties: Array<RestProperty>, ctor: new () => T, p
     }
   }
   return obj;
+}
+
+export interface TypeConverter2<T> {
+  (arg: any): T;
+}
+
+export interface PropertyDefinition2 {
+  name: string;
+  type: TypeConverter2<any>;
+}
+
+//Convert JSON object to normalized TS object.
+export function convert2<T>(object: any, ctor: new () => T, propertyDefinitions: PropertyDefinition2[]): T {
+  let newObj = new ctor();
+  for (let p of propertyDefinitions) {
+    let value = object[p.name];
+    if (p.type == Date) {
+      (newObj as any)[p.name] = new Date(value);
+    }
+    else if (p.type == String || p.type == Number || p.type == Boolean) {
+      (newObj as any)[p.name] = value;
+    }
+    else {
+      (newObj as any)[p.name] = p.type(value);
+    }
+  }
+  return newObj;
 }
