@@ -4,6 +4,11 @@ import { convert2 } from './converter'
 export { OperationLog as IOperationLog, OperationLogEntry as IOperationLogEntry } from '../api-client'
 
 export class OperationLogEntry implements IOperationLogEntry {
+  Message: string;
+  Severity: IOperationLogEntry.SeverityEnum;
+  Source: string;
+  CreateTime: Date;
+
   static readonly properties = [
     { name: 'Message', label: 'Message', type: String },
     { name: 'Severity', label: 'Severity', type: String },
@@ -22,6 +27,19 @@ export class OperationLogEntry implements IOperationLogEntry {
 }
 
 export class OperationLog implements IOperationLog {
+  Id: string;
+  Name: string;
+  State: string;
+  Operator: string;
+  UpdateTime: Date;
+  Entries?: Array<OperationLogEntry>;
+
+  update(other: OperationLog): void {
+    for (let prop of OperationLog.properties) {
+      (this as any)[prop.name] = (other as any)[prop.name];
+    }
+  }
+
   static readonly properties = [
     { name: 'Id', label: 'ID', type: String },
     { name: 'Name', label: 'Name', type: String },
