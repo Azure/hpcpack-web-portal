@@ -209,7 +209,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   columnText(row: any, column: string): string {
     let v = row[column];
     if (v instanceof Date) {
-      return `${v.getFullYear()}/${v.getMonth() + 1}/${v.getDate()} ${v.getHours()}:${v.getMinutes()}:${v.getSeconds()}`
+      return v.toLocaleString();
     }
     return v;
   }
