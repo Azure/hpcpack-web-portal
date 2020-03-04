@@ -1,23 +1,23 @@
-:host {
-  flex: 1;
+h2 {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-flow: row wrap;
 }
 
-.column {
-  height: 100%;
+.subtitle {
+  font-size: 60%;
+  font-weight: normal;
+}
+
+mat-dialog-actions {
+  justify-content: flex-end;
+}
+
+mat-dialog-content {
   display: flex;
   flex-direction: column;
-
-  .body {
-    flex: 1;
-  }
-}
-
-.filter {
-  padding: 1.25em 1.6em;
-}
-
-.container {
-  height: 100%;
 }
 
 /*
@@ -26,7 +26,8 @@ for why a table container is required and why the table has to be absolute-posit
 */
 .table-container {
   flex: 1;
-  min-height: 0;
+  min-height: 60vh;
+  min-width: 70vw;
   overflow: auto;
   width: 100%;
   position: relative;
@@ -42,16 +43,7 @@ for why a table container is required and why the table has to be absolute-posit
     td.mat-cell, th.mat-header-cell {
       padding: 0 2px;
     }
-
-    td.mat-cell:first-of-type, th.mat-header-cell:first-of-type {
-      padding-left: 24px;
-      padding-right: 0;
-    }
   }
-}
-
-.mat-column-Select mat-checkbox {
-  margin-right: 2em;
 }
 
 mat-progress-bar {

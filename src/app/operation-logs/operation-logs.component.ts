@@ -8,6 +8,7 @@ import { OperationLog } from '../models/operation-log';
 import { ApiService } from '../services/api.service';
 import { UserService } from '../services/user.service';
 import { LogOptions } from '../models/user-options';
+import { OperationLogComponent } from './operation-log/operation-log.component';
 
 @Component({
   selector: 'app-operation-logs',
@@ -39,7 +40,7 @@ export class OperationLogsComponent implements OnInit, OnDestroy {
   }
 
   get displayedColumns(): string[] {
-    return this.selectedColumns;
+    return this.selectedColumns.concat(['Detail']);
   }
 
   private dataSubscription: Subscription;
@@ -126,5 +127,9 @@ export class OperationLogsComponent implements OnInit, OnDestroy {
         this.selectedColumns = result.selected;
       }
     });
+  }
+
+  showDetail(log: OperationLog): void {
+    this.dialog.open(OperationLogComponent, { data: log });
   }
 }

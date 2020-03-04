@@ -16,6 +16,15 @@
       <ng-template #main>
         <div class="table-container" #tableContainer>
           <table mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="Detail">
+              <th mat-header-cell *matHeaderCellDef>Detail</th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-icon-button (click)="showDetail(row)" aria-label="Show detailed log">
+                  <mat-icon>more_horiz</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
             <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
               <td mat-cell *matCellDef="let row">{{columnText(row, column.name)}}</td>
