@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MatTableDataSource, MatDialog, MatSort } from '@angular/material';
 import { Subscription, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -80,6 +81,7 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
   tableContainerRef: ElementRef
 
   constructor(
+    private route: ActivatedRoute,
     private api: ApiService,
     private userService: UserService,
     private dialog: MatDialog,
@@ -89,6 +91,12 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngOnInit() {
+    this.route.queryParamMap.subscribe(map => {
+      let nodesParam = map.get('nodes');
+      if (nodesParam) {
+        this.nodes = nodesParam.split(',');
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -100,7 +108,8 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
       .pipe(debounceTime(500))
       .subscribe(e => this.onTableScroll(e));
     console.log("Listening to scroll");
-    //To avoid ExpressionChangedAfterItHasBeenCheckedError, do loadData in next round.
+
+    //To avoid ExpressionChangedAfterItHasBeenCheckedError, loadData in next round.
     setTimeout(() => this.loadData(), 0);
   }
 
@@ -150,7 +159,7 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
     //NOTE: api.getClusterOperations gets data between (from, to), exclusive in both ends. So "-1"
     //is required to get data between [fromTime, this.currentTime).
     let fromTime = new Date(this.currentTime.getTime() - this.timeSpan - 1);
-    this.dataSubscription = this.api.getClusterOperations(null, fromTime, this.currentTime).subscribe({
+    this.dataSubscription = this.api.getClusterOperations(null, fromTime, this.currentTime, this.nodes.join(',')).subscribe({
       next: res => {
         this.loadingData = false;
         //Move cursor for next loadMoreData

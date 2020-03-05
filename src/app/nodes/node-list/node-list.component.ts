@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort, Sort } from '@angular/material/sort';
@@ -135,6 +135,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private api: ApiService,
     private userService: UserService,
     private dialog: MatDialog,
@@ -392,5 +393,10 @@ export class NodeListComponent implements OnInit, OnDestroy {
     //Make one update after another, because multiple concurrent updates on node groups are likely to fail.
     //Still, a node group service is preferred since there may be multiple concurrent loopers like this.
     oneAfterAnother(updates, 3);
+  }
+
+  viewLogs(): void {
+    let names = this.selection.selected.map(e => e.Name);
+    this.router.navigate(['/logs'], { queryParams: { nodes: names.join(',') }});
   }
 }
