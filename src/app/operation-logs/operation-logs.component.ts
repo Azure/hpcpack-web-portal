@@ -159,7 +159,11 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
     //NOTE: api.getClusterOperations gets data between (from, to), exclusive in both ends. So "-1"
     //is required to get data between [fromTime, this.currentTime).
     let fromTime = new Date(this.currentTime.getTime() - this.timeSpan - 1);
-    this.dataSubscription = this.api.getClusterOperations(null, fromTime, this.currentTime, this.nodes.join(',')).subscribe({
+    let nodes: string = null;
+    if (this.nodes) {
+      nodes = this.nodes.join(',');
+    }
+    this.dataSubscription = this.api.getClusterOperations(null, fromTime, this.currentTime, nodes).subscribe({
       next: res => {
         this.loadingData = false;
         //Move cursor for next loadMoreData
