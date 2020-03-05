@@ -47,8 +47,6 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private dataSubscription: Subscription;
 
-  private loadedAll: boolean = false;
-
   private loadingData: boolean = false;
 
   get isLoading(): boolean {
@@ -57,8 +55,14 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   nodes: string[];
 
+  //Whether the first log is being requested
+  private gettingFirst: boolean = false;
+
+  //The time of the first log
+  private firstTime: Date;
+
   //Cursor for loadMoreData, not simply meaning "now".
-  currentTime: Date;
+  private currentTime: Date;
 
   //Get 7 days' log in one time
   private readonly timeSpan = 1000 * 3600 * 24 * 7;
@@ -129,7 +133,8 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
       this.dataSubscription.unsubscribe();
     }
     this.loadingData = false;
-    this.loadedAll = false;
+    this.gettingFirst = false;
+    this.firstTime = null;
     this.currentTime = new Date();
     this.dataSubscription = null;
     this.dataSource.data = [];
@@ -140,6 +145,31 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
       //Let UI get update before determining to load more or not, since shouldLoadMore depends on UI change.
       this.loadMoreData(() => setTimeout(() => this.loadData(), 0));
     }
+  }
+
+  private get loadedAll(): boolean {
+    if (this.firstTime) {
+      return this.currentTime <= this.firstTime;
+    }
+
+    if (!this.gettingFirst) {
+      let nodes: string = null;
+      if (this.nodes) {
+        nodes = this.nodes.join(',');
+      }
+      this.api.getClusterFirstOperation(null, null, null, null).subscribe(
+        res => {
+          this.firstTime = new Date(res.UpdateTime); //Parse JOSN string into Date
+          this.gettingFirst = false;
+        },
+        err => {
+          console.error(err);
+          this.gettingFirst = false;
+        }
+      );
+      this.gettingFirst = true;
+    }
+    return false;
   }
 
   private get shouldLoadMore(): boolean {
@@ -171,9 +201,6 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
         if (res && res.length > 0) {
           let data = res.map(e => OperationLog.fromJson(e));
           this.dataSource.data = this.dataSource.data.concat(data);
-        }
-        else {
-          this.loadedAll = true;
         }
         if (onDataLoad) {
           onDataLoad();
