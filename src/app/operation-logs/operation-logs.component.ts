@@ -79,8 +79,7 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
   };
 
   //NOTE: Only when ngAfterViewInit() then there will be a value for tableContainerRef, since it's
-  //inside a <ng-template>. And since this.shouldLoadMore depends on it, this.loadData should not be
-  //earlier than ngAfterViewInit.
+  //inside a <ng-template>.
   @ViewChild('tableContainer', { read: ElementRef, static: false })
   tableContainerRef: ElementRef
 
@@ -94,12 +93,21 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
     this.currentTime = new Date();
   }
 
+  //NOTE: Angular may "reuse" the component without destroying it(calling ngOnDestroy) before,
+  //and thus without calling ngAfterViewInit. For example, when /logs is accessed after /logs?nodes=xxx.
+  //When a component is reused, only ngOnInit is called, among the ngOnInit, ngOnDestroy and
+  //ngAfterViewInit hooks. So we have to "reset" the component in ngOnInit, before "loadData".
+  //That's what "refresh" does. Also note that this.nodes also gets "reset" by queryParamMap.
   ngOnInit() {
     this.route.queryParamMap.subscribe(map => {
       let nodesParam = map.get('nodes');
       if (nodesParam) {
         this.nodes = nodesParam.split(',');
       }
+      else {
+        this.nodes = null;
+      }
+      this.refresh();
     });
   }
 
@@ -112,9 +120,6 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
       .pipe(debounceTime(500))
       .subscribe(e => this.onTableScroll(e));
     console.log("Listening to scroll");
-
-    //To avoid ExpressionChangedAfterItHasBeenCheckedError, loadData in next round.
-    setTimeout(() => this.loadData(), 0);
   }
 
   onTableScroll(e: Event): void {
@@ -175,6 +180,11 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
   private get shouldLoadMore(): boolean {
     if (this.isLoading || this.loadedAll) {
       return false;
+    }
+    if (!this.tableContainerRef) {
+      //When UI is not rendered completely, tableContainerRef hasn't got a value. We should load
+      //data in that case.
+      return true;
     }
     let target = this.tableContainerRef.nativeElement;
     let totalScrollableDistance = target.scrollHeight - target.clientHeight;
