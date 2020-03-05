@@ -15,7 +15,7 @@
 
       <ng-template #main>
         <div class="table-container" #tableContainer>
-          <table mat-table [dataSource]="dataSource" matSort>
+          <table mat-table [dataSource]="dataSource" matSort [matSortDisabled]="true">
             <ng-container matColumnDef="Detail">
               <th mat-header-cell *matHeaderCellDef>Detail</th>
               <td mat-cell *matCellDef="let row">
