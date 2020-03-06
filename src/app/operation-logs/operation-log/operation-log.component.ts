@@ -25,7 +25,7 @@ export class OperationLogComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private log: OperationLog,
+    @Inject(MAT_DIALOG_DATA) public log: OperationLog,
     private api: ApiService,
   ) { }
 
