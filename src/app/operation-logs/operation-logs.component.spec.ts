@@ -6,6 +6,7 @@ import { UserService } from '../services/user.service';
 import { ApiService } from '../services/api.service';
 import { SharedComponentsModule } from '../shared-components/shared-components.module';
 import { OperationLogsComponent } from './operation-logs.component';
+import { ActivatedRoute } from '@angular/router';
 
 describe('OperationLogsComponent', () => {
   let component: OperationLogsComponent;
@@ -19,6 +20,7 @@ describe('OperationLogsComponent', () => {
         SharedComponentsModule,
       ],
       providers: [
+        { provide: ActivatedRoute, useValue: {} },
         { provide: UserService, useValue: { userOptions: {} } },
         { provide: ApiService, useValue: {} },
       ],

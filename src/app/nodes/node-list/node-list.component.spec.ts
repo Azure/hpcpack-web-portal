@@ -6,7 +6,7 @@ import { MaterialModule } from '../../material.module'
 import { ApiService } from '../../services/api.service';
 import { UserService } from '../../services/user.service'
 import { NodeListComponent } from './node-list.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SharedComponentsModule } from 'src/app/shared-components/shared-components.module';
 
 describe('NodeListComponent', () => {
@@ -26,6 +26,7 @@ describe('NodeListComponent', () => {
       ],
       providers: [
         { provide: ActivatedRoute, useValue: {} },
+        { provide: Router, useValue: {} },
         { provide: UserService, useValue: { userOptions: { nodeOptions: {} } } },
         { provide: ApiService, useValue: {} },
       ]
