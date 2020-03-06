@@ -155,10 +155,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         for (let instance of data.Instances) {
           instance.Values = sampleLastInEachHour(instance.Values as DataPoint[]);
         }
-        this.jobChartLabels = data.Instances[0].Values.map(e => formatDateToHour(new Date(Date.parse(e.Key))));
+        this.jobChartLabels = data.Instances[0].Values.map(e => formatDateToHour(new Date(e.Key)));
       }
       else {
-        this.jobChartLabels = data.Instances[0].Values.map(e => formatDateToHourAndMinute(new Date(Date.parse(e.Key))));
+        this.jobChartLabels = data.Instances[0].Values.map(e => formatDateToHourAndMinute(new Date(e.Key)));
       }
       let dataSets: ChartDataSets[] = [];
       for (let instance of data.Instances) {

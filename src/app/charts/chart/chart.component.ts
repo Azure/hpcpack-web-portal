@@ -160,10 +160,10 @@ export class ChartComponent implements OnInit, OnDestroy {
         for (let instance of data.Instances) {
           instance.Values = sampleLastInEachHour(instance.Values as DataPoint[]);
         }
-        this.chartLabels = data.Instances[0].Values.map(e => formatDateToHour(new Date(Date.parse(e.Key))));
+        this.chartLabels = data.Instances[0].Values.map(e => formatDateToHour(new Date(e.Key)));
       }
       else {
-        this.chartLabels = data.Instances[0].Values.map(e => formatDateToHourAndMinute(new Date(Date.parse(e.Key))));
+        this.chartLabels = data.Instances[0].Values.map(e => formatDateToHourAndMinute(new Date(e.Key)));
       }
       this.chartData = data.Instances.map(instance => ({
         data: instance.Values.map(e => e.Value),

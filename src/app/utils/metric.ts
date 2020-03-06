@@ -1,8 +1,7 @@
 export interface DataPoint { Key: string, Value: number };
 
 function normalizeByHour(time: string): Date {
-  let t = Date.parse(time);
-  let d = new Date(t);
+  let d = new Date(time);
   d.setMinutes(0, 0, 0);
   return d;
 }
