@@ -3,10 +3,10 @@
     <mat-list>
       <mat-list-item><button mat-button (click)="showColumnSelector()">Select Columns...</button></mat-list-item>
       <mat-list-item><button mat-button (click)="refresh()">Refresh Data</button></mat-list-item>
-      <mat-list-item><button mat-button [disabled]="!anySelected" (click)="submitJobs()">Submit</button></mat-list-item>
-      <mat-list-item><button mat-button [disabled]="!anySelected" (click)="cancelJobs()">Cancel</button></mat-list-item>
-      <mat-list-item><button mat-button [disabled]="!anySelected" (click)="finishJobs()">Finish</button></mat-list-item>
-      <mat-list-item><button mat-button [disabled]="!anySelected" (click)="requeueJobs()">Requeue</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!canSubmitJobs" (click)="submitJobs()">Submit</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!canCancelJobs" (click)="cancelJobs()">Cancel</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!canCancelJobs" (click)="finishJobs()">Finish</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!canRequeueJobs" (click)="requeueJobs()">Requeue</button></mat-list-item>
     </mat-list>
   </ng-template>
 

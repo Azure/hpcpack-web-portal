@@ -270,8 +270,24 @@ export class JobsComponent implements OnInit, OnDestroy {
     }
   }
 
+  get canSubmitJobs(): boolean {
+    if (!this.anySelected) {
+      return false;
+    }
+    return this.selection.selected.every(e => e.State === 'Configuring');
+  }
+
   submitJobs(): void {
     this.operateOnSelectedJobs(job => this.api.submitJobAndWatch(job.Id, this.updateInterval, this.updateExpiredIn));
+  }
+
+  private readonly cancelableStates: Set<string> = new Set(['Configuring', 'Submitted', 'Validating', 'Queued', 'Running']);
+
+  get canCancelJobs(): boolean {
+    if (!this.anySelected) {
+      return false;
+    }
+    return this.selection.selected.every(e => this.cancelableStates.has(e.State));
   }
 
   cancelJobs(): void {
@@ -280,6 +296,13 @@ export class JobsComponent implements OnInit, OnDestroy {
 
   finishJobs(): void {
     this.operateOnSelectedJobs(job => this.api.finishJobAndWatch(job.Id, this.updateInterval, this.updateExpiredIn));
+  }
+
+  get canRequeueJobs(): boolean {
+    if (!this.anySelected) {
+      return false;
+    }
+    return this.selection.selected.every(e => e.State === 'Failed' || e.State === 'Canceled');
   }
 
   requeueJobs(): void {

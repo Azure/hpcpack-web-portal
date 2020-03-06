@@ -13,7 +13,7 @@ export class Job {
   EndTime: Date;
   StartTime: Date;
   ChangeTime: Date;
-  State: string;
+  State: string;  //TODO: Define a type of the state literals, "Failed" | "Finished" | ...
   PreviousState: string;
   MinCores: number;
   MaxCores: number;
