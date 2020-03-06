@@ -4,7 +4,8 @@ import { ChartOptions, ChartDataSets } from 'chart.js';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { MediaQueryService, WidthChangeEventHandler } from '../services/media-query.service';
-import { DataPoint, sampleLastInEachHour, formatDateToHour, formatDateToHourAndMinute } from '../utils/metric'
+import { DataPoint, sampleLastInEachHour } from '../utils/metric'
+import { formatDateToHour, formatDateToHourAndMinute } from '../utils/date'
 
 interface MeticInstanceConfig {
   name: string,

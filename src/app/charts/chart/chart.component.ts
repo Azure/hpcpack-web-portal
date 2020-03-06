@@ -6,7 +6,8 @@ import { ChartOptions, ChartDataSets } from 'chart.js';
 import { ApiService } from 'src/app/services/api.service';
 import { ClusterMetricService } from 'src/app/services/cluster-metric.service';
 import { MediaQueryService } from 'src/app/services/media-query.service';
-import { DataPoint, sampleLastInEachHour, formatDateToHour, formatDateToHourAndMinute } from 'src/app/utils/metric'
+import { DataPoint, sampleLastInEachHour } from 'src/app/utils/metric'
+import { formatDateToHour, formatDateToHourAndMinute } from 'src/app/utils/date'
 
 @Component({
   selector: 'app-chart',
