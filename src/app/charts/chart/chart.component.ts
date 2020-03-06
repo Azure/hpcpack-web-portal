@@ -167,7 +167,7 @@ export class ChartComponent implements OnInit, OnDestroy {
         this.chartLabels = data.Instances[0].Values.map(e => formatDateToHourAndMinute(new Date(e.Key)));
       }
       this.chartData = data.Instances.map(instance => ({
-        data: instance.Values.map(e => e.Value),
+        data: instance.Values.map(e => +e.Value.toFixed(2)),
         label: instance.InstanceName,
         steppedLine: 'before',
         pointRadius: 0,

@@ -165,7 +165,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       for (let instance of data.Instances) {
         let idx = this.jobMetricInstanceConfigMap.get(instance.InstanceName);
         dataSets[idx] = {
-          data: instance.Values.map(e => e.Value),
+          data: instance.Values.map(e => +e.Value.toFixed(2)),
           label: this.jobMetricInstanceConfig[idx].alias,
           steppedLine: 'before',
           pointRadius: 0,
