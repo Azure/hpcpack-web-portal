@@ -1,4 +1,5 @@
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort, Sort } from '@angular/material/sort';
@@ -132,9 +133,26 @@ export class JobsComponent implements OnInit, OnDestroy {
     }
   };
 
+  nodes: string[];
+
+  get nodesLabel(): string {
+    if (!this.nodes) {
+      return null;
+    }
+    if (this.nodes.length == 1) {
+      return `On Node ${this.nodes[0]}`;
+    }
+    return `On Nodes ${this.nodes.join(', ')}`;
+  }
+
+  get noPagination(): boolean {
+    return !!this.nodes;
+  }
+
   panelOptions: CollapsablePanelOptions;
 
   constructor(
+    private route: ActivatedRoute,
     private api: ApiService,
     private userService: UserService,
     private dialog: MatDialog,
@@ -143,16 +161,47 @@ export class JobsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.refresh();
+    this.route.queryParamMap.subscribe(map => {
+      let nodesParam = map.get('nodes');
+      this.nodes = nodesParam ? nodesParam.split(',') : null;
+      this.refresh();
+    });
   }
 
   ngOnDestroy(): void {
     this.reset();
   }
 
+  private loadData(): void {
+    if (this.nodes) {
+      this.getJobsForNodes();
+    }
+    else {
+      this.getJobs();
+    }
+  }
+
   private readonly propertiesToRead = Job.properties.map(p => p.name).join(',');
 
-  private loadData(): void {
+  private getJobsForNodes(): void {
+    if (this.pageLoading) {
+      this.pageDataSub.unsubscribe();
+    }
+    this.pageLoading = true;
+    this.pageDataSub = this.api.getJobs(null, this.nodes.join(','), this.propertiesToRead).subscribe({
+      next: res => {
+        this.pageLoading = false;
+        let jobs = res.map(e => Job.fromProperties(e.Properties));
+        this.dataSource.data = jobs;
+      },
+      error: err => {
+        this.pageLoading = false;
+        console.log(err);
+      }
+    });
+  }
+
+  private getJobs(): void {
     if (this.pageLoading) {
       this.pageDataSub.unsubscribe();
     }
@@ -182,7 +231,7 @@ export class JobsComponent implements OnInit, OnDestroy {
     console.log(e);
     this.orderBy = e.active;
     this.asc = (e.direction == "asc");
-    if (this.pageSize < this.rowCount) {
+    if (!this.noPagination && this.pageSize < this.rowCount) {
       this.refresh();
     }
   }

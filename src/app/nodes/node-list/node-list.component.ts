@@ -395,6 +395,11 @@ export class NodeListComponent implements OnInit, OnDestroy {
     oneAfterAnother(updates, 3);
   }
 
+  viewJobs(): void {
+    let names = this.selection.selected.map(e => e.Name);
+    this.router.navigate(['/jobs'], { queryParams: { nodes: names.join(',') }});
+  }
+
   viewLogs(): void {
     let names = this.selection.selected.map(e => e.Name);
     this.router.navigate(['/logs'], { queryParams: { nodes: names.join(',') }});

@@ -1,52 +1,62 @@
-<app-collapsable-panel [options]="panelOptions" class="container">
-  <ng-template #side>
-    <mat-list>
-      <mat-list-item><button mat-button (click)="showColumnSelector()">Select Columns...</button></mat-list-item>
-      <mat-list-item><button mat-button (click)="refresh()">Refresh Data</button></mat-list-item>
-      <mat-list-item><button mat-button [disabled]="!canSubmitJobs" (click)="submitJobs()">Submit</button></mat-list-item>
-      <mat-list-item><button mat-button [disabled]="!canCancelJobs" (click)="cancelJobs()">Cancel</button></mat-list-item>
-      <mat-list-item><button mat-button [disabled]="!canCancelJobs" (click)="finishJobs()">Finish</button></mat-list-item>
-      <mat-list-item><button mat-button [disabled]="!canRequeueJobs" (click)="requeueJobs()">Requeue</button></mat-list-item>
-    </mat-list>
-  </ng-template>
-
-  <ng-template #main>
-    <div class="table-container" #tableContainer>
-      <table mat-table [dataSource]="dataSource" matSort [matSortDisableClear]="true" [matSortActive]="orderBy"
-        [matSortDirection]="asc ? 'asc' : 'desc'" (matSortChange)="onSortChange($event)">
-        <ng-container matColumnDef="Select">
-          <th mat-header-cell *matHeaderCellDef>
-            <mat-checkbox (change)="masterToggle()"
-                          [checked]="masterChecked"
-                          [indeterminate]="masterIndeterminate">
-            </mat-checkbox>
-          </th>
-          <td mat-cell *matCellDef="let row">
-            <mat-checkbox (click)="$event.stopPropagation()"
-                          (change)="selection.toggle(row)"
-                          [checked]="selection.isSelected(row)">
-            </mat-checkbox>
-          </td>
-        </ng-container>
-
-        <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
-          <td mat-cell *matCellDef="let row">
-            <a *ngIf="column.name == 'Id'; else text" [routerLink]="routerLinkToJob(row)">{{columnText(row, column.name)}}</a>
-            <ng-template #text>{{columnText(row, column.name)}}</ng-template>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+<div class="column">
+  <div class="header">
+    <div class="filter" *ngIf="nodes">
+      <span>{{nodesLabel}}</span>
     </div>
+  </div>
+  <div class="body">
+    <app-collapsable-panel [options]="panelOptions" class="container">
+      <ng-template #side>
+        <mat-list>
+          <mat-list-item><button mat-button (click)="showColumnSelector()">Select Columns...</button></mat-list-item>
+          <mat-list-item><button mat-button (click)="refresh()">Refresh Data</button></mat-list-item>
+          <mat-list-item><button mat-button [disabled]="!canSubmitJobs" (click)="submitJobs()">Submit</button></mat-list-item>
+          <mat-list-item><button mat-button [disabled]="!canCancelJobs" (click)="cancelJobs()">Cancel</button></mat-list-item>
+          <mat-list-item><button mat-button [disabled]="!canCancelJobs" (click)="finishJobs()">Finish</button></mat-list-item>
+          <mat-list-item><button mat-button [disabled]="!canRequeueJobs" (click)="requeueJobs()">Requeue</button></mat-list-item>
+        </mat-list>
+      </ng-template>
 
-    <mat-progress-bar *ngIf="isLoading" mode="buffer"></mat-progress-bar>
+      <ng-template #main>
+        <div class="table-container" #tableContainer>
+          <table mat-table [dataSource]="dataSource" matSort [matSortDisableClear]="true" [matSortActive]="orderBy"
+            [matSortDirection]="asc ? 'asc' : 'desc'" (matSortChange)="onSortChange($event)">
+            <ng-container matColumnDef="Select">
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="masterToggle()"
+                              [checked]="masterChecked"
+                              [indeterminate]="masterIndeterminate">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                              (change)="selection.toggle(row)"
+                              [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
 
-    <mat-paginator [length]="rowCount" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-      [showFirstLastButtons]="true" (page)="onPageChange($event)">
-    </mat-paginator>
+            <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
+              <td mat-cell *matCellDef="let row">
+                <a *ngIf="column.name == 'Id'; else text" [routerLink]="routerLinkToJob(row)">{{columnText(row, column.name)}}</a>
+                <ng-template #text>{{columnText(row, column.name)}}</ng-template>
+              </td>
+            </ng-container>
 
-  </ng-template>
-</app-collapsable-panel>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+        <mat-progress-bar *ngIf="isLoading" mode="buffer"></mat-progress-bar>
+
+        <mat-paginator *ngIf="!noPagination" [length]="rowCount" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+          [showFirstLastButtons]="true" (page)="onPageChange($event)">
+        </mat-paginator>
+
+      </ng-template>
+    </app-collapsable-panel>
+  </div>
+</div>
+
