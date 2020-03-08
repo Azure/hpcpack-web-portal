@@ -74,8 +74,8 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
   //Cursor for loadMoreData, not simply meaning "now".
   private currentTime: Date;
 
-  //Get 7 days' log in one time
-  private readonly timeSpan = 1000 * 3600 * 24 * 7;
+  //Get 14 days' log in one time
+  private readonly timeSpan = 1000 * 3600 * 24 * 14;
 
   panelOptions: CollapsablePanelOptions;
 
