@@ -177,7 +177,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
     this.loadingData = true;
-    this.dataSubscription = this.api.getNodes(null, null, null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
+    this.dataSubscription = this.api.getNodes(null, null, null, null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
       next: res => {
         this.loadingData = false;
         this.rowCount = Number(res.headers.get('x-ms-row-count'));

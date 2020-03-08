@@ -157,7 +157,7 @@ export class JobsComponent implements OnInit, OnDestroy {
       this.pageDataSub.unsubscribe();
     }
     this.pageLoading = true;
-    this.pageDataSub = this.api.getJobs(null, this.propertiesToRead, null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
+    this.pageDataSub = this.api.getJobs(null, null, this.propertiesToRead, null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
       next: res => {
         this.pageLoading = false;
         this.rowCount = Number(res.headers.get('x-ms-row-count'));
