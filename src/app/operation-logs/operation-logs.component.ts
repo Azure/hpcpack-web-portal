@@ -62,7 +62,7 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
     if (this.nodes.length == 1) {
       return `For Node ${this.nodes[0]}`;
     }
-    return `For Nodes ${this.nodes.join(',')}`;
+    return `For Nodes ${this.nodes.join(', ')}`;
   }
 
   //Whether the first log is being requested
