@@ -14,6 +14,7 @@
           <mat-list-item><button mat-button [disabled]="!canCancelJobs" (click)="cancelJobs()">Cancel</button></mat-list-item>
           <mat-list-item><button mat-button [disabled]="!canCancelJobs" (click)="finishJobs()">Finish</button></mat-list-item>
           <mat-list-item><button mat-button [disabled]="!canRequeueJobs" (click)="requeueJobs()">Requeue</button></mat-list-item>
+          <mat-list-item><button mat-button [disabled]="!anySelected" (click)="viewNodes()">View Allocated Nodes</button></mat-list-item>
         </mat-list>
       </ng-template>
 

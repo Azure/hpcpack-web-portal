@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort, Sort } from '@angular/material/sort';
@@ -153,6 +153,7 @@ export class JobsComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private api: ApiService,
     private userService: UserService,
     private dialog: MatDialog,
@@ -356,5 +357,10 @@ export class JobsComponent implements OnInit, OnDestroy {
 
   requeueJobs(): void {
     this.operateOnSelectedJobs(job => this.api.requeueJobAndWatch(job.Id, this.updateInterval, this.updateExpiredIn));
+  }
+
+  viewNodes(): void {
+    let ids = this.selection.selected.map(e => e.Id);
+    this.router.navigate(['/nodes'], { queryParams: { jobs: ids.join(',') }});
   }
 }

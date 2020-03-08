@@ -127,8 +127,25 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   nodeGroup: string;
 
+  get nodeGroupLabel(): string {
+    return `In Group ${this.nodeGroup}`;
+  }
+
+  jobIds: string[];
+
+  get jobIdsLabel(): string {
+    if (!this.jobIds) {
+      return null;
+    }
+    return this.jobIds.length > 1 ? `For Jobs ${this.jobIds.join(', ')}` : `For Job ${this.jobIds[0]}`;
+  }
+
+  get hasFilter(): boolean {
+    return !!this.nodeGroup || !!this.jobIds;
+  }
+
   get noPagination(): boolean {
-    return !!this.nodeGroup;
+    return this.hasFilter;
   }
 
   panelOptions: CollapsablePanelOptions;
@@ -146,6 +163,8 @@ export class NodeListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(map => {
       this.nodeGroup = map.get('group');
+      let jobIds = map.get('jobs');
+      this.jobIds = jobIds ? jobIds.split(',') : null;
       this.refresh();
     });
   }
@@ -172,6 +191,25 @@ export class NodeListComponent implements OnInit, OnDestroy {
     );
   }
 
+  private getNodesForJobs(): void {
+    if (this.loadingData) {
+      this.dataSubscription.unsubscribe();
+    }
+    this.loadingData = true;
+    this.dataSubscription = this.api.getNodes(null, null, this.jobIds.join(',')).subscribe({
+      next: res => {
+        this.loadingData = false;
+        this.rowCount = res.length;
+        let nodes = res.map(e => Node.fromProperties(e.Properties));
+        this.dataSource.data = nodes;
+      },
+      error: err => {
+        this.loadingData = false;
+        console.log(err);
+      }
+    });
+  }
+
   private getNodes(): void {
     if (this.loadingData) {
       this.dataSubscription.unsubscribe();
@@ -194,6 +232,9 @@ export class NodeListComponent implements OnInit, OnDestroy {
   private loadData(): void {
     if (this.nodeGroup) {
       this.getNodesInGroup();
+    }
+    else if (this.jobIds) {
+      this.getNodesForJobs();
     }
     else {
       this.getNodes();

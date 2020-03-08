@@ -1,7 +1,8 @@
 <div class="column">
   <div class="header">
-    <div class="filter" *ngIf="nodeGroup">
-      <span>In Group {{nodeGroup}}</span>
+    <div class="filter" *ngIf="hasFilter">
+      <span *ngIf="nodeGroup">{{nodeGroupLabel}}</span>
+      <span *ngIf="jobIds">{{jobIdsLabel}}</span>
     </div>
   </div>
   <div class="body">
