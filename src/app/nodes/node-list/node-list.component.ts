@@ -212,7 +212,6 @@ export class NodeListComponent implements OnInit, OnDestroy {
     this.refresh();
   }
 
-
   //TODO: change URL accordingly?
   onSortChange(e: Sort): void {
     console.log(e);
@@ -286,8 +285,16 @@ export class NodeListComponent implements OnInit, OnDestroy {
     }
   }
 
+  get canBringOnline(): boolean {
+    return this.anySelected && this.selection.selected.every(e => e.State === 'Offline');
+  }
+
   bringOnline(): void {
     this.operateOnSelectedNodes(node => this.api.bringNodeOnlineAndWatch(node.Name, this.updateInterval, this.updateExpiredIn));
+  }
+
+  get canTakeOffline(): boolean {
+    return this.anySelected && this.selection.selected.every(e => e.State === 'Online');
   }
 
   takeOffline(): void {

@@ -12,8 +12,8 @@
           <mat-list-item><button mat-button (click)="showColumnSelector()">Select Columns...</button></mat-list-item>
           <mat-list-item><button mat-button (click)="refresh()">Refresh Data</button></mat-list-item>
           <ng-container *ngIf="adminView">
-            <mat-list-item><button mat-button [disabled]="!anySelected" (click)="bringOnline()">Bring Online</button></mat-list-item>
-            <mat-list-item><button mat-button [disabled]="!anySelected" (click)="takeOffline()">Take Offline</button></mat-list-item>
+            <mat-list-item><button mat-button [disabled]="!canBringOnline" (click)="bringOnline()">Bring Online</button></mat-list-item>
+            <mat-list-item><button mat-button [disabled]="!canTakeOffline" (click)="takeOffline()">Take Offline</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!anySelected" (click)="runCommand()">Run Command...</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!anySelected" (click)="manageGroups()">Manage Groups...</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!anySelected" (click)="viewJobs()">View Running Jobs</button></mat-list-item>
