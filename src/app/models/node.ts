@@ -1,24 +1,23 @@
-import { RestProperty } from '../services/api.service'
-import { convert } from './converter'
+import { Node as INode, NodeState, NodeHealth, NodeServiceRole } from '../services/api.service'
+import { convert2, Strings } from './converter'
 
-export class Node {
-  Availability: string;
-  AzureServiceName: string;
-  CpuSpeed: number;
-  DnsSuffix: string;
-  Guid: string;
-  Id: number;
-  JobType: string;
+export { Node as INode, NodeState, NodeHealth, NodeServiceRole } from '../services/api.service'
+
+export class Node implements INode {
+  Name: string;
+  State: NodeState;
+  Health: NodeHealth;
+  Template: string;
   Location: string;
   MemorySize: number;
-  Name: string;
-  NodeGroups: string[];
-  NumCores: number;
-  NumSockets: number;
-  OfflineTime: Date;
-  OnlineTime: Date;
-  Reachable: boolean;
-  State: string;
+  Cores: number;
+  Sockets: number;
+  HpcPackVersion: string;
+  OnAzure: boolean;
+  Groups: Array<string>;
+  Roles: Array<string>;
+  InstalledServiceRoles: Array<NodeServiceRole>;
+  ActiveServiceRoles: Array<NodeServiceRole>;
 
   update(other: Node): void {
     for (let prop of Node.properties) {
@@ -26,39 +25,29 @@ export class Node {
     }
   }
 
-  static toStringArray(value: string): string[] {
-    if (value === undefined) {
-      return undefined;
-    }
-    if (!value) {
-      return [];
-    }
-    return value.split(',');
-  }
-
   static readonly properties = [
-    { name: 'Availability', label: 'Availability', type: String },
-    { name: 'AzureServiceName', label: 'AzureService Name', type: String },
-    { name: 'CpuSpeed', label: 'Cpu Speed', type: Number },
-    { name: 'DnsSuffix', label: 'Dns Suffix', type: String },
-    { name: 'Guid', label: 'Guid', type: String },
-    { name: 'Id', label: 'Id', type: Number },
-    { name: 'JobType', label: 'Job Type', type: String },
-    { name: 'Location', label: 'Location', type: String },
-    { name: 'MemorySize', label: 'Memory Size', type: Number },
     { name: 'Name', label: 'Name', type: String },
-    { name: 'NodeGroups', label: 'Node Groups', type: Node.toStringArray },
-    { name: 'NumCores', label: 'Cores', type: Number },
-    { name: 'NumSockets', label: 'Sockets', type: Number },
-    { name: 'OfflineTime', label: 'Offline Time', type: Date },
-    { name: 'OnlineTime', label: 'Online Time', type: Date },
-    { name: 'Reachable', label: 'Reachable', type: Boolean },
     { name: 'State', label: 'State', type: String },
-  ];
+    { name: 'Health', label: 'Health', type: String },
+    { name: 'Template', label: 'Template', type: String },
+    { name: 'Location', label: 'Location', type: String },
+    { name: 'MemorySize', label: 'MemorySize', type: Number },
+    { name: 'Cores', label: 'Cores', type: Number },
+    { name: 'Sockets', label: 'Sockets', type: Number },
+    { name: 'HpcPackVersion', label: 'HpcPackVersion', type: String },
+    { name: 'OnAzure', label: 'OnAzure', type: Boolean },
+    { name: 'Groups', label: 'Groups', type: Strings },
+    { name: 'Roles', label: 'Roles', type: Strings },
+    { name: 'InstalledServiceRoles', label: 'InstalledServiceRoles', type: Strings },
+    { name: 'ActiveServiceRoles', label: 'ActiveServiceRoles', type: Strings },
+  ].sort((a, b) => {
+    if (a.label == b.label) {
+      return 0;
+    }
+    return a.label < b.label ? -1 : 1;
+  });
 
-  static readonly propertyMap = new Map(Node.properties.map(p => [p.name, p]));
-
-  static fromProperties(properties: Array<RestProperty>): Node {
-    return convert(properties, Node, Node.propertyMap);
+  static fromJson(object: any): Node {
+    return convert2(object, Node, Node.properties);
   }
 }

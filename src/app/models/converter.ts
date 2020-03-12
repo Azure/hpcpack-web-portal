@@ -43,7 +43,12 @@ export interface PropertyDefinition2 {
   type: TypeConverter2<any>;
 }
 
-//Convert JSON object to normalized TS object.
+//It serves as a type indicator in PropertyDefinition2
+export function Strings(input: string[]): string[] {
+  return input;
+}
+
+//Convert a JSON object to a normalized TS object.
 export function convert2<T>(object: any, ctor: new () => T, propertyDefinitions: PropertyDefinition2[]): T {
   let newObj = new ctor();
   for (let p of propertyDefinitions) {
@@ -51,7 +56,7 @@ export function convert2<T>(object: any, ctor: new () => T, propertyDefinitions:
     if (p.type == Date) {
       (newObj as any)[p.name] = new Date(value);
     }
-    else if (p.type == String || p.type == Number || p.type == Boolean) {
+    else if (p.type == String || p.type == Number || p.type == Boolean || p.type == Strings) {
       (newObj as any)[p.name] = value;
     }
     else {

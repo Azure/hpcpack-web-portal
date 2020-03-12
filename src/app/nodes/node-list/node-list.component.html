@@ -44,7 +44,7 @@
             <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
               <td mat-cell *matCellDef="let node">
-                <ng-container *ngIf="column.name == 'NodeGroups'; else text">
+                <ng-container *ngIf="column.name == 'Groups'; else text">
                   <a *ngFor="let group of node[column.name]" [routerLink]="['.']" [queryParams]="{group: group}" class="group-link">{{group}}</a>
                 </ng-container>
                 <ng-template #text>{{columnText(node, column.name)}}</ng-template>

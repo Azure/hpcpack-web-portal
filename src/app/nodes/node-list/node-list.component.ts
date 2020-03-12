@@ -27,7 +27,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   selection = new SelectionModel<Node>(true);
 
-  private static readonly defaultSelectedColumns = ['Name', 'State', 'Reachable', 'NodeGroups'];
+  private static readonly defaultSelectedColumns = ['Name', 'State', 'Health', 'Template', 'Groups'];
 
   private userOptions = this.userService.userOptions.nodeOptions;
 
@@ -102,9 +102,9 @@ export class NodeListComponent implements OnInit, OnDestroy {
     return this.pageIndex * this.pageSize;
   }
 
-  private updateInterval = 1200;
+  private updateInterval = 5 * 1000;
 
-  private updateExpiredIn = 36 * 1000;
+  private updateExpiredIn = 30 * 60 * 1000;
 
   private subscription: Subscription = new Subscription();
 
@@ -145,7 +145,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   get noPagination(): boolean {
-    return this.hasFilter;
+    return true;
   }
 
   panelOptions: CollapsablePanelOptions;
@@ -173,53 +173,16 @@ export class NodeListComponent implements OnInit, OnDestroy {
     this.reset();
   }
 
-  private getNodesInGroup(): void {
-    this.loadingData = true;
-    this.dataSubscription = this.api.getNodesOfGroup(this.nodeGroup).pipe(
-      mergeMap(names => this.api.getNodes(null, names.join(',')))
-    ).subscribe(
-      data => {
-        this.loadingData = false;
-        this.rowCount = data.length;
-        let nodes = data.map(e => Node.fromProperties(e.Properties));
-        this.dataSource.data = nodes;
-      },
-      error => {
-        this.loadingData = false;
-        console.log(error);
-      }
-    );
-  }
-
-  private getNodesForJobs(): void {
+  private getNodes(group?: string, jobs?: string): void {
     if (this.loadingData) {
       this.dataSubscription.unsubscribe();
     }
     this.loadingData = true;
-    this.dataSubscription = this.api.getNodes(null, null, this.jobIds.join(',')).subscribe({
+    this.dataSubscription = this.api.getClusterNodes(null, null, jobs, group).subscribe({
       next: res => {
         this.loadingData = false;
         this.rowCount = res.length;
-        let nodes = res.map(e => Node.fromProperties(e.Properties));
-        this.dataSource.data = nodes;
-      },
-      error: err => {
-        this.loadingData = false;
-        console.log(err);
-      }
-    });
-  }
-
-  private getNodes(): void {
-    if (this.loadingData) {
-      this.dataSubscription.unsubscribe();
-    }
-    this.loadingData = true;
-    this.dataSubscription = this.api.getNodes(null, null, null, null, null, this.orderBy, this.asc, this.startRow, this.pageSize, null, 'response').subscribe({
-      next: res => {
-        this.loadingData = false;
-        this.rowCount = Number(res.headers.get('x-ms-row-count'));
-        let nodes = res.body.map(e => Node.fromProperties(e.Properties));
+        let nodes = res.map(e => Node.fromJson(e));
         this.dataSource.data = nodes;
       },
       error: err => {
@@ -231,10 +194,10 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   private loadData(): void {
     if (this.nodeGroup) {
-      this.getNodesInGroup();
+      this.getNodes(this.nodeGroup);
     }
     else if (this.jobIds) {
-      this.getNodesForJobs();
+      this.getNodes(null, this.jobIds.join(','));
     }
     else {
       this.getNodes();
@@ -314,35 +277,21 @@ export class NodeListComponent implements OnInit, OnDestroy {
       this.dataSource.data.forEach(node => this.selection.select(node));
   }
 
-  private updateNodes(nodes: Node[]): void {
-    let pairs: [number, Node][] = nodes.map(n => [n.Id, n]);
-    let idToNode = new Map<number, Node>(pairs);
-    for (let node of this.dataSource.data) {
-      let update = idToNode.get(node.Id);
-      if (update) {
-        node.update(update)
-      }
+  private operateOnSelectedNodes(operate: (node: Node) => Observable<Node>): void {
+    for (let node of this.selection.selected) {
+      let sub = operate(node).subscribe(data => {
+        node.update(Node.fromJson(data));
+      });
+      this.subscription.add(sub);
     }
   }
 
   bringOnline(): void {
-    let names = this.selection.selected.map(node => node.Name);
-    let sub = this.api.bringNodesOnlineAndWatch(names, this.updateInterval, this.updateExpiredIn).subscribe({
-      next: (nodes) => {
-        this.updateNodes(nodes);
-      }
-    });
-    this.subscription.add(sub);
+    this.operateOnSelectedNodes(node => this.api.bringNodeOnlineAndWatch(node.Name, this.updateInterval, this.updateExpiredIn));
   }
 
   takeOffline(): void {
-    let names = this.selection.selected.map(node => node.Name);
-    let sub = this.api.takeNodesOfflineAndWatch(names, this.updateInterval, this.updateExpiredIn).subscribe({
-      next: (nodes) => {
-        this.updateNodes(nodes);
-      }
-    });
-    this.subscription.add(sub);
+    this.operateOnSelectedNodes(node => this.api.takeNodeOfflineAndWatch(node.Name, this.updateInterval, this.updateExpiredIn));
   }
 
   showColumnSelector(): void {
@@ -378,7 +327,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
   private makeGroupSelectorItems(groups: NodeGroup[]): GroupSeletorItem[] {
     let groupCount = new Map<string, number>(groups.map(g => [g.Name, 0]));
     for (let node of this.selection.selected) {
-      for (let g of node.NodeGroups) {
+      for (let g of node.Groups) {
         let v = groupCount.get(g);
         if (v !== undefined) {
           groupCount.set(g, v + 1);
@@ -418,15 +367,15 @@ export class NodeListComponent implements OnInit, OnDestroy {
       //Update UI instantly. NOTE:
       //If anything goes wrong, then user has to "refresh data" to get consistent with server
       for (let node of nodes) {
-        let idx = node.NodeGroups.indexOf(group.name);
+        let idx = node.Groups.indexOf(group.name);
         if (group.selected) {
           if (idx < 0) {
-            node.NodeGroups.push(group.name);
+            node.Groups.push(group.name);
           }
         }
         else {
           if (idx >= 0) {
-            node.NodeGroups.splice(idx, 1);
+            node.Groups.splice(idx, 1);
           }
         }
       }

@@ -1,12 +1,14 @@
 import { Injectable, Optional, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subscriber } from 'rxjs'
-import { DefaultService, BASE_PATH, Configuration, NodeMetric, NodeAvailability, MetricData } from '../api-client'
-import { Node } from '../models/node'
+import { DefaultService, BASE_PATH, Configuration, NodeMetric, NodeAvailability, MetricData, NodeState, RestProperty } from '../api-client'
+import { Node, INode } from '../models/node'
 import { Job } from '../models/job'
 import { ILooper, Looper, ObservableCreator } from './looper.service'
 
 export * from '../api-client'
+
+export type NodeOperation = 'start' | 'stop' | 'reboot' | 'shutdown' | 'bringOnline' | 'takeOffline';
 
 @Injectable({
   providedIn: 'root'
@@ -75,30 +77,19 @@ export class ApiService extends DefaultService {
     });
   }
 
-  doNodeOperationAndWatch(operation: 'online' | 'offline', targetState: string, nodeNames: string[], updateInterval: number, updateExpiredIn: number): Observable<Node[]> {
-    return new Observable<Node[]>(subscriber => {
-      this.operateNodes(operation, nodeNames).subscribe(_ => {
-        let looper = Looper.start(
-          this.getNodes(null, nodeNames.join(',')),
+  doNodeOperationAndWatch(nodeName: string, operation: NodeOperation, targetState: NodeState, updateInterval: number, updateExpiredIn: number): Observable<Node> {
+    return new Observable<Node>(subscriber => {
+      let looper: Looper<INode>;
+      let sub = this.operateClusterNode(nodeName, operation).subscribe(_ => {
+        looper = Looper.start(
+          this.getClusterNode(nodeName),
           {
             next: (data, looper) => {
-              let nodes = data.map(e => Node.fromProperties(e.Properties));
-              subscriber.next(nodes);
+              let node = Node.fromJson(data);
+              subscriber.next(node);
 
-              //Check target status and filter out nodes that needs further check.
-              let names: string[] = [];
-              for (let node of nodes) {
-                if (node.State !== targetState) {
-                  names.push(node.Name);
-                }
-              }
-
-              //Do next query or finish.
-              if (names.length == 0) {
+              if (node.State === targetState) {
                 looper.stop();
-              }
-              else {
-                looper.observable = this.getNodes(null, names.join(','));
               }
             },
             stop: () => {
@@ -108,17 +99,22 @@ export class ApiService extends DefaultService {
           updateInterval,
           updateExpiredIn
         );
-        return () => looper.stop();
       });
+      return () => {
+        sub.unsubscribe();
+        if (looper) {
+          looper.stop();
+        }
+      }
     });
   }
 
-  bringNodesOnlineAndWatch(names: string[], updateInterval: number, updateExpiredIn: number): Observable<Node[]> {
-    return this.doNodeOperationAndWatch('online', 'Online', names, updateInterval, updateExpiredIn);
+  bringNodeOnlineAndWatch(name: string, updateInterval: number, updateExpiredIn: number): Observable<Node> {
+    return this.doNodeOperationAndWatch(name, 'bringOnline', 'Online', updateInterval, updateExpiredIn);
   }
 
-  takeNodesOfflineAndWatch(names: string[], updateInterval: number, updateExpiredIn: number): Observable<Node[]> {
-    return this.doNodeOperationAndWatch('offline', 'Offline', names, updateInterval, updateExpiredIn);
+  takeNodeOfflineAndWatch(name: string, updateInterval: number, updateExpiredIn: number): Observable<Node> {
+    return this.doNodeOperationAndWatch(name, 'takeOffline', 'Offline', updateInterval, updateExpiredIn);
   }
 
   doJobOperationAndWatch(operation: Observable<any>, jobId: number, updateInterval: number, updateExpiredIn: number): Observable<Job> {
