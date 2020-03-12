@@ -123,8 +123,9 @@ export class ApiService extends DefaultService {
 
   doJobOperationAndWatch(operation: Observable<any>, jobId: number, updateInterval: number, updateExpiredIn: number): Observable<Job> {
     return new Observable<Job>(subscriber => {
-      operation.subscribe(_ => {
-        let looper = Looper.start(
+      let looper: Looper<RestProperty[]>;
+      let sub = operation.subscribe(_ => {
+        looper = Looper.start(
           this.getJob(jobId),
           {
             next: (data, looper) => {
@@ -144,6 +145,12 @@ export class ApiService extends DefaultService {
         );
         return () => looper.stop();
       });
+      return () => {
+        sub.unsubscribe();
+        if (looper) {
+          looper.stop();
+        }
+      }
     });
   }
 
