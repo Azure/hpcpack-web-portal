@@ -249,6 +249,9 @@ export class NodeListComponent implements OnInit, OnDestroy {
     if (v instanceof Date) {
       return v.toLocaleString();
     }
+    else if (v instanceof Array) {
+      return v.join(', ');
+    }
     return v;
   }
 

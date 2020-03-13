@@ -13,7 +13,6 @@ export class Node implements INode {
   Cores: number;
   Sockets: number;
   HpcPackVersion: string;
-  OnAzure: boolean;
   Groups: Array<string>;
   Roles: Array<string>;
   InstalledServiceRoles: Array<NodeServiceRole>;
@@ -31,15 +30,14 @@ export class Node implements INode {
     { name: 'Health', label: 'Health', type: String },
     { name: 'Template', label: 'Template', type: String },
     { name: 'Location', label: 'Location', type: String },
-    { name: 'MemorySize', label: 'MemorySize', type: Number },
+    { name: 'MemorySize', label: 'Memory Size', type: Number },
     { name: 'Cores', label: 'Cores', type: Number },
     { name: 'Sockets', label: 'Sockets', type: Number },
-    { name: 'HpcPackVersion', label: 'HpcPackVersion', type: String },
-    { name: 'OnAzure', label: 'OnAzure', type: Boolean },
+    { name: 'HpcPackVersion', label: 'HPC Pack Version', type: String },
     { name: 'Groups', label: 'Groups', type: Strings },
     { name: 'Roles', label: 'Roles', type: Strings },
-    { name: 'InstalledServiceRoles', label: 'InstalledServiceRoles', type: Strings },
-    { name: 'ActiveServiceRoles', label: 'ActiveServiceRoles', type: Strings },
+    { name: 'InstalledServiceRoles', label: 'Installed Service Roles', type: Strings },
+    { name: 'ActiveServiceRoles', label: 'Active Service Roles', type: Strings },
   ].sort((a, b) => {
     if (a.label == b.label) {
       return 0;
