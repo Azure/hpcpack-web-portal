@@ -12,7 +12,9 @@
         [options]="stateChartOptions"
         [labels]="stateChartLabels"
         [colors]="stateChartColors"
-        [data]="stateChartData">
+        [data]="stateChartData"
+        (chartHover)="chartHover($event)"
+        (chartClick)="stateChartClick($event)">
       </canvas>
     </div>
     <div class="node health chart">
@@ -21,7 +23,9 @@
         [options]="healthChartOptions"
         [labels]="healthChartLabels"
         [colors]="healthChartColors"
-        [data]="healthChartData">
+        [data]="healthChartData"
+        (chartHover)="chartHover($event)"
+        (chartClick)="healthChartClick($event)">
       </canvas>
     </div>
   </div>

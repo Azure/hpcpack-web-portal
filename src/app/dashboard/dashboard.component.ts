@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Label, MultiDataSet, Color, BaseChartDirective } from 'ng2-charts';
+import { Router } from '@angular/router';
+import { Label, Color, BaseChartDirective } from 'ng2-charts';
 import { ChartOptions, ChartDataSets } from 'chart.js';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../services/api.service';
@@ -188,6 +189,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private router: Router,
     private api: ApiService,
     public mediaQuery: MediaQueryService,
   ) {}
@@ -244,6 +246,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
       this.subscription = null;
+    }
+  }
+
+  chartHover(e: any): void {
+    e.event.target.style.cursor = 'pointer'
+  }
+
+  stateChartClick(e: any): void {
+    if (e.active.length > 0) {
+      let idx: number = e.active[0]._index;
+      let value = this.stateChartLabels[idx];
+      this.router.navigate(['/nodes'], { queryParams: { state: value }});
+    }
+  }
+
+  healthChartClick(e: any): void {
+    if (e.active.length > 0) {
+      let idx: number = e.active[0]._index;
+      let value = this.healthChartLabels[idx];
+      this.router.navigate(['/nodes'], { queryParams: { health: value }});
     }
   }
 }

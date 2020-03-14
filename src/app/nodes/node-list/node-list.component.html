@@ -1,6 +1,8 @@
 <div class="column">
   <div class="header">
     <div class="filter" *ngIf="hasFilter">
+      <span *ngIf="nodeState">{{nodeStateLabel}}</span>
+      <span *ngIf="nodeHealth">{{nodeHealthLabel}}</span>
       <span *ngIf="nodeGroup">{{nodeGroupLabel}}</span>
       <span *ngIf="jobIds">{{jobIdsLabel}}</span>
     </div>

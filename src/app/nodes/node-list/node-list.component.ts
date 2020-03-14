@@ -4,7 +4,7 @@ import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort, Sort } from '@angular/material/sort';
 import { Subscription, Observable } from 'rxjs'
-import { Node } from '../../models/node'
+import { Node, NodeState, NodeHealth } from '../../models/node'
 import { UserService } from '../../services/user.service'
 import { ApiService, NodeGroup, NodeGroupOperation } from '../../services/api.service';
 import { oneAfterAnother } from 'src/app/utils/looper';
@@ -124,6 +124,18 @@ export class NodeListComponent implements OnInit, OnDestroy {
     }
   };
 
+  nodeState: NodeState;
+
+  get nodeStateLabel(): string {
+    return `In State ${this.nodeState}`;
+  }
+
+  nodeHealth: NodeHealth;
+
+  get nodeHealthLabel(): string {
+    return `In Health State ${this.nodeHealth}`;
+  }
+
   nodeGroup: string;
 
   get nodeGroupLabel(): string {
@@ -140,7 +152,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   get hasFilter(): boolean {
-    return !!this.nodeGroup || !!this.jobIds;
+    return !!this.nodeGroup || !!this.jobIds || !!this.nodeState || !!this.nodeHealth;
   }
 
   get noPagination(): boolean {
@@ -161,6 +173,8 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(map => {
+      this.nodeState = map.get('state') as NodeState;
+      this.nodeHealth = map.get('health') as NodeHealth;
       this.nodeGroup = map.get('group');
       let jobIds = map.get('jobs');
       this.jobIds = jobIds ? jobIds.split(',') : null;
@@ -172,12 +186,12 @@ export class NodeListComponent implements OnInit, OnDestroy {
     this.reset();
   }
 
-  private getNodes(group?: string, jobs?: string): void {
+  private getNodes(group?: string, jobs?: string, state?: NodeState, health?: NodeHealth): void {
     if (this.loadingData) {
       this.dataSubscription.unsubscribe();
     }
     this.loadingData = true;
-    this.dataSubscription = this.api.getClusterNodes(null, null, jobs, group).subscribe({
+    this.dataSubscription = this.api.getClusterNodes(null, null, jobs, group, state, health).subscribe({
       next: res => {
         this.loadingData = false;
         this.rowCount = res.length;
@@ -197,6 +211,12 @@ export class NodeListComponent implements OnInit, OnDestroy {
     }
     else if (this.jobIds) {
       this.getNodes(null, this.jobIds.join(','));
+    }
+    else if (this.nodeState) {
+      this.getNodes(null, null, this.nodeState);
+    }
+    else if (this.nodeHealth) {
+      this.getNodes(null, null, null, this.nodeHealth);
     }
     else {
       this.getNodes();
