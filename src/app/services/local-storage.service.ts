@@ -18,14 +18,27 @@ export class LocalStorageService {
     return value;
   }
 
+  //Note: JSON.stringify(undefined) returns string "undefined", which can not be JSON.parse back
+  //to a value of undefined, but instead throw an error!
   protected setProperty(key: string, value: any, persistent = false): void {
-    this.store.set(key, value);
-    let json = JSON.stringify(value);
-    if (persistent) {
-      localStorage.setItem(key, json);
+    if (value === undefined) {
+      this.store.delete(key);
+      if (persistent) {
+        localStorage.removeItem(key);
+      }
+      else {
+        sessionStorage.removeItem(key);
+      }
     }
     else {
-      sessionStorage.setItem(key, json);
+      this.store.set(key, value);
+      let json = JSON.stringify(value);
+      if (persistent) {
+        localStorage.setItem(key, json);
+      }
+      else {
+        sessionStorage.setItem(key, json);
+      }
     }
   }
 }
