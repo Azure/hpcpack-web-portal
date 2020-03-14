@@ -38,6 +38,10 @@ export class AppComponent {
     };
   }
 
+  clearLocalSettings(): void {
+    this.userService.userOptions = undefined;
+  }
+
   logout(): void {
     this.authService.reset();
     this.router.navigate(['/login']);
