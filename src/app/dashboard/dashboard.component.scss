@@ -3,11 +3,35 @@
   flex-direction: column;
 }
 
-:host-context(.app.big, .app.median) .node {
-  width: 50%;
-  max-width: 600px;
+.row {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
 }
 
-:host-context(.app.big, .app.median) .job {
-  max-width: 1200px;
+.node {
+  flex: 1;
+  width: 50%;
+  box-sizing: border-box;
+}
+
+.job {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.chart {
+  padding: 2em;
+}
+
+:host-context(.app.small) .row {
+  flex-direction: column;
+}
+
+:host-context(.app.small) .node {
+  width: 100%;
+}
+
+:host-context(.app.small) .chart {
+  padding: 0;
 }

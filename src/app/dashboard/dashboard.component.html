@@ -1,20 +1,39 @@
+<!--
+  IMPORTANT NOTE:
+  All input objects to ng2-charts baseChart, like stateChartOptions, stateChartLabels, stateChartColors
+  and stateChartData etc., must NOT be changed once set. You only change an object's properties, but
+  never assign a new object to an input property, or you'll be in trouble.
+-->
 <div class="container">
-  <div class="node">
-    <canvas baseChart
-      chartType="doughnut"
-      [options]="nodeChartOptions"
-      [labels]="nodeChartLabels"
-      [colors]="nodeChartColors"
-      [data]="nodeChartData">
-    </canvas>
+  <div class="row">
+    <div class="node state chart">
+      <canvas baseChart
+        chartType="doughnut"
+        [options]="stateChartOptions"
+        [labels]="stateChartLabels"
+        [colors]="stateChartColors"
+        [data]="stateChartData">
+      </canvas>
+    </div>
+    <div class="node health chart">
+      <canvas baseChart
+        chartType="doughnut"
+        [options]="healthChartOptions"
+        [labels]="healthChartLabels"
+        [colors]="healthChartColors"
+        [data]="healthChartData">
+      </canvas>
+    </div>
   </div>
-  <div class="job">
-    <canvas baseChart #jobchart
-      chartType="line"
-      [options]="jobChartOptions"
-      [labels]="jobChartLabels"
-      [colors]="jobChartColors"
-      [datasets]="jobChartData">
-    </canvas>
+  <div class="row">
+    <div class="job chart">
+      <canvas baseChart #jobchart
+        chartType="line"
+        [options]="jobChartOptions"
+        [labels]="jobChartLabels"
+        [colors]="jobChartColors"
+        [datasets]="jobChartData">
+      </canvas>
+    </div>
   </div>
 </div>

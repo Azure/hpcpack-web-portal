@@ -7,10 +7,17 @@ import { MediaQueryService, WidthChangeEventHandler } from '../services/media-qu
 import { DataPoint, sampleLastInEachHour } from '../utils/metric'
 import { formatDateToHour, formatDateToHourAndMinute } from '../utils/date'
 
-interface MeticInstanceConfig {
+interface ChartConfigItem {
   name: string,
-  alias: string,
+  alias?: string,
   color: string,
+}
+
+function setArray<T>(value: Array<T>, newValue: Array<T>): void {
+  value.length = 0;
+  for (let e of newValue) {
+    value.push(e);
+  }
 }
 
 @Component({
@@ -19,27 +26,72 @@ interface MeticInstanceConfig {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  nodeChartLabels: Label[] = ['Available', 'Unavailable'];
-
-  nodeChartColors: Color[] = [
-    {
-      backgroundColor: ['green', 'yellow']
-    },
+  private readonly nodeStateStatConfig: ChartConfigItem[] = [
+    { name: 'Unknown', color: 'gray' },
+    { name: 'Provisioning', color: 'lightgreen' },
+    { name: 'Offline', color: 'blue' },
+    { name: 'Starting', color: 'lightblue' },
+    { name: 'Online', color: 'green' },
+    { name: 'Draining', color: 'lightslategray' },
+    { name: 'Rejected', color: 'lightyellow' },
+    { name: 'Removing', color: 'lightcoral' },
+    { name: 'NotDeployed', color: 'lightgray' },
+    { name: 'Stopping', color: 'lightskyblue' },
   ]
 
-  nodeChartData: MultiDataSet = [];
+  private readonly nodeStateStatConfigMap: Map<string, ChartConfigItem> = new Map<string, ChartConfigItem>(this.nodeStateStatConfig.map(e => [e.name, e]));
 
-  nodeChartOptions: ChartOptions = {
+  private readonly nodeHealthStatConfig: ChartConfigItem[] = [
+    { name: 'OK', color: 'green' },
+    { name: 'Warning', color: 'yellow' },
+    { name: 'Error', color: 'red' },
+    { name: 'Transitional', color: 'blue' },
+    { name: 'Unapproved', color: 'gray' },
+  ]
+
+  private readonly nodeHealthStatConfigMap: Map<string, ChartConfigItem> = new Map<string, ChartConfigItem>(this.nodeHealthStatConfig.map(e => [e.name, e]));
+
+  get stateChartReady(): boolean {
+    return this.stateChartData && this.stateChartData.length > 0;
+  }
+
+  stateChartLabels: Label[] = [];
+
+  stateChartColors: Color[] = [
+    { backgroundColor: [] }
+  ];
+
+  stateChartData: number[] = [];
+
+  stateChartOptions: ChartOptions = {
     title: {
       display: true,
-      text: 'Node Availability',
+      text: 'Node State',
     },
     legend: {
       position: 'bottom',
     },
   }
 
-  private readonly jobMetricInstanceConfig: MeticInstanceConfig[] = [
+  healthChartLabels: Label[] = [];
+
+  healthChartColors: Color[] = [
+    { backgroundColor: [] }
+  ];
+
+  healthChartData: number[] = [];
+
+  healthChartOptions: ChartOptions = {
+    title: {
+      display: true,
+      text: 'Node Health',
+    },
+    legend: {
+      position: 'bottom',
+    },
+  }
+
+  private readonly jobMetricInstanceConfig: ChartConfigItem[] = [
     {
       name: 'Number of configuring jobs',
       alias: 'Configuring',
@@ -142,12 +194,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     //this.mediaQuery.addWidthChangeEventHandler(this.onWidthChange);
-    this.subscription = this.api.getClusterNodeAvailabilityInLoop(this.updateInterval).subscribe(data => {
-      this.nodeChartData = [
-        [data.Available, data.Total - data.Available]
-      ];
+
+    this.subscription = new Subscription();
+    let sub: any = this.api.repeat(this.api.getClusterNodeStatOfState(), this.updateInterval / 2).subscribe(data => {
+      setArray(this.stateChartData, data.map(e => e.Value));
+      setArray(this.stateChartLabels, data.map(e => e.Name));
+      this.stateChartColors[0].backgroundColor = data.map(e => this.nodeStateStatConfigMap.get(e.Name).color)
     });
-    let sub = this.api.getClusterJobMetricsInLoop(this.updateInterval).subscribe(data => {
+    this.subscription.add(sub);
+
+    sub = this.api.repeat(this.api.getClusterNodeStatOfHealth(), this.updateInterval / 2).subscribe(data => {
+      setArray(this.healthChartData, data.map(e => e.Value));
+      setArray(this.healthChartLabels, data.map(e => e.Name));
+      this.healthChartColors[0].backgroundColor = data.map(e => this.nodeHealthStatConfigMap.get(e.Name).color)
+    });
+    this.subscription.add(sub);
+
+    sub = this.api.getClusterJobMetricsInLoop(this.updateInterval).subscribe(data => {
       if (data.Instances.length == 0 || data.Instances[0].Values.length == 0) {
         return;
       }
