@@ -4,7 +4,6 @@ import { MatTableDataSource, MatDialog, PageEvent } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatSort, Sort } from '@angular/material/sort';
 import { Subscription, Observable } from 'rxjs'
-import { mergeMap } from 'rxjs/operators';
 import { Node } from '../../models/node'
 import { UserService } from '../../services/user.service'
 import { ApiService, NodeGroup, NodeGroupOperation } from '../../services/api.service';
@@ -279,6 +278,16 @@ export class NodeListComponent implements OnInit, OnDestroy {
       this.dataSource.data.forEach(node => this.selection.select(node));
   }
 
+  showColumnSelector(): void {
+    let data: ColumnSelectorInput = { selected: this.selectedColumns, columns: this.columns };
+    let dialogRef = this.dialog.open(ColumnSelectorComponent, { data })
+    dialogRef.afterClosed().subscribe((result: undefined | ColumnSelectorResult) => {
+      if (result) {
+        this.selectedColumns = result.selected;
+      }
+    });
+  }
+
   private operateOnSelectedNodes(operate: (node: Node) => Observable<Node>): void {
     for (let node of this.selection.selected) {
       let sub = operate(node).subscribe(data => {
@@ -304,14 +313,37 @@ export class NodeListComponent implements OnInit, OnDestroy {
     this.operateOnSelectedNodes(node => this.api.takeNodeOfflineAndWatch(node.Name, this.updateInterval, this.updateExpiredIn));
   }
 
-  showColumnSelector(): void {
-    let data: ColumnSelectorInput = { selected: this.selectedColumns, columns: this.columns };
-    let dialogRef = this.dialog.open(ColumnSelectorComponent, { data })
-    dialogRef.afterClosed().subscribe((result: undefined | ColumnSelectorResult) => {
-      if (result) {
-        this.selectedColumns = result.selected;
-      }
-    });
+  get canStart(): boolean {
+    //Can an on-premise node be started? If so, what's the initial state to be tested here?
+    return this.anySelected && this.selection.selected.every(e => e.State === 'NotDeployed');
+  }
+
+  start(): void {
+    this.operateOnSelectedNodes(node => this.api.startNodeAndWatch(node.Name, this.updateInterval, this.updateExpiredIn));
+  }
+
+  get canStop(): boolean {
+    return this.anySelected && this.selection.selected.every(e => !e.isHeadNode && e.isOnAzure && (e.State === 'Online' || e.State === 'Offline'));
+  }
+
+  stop(): void {
+    this.operateOnSelectedNodes(node => this.api.stopNodeAndWatch(node.Name, this.updateInterval, this.updateExpiredIn));
+  }
+
+  get canReboot(): boolean {
+    return this.anySelected && this.selection.selected.every(e => !e.isHeadNode && (e.isAzureIaasNode || e.isOnPremise) && e.State === 'Offline');
+  }
+
+  reboot(): void {
+    this.operateOnSelectedNodes(node => this.api.rebootNodeAndWatch(node.Name, this.updateInterval, this.updateExpiredIn));
+  }
+
+  get canShutdown(): boolean {
+    return this.anySelected && this.selection.selected.every(e => !e.isHeadNode && !e.isOnAzure && (e.State === 'Online' || e.State === 'Offline'));
+  }
+
+  shutdown(): void {
+    this.operateOnSelectedNodes(node => this.api.shutdownNodeAndWatch(node.Name, this.updateInterval, this.updateExpiredIn));
   }
 
   get adminView(): boolean {

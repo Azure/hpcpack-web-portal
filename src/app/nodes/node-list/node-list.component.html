@@ -14,6 +14,10 @@
           <ng-container *ngIf="adminView">
             <mat-list-item><button mat-button [disabled]="!canBringOnline" (click)="bringOnline()">Bring Online</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!canTakeOffline" (click)="takeOffline()">Take Offline</button></mat-list-item>
+            <mat-list-item><button mat-button [disabled]="!canStart" (click)="start()">Start</button></mat-list-item>
+            <mat-list-item><button mat-button [disabled]="!canStop" (click)="stop()">Stop</button></mat-list-item>
+            <mat-list-item><button mat-button [disabled]="!canReboot" (click)="reboot()">Reboot</button></mat-list-item>
+            <mat-list-item><button mat-button [disabled]="!canShutdown" (click)="shutdown()">Shutdown</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!anySelected" (click)="runCommand()">Run Command...</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!anySelected" (click)="manageGroups()">Manage Groups...</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!anySelected" (click)="viewJobs()">View Running Jobs</button></mat-list-item>

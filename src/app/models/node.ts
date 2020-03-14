@@ -13,10 +13,29 @@ export class Node implements INode {
   Cores: number;
   Sockets: number;
   HpcPackVersion: string;
+  OnAzure: boolean;
   Groups: Array<string>;
   Roles: Array<string>;
   InstalledServiceRoles: Array<NodeServiceRole>;
   ActiveServiceRoles: Array<NodeServiceRole>;
+
+  private azureGroups = new Set<string>(['AzureIaaSNodes', 'AzureBatchServicePools', 'AzureNodes']);
+
+  get isOnAzure(): boolean {
+    return this.OnAzure || this.Groups.findIndex(e => this.azureGroups.has(e)) >= 0;
+  }
+
+  get isOnPremise(): boolean {
+    return !this.isOnAzure
+  }
+
+  get isAzureIaasNode(): boolean {
+    return this.Groups.indexOf('AzureIaaSNodes') >= 0;
+  }
+
+  get isHeadNode(): boolean {
+    return this.ActiveServiceRoles.indexOf('HeadNode') >= 0;
+  }
 
   update(other: Node): void {
     for (let prop of Node.properties) {
@@ -34,6 +53,7 @@ export class Node implements INode {
     { name: 'Cores', label: 'Cores', type: Number },
     { name: 'Sockets', label: 'Sockets', type: Number },
     { name: 'HpcPackVersion', label: 'HPC Pack Version', type: String },
+    { name: 'OnAzure', label: 'On Azure', type: Boolean },
     { name: 'Groups', label: 'Groups', type: Strings },
     { name: 'Roles', label: 'Roles', type: Strings },
     { name: 'InstalledServiceRoles', label: 'Installed Service Roles', type: Strings },

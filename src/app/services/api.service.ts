@@ -117,6 +117,24 @@ export class ApiService extends DefaultService {
     return this.doNodeOperationAndWatch(name, 'takeOffline', 'Offline', updateInterval, updateExpiredIn);
   }
 
+  startNodeAndWatch(name: string, updateInterval: number, updateExpiredIn: number): Observable<Node> {
+    return this.doNodeOperationAndWatch(name, 'start', 'Offline', updateInterval, updateExpiredIn);
+  }
+
+  stopNodeAndWatch(name: string, updateInterval: number, updateExpiredIn: number): Observable<Node> {
+    return this.doNodeOperationAndWatch(name, 'stop', 'NotDeployed', updateInterval, updateExpiredIn);
+  }
+
+  //TODO: Is "Offline" the end state of reboot?
+  rebootNodeAndWatch(name: string, updateInterval: number, updateExpiredIn: number): Observable<Node> {
+    return this.doNodeOperationAndWatch(name, 'reboot', 'Offline', updateInterval, updateExpiredIn);
+  }
+
+  //TODO: What's the end state for shutdown?
+  shutdownNodeAndWatch(name: string, updateInterval: number, updateExpiredIn: number): Observable<Node> {
+    return this.doNodeOperationAndWatch(name, 'shutdown', 'Unknown', updateInterval, updateExpiredIn);
+  }
+
   doJobOperationAndWatch(operation: Observable<any>, jobId: number, updateInterval: number, updateExpiredIn: number): Observable<Job> {
     return new Observable<Job>(subscriber => {
       let looper: Looper<RestProperty[]>;
