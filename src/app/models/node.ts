@@ -15,7 +15,6 @@ export class Node implements INode {
   HpcPackVersion: string;
   OnAzure: boolean;
   Groups: Array<string>;
-  Roles: Array<string>;
   InstalledServiceRoles: Array<NodeServiceRole>;
   ActiveServiceRoles: Array<NodeServiceRole>;
 
@@ -55,7 +54,6 @@ export class Node implements INode {
     { name: 'HpcPackVersion', label: 'HPC Pack Version', type: String },
     { name: 'OnAzure', label: 'On Azure', type: Boolean },
     { name: 'Groups', label: 'Groups', type: Strings },
-    { name: 'Roles', label: 'Roles', type: Strings },
     { name: 'InstalledServiceRoles', label: 'Installed Service Roles', type: Strings },
     { name: 'ActiveServiceRoles', label: 'Active Service Roles', type: Strings },
   ].sort((a, b) => {
