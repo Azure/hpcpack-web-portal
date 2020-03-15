@@ -111,12 +111,12 @@ export class CommanderComponent implements OnInit, OnDestroy {
     }
     this.dataSource.data = this.nodeNames.map(name => new NodeOut(name));
     this.select(this.dataSource.data[0]);
-    this.nameToIndex = new Map(this.nodeNames.map((name, idx) => [name, idx]));
+    this.nameToIndex = new Map(this.nodeNames.map((name, idx) => [name.toLowerCase(), idx]));
     this.command = this.commandService.create(this.cmdLine, this.nodeNames);
     this.command.start(
       output => {
         console.log(output);
-        let idx = this.nameToIndex.get(output.nodeName);
+        let idx = this.nameToIndex.get(output.nodeName.toLowerCase());
         let nodeOut = this.dataSource.data[idx];
         nodeOut.update(output);
       },
