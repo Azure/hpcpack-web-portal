@@ -20,7 +20,7 @@
             <mat-list-item><button mat-button [disabled]="!canStop" (click)="stop()">Stop</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!canReboot" (click)="reboot()">Reboot</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!canShutdown" (click)="shutdown()">Shutdown</button></mat-list-item>
-            <mat-list-item><button mat-button [disabled]="!anySelected" (click)="runCommand()">Run Command...</button></mat-list-item>
+            <mat-list-item><button mat-button [disabled]="!canRunCommand" (click)="runCommand()">Run Command...</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!anySelected" (click)="manageGroups()">Manage Groups...</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!anySelected" (click)="viewJobs()">View Running Jobs</button></mat-list-item>
             <mat-list-item><button mat-button [disabled]="!anySelected" (click)="viewLogs()">View Logs</button></mat-list-item>

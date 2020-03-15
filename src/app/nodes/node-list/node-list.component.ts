@@ -370,6 +370,10 @@ export class NodeListComponent implements OnInit, OnDestroy {
     return this.userService.user.isAdmin;
   }
 
+  get canRunCommand(): boolean {
+    return this.anySelected && this.selection.selected.every(e => e.State === 'Online' || e.State === 'Offline');
+  }
+
   runCommand(): void {
     let nodeNames = this.selection.selected.map(node => node.Name);
     let dialogRef = this.dialog.open(CommanderComponent, { data: nodeNames, disableClose: true, minWidth: '50%' });
