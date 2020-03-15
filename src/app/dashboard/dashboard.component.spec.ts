@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { BaseChartDirectiveStub } from '../../test-stubs'
 import { ApiService } from '../services/api.service';
 import { DashboardComponent } from './dashboard.component';
@@ -14,6 +15,7 @@ describe('DashboardComponent', () => {
         BaseChartDirectiveStub,
       ],
       providers: [
+        { provide: Router, useValue: {} },
         { provide: ApiService, useValue: {} },
       ]
     })

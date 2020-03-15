@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterLinkDirectiveStub } from '../../test-stubs';
 import { MaterialModule } from '../material.module';
 import { ApiService } from '../services/api.service';
@@ -20,6 +21,8 @@ describe('JobsComponent', () => {
       ],
       declarations: [ RouterLinkDirectiveStub, JobsComponent ],
       providers: [
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: Router, useValue: {} },
         { provide: UserService, useValue: { userOptions: { jobOptions: {} } } },
         { provide: ApiService, useValue: {} },
       ]
