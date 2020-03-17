@@ -48,7 +48,6 @@ export class ChartsComponent implements OnInit, OnDestroy {
       this.subscription.unsubscribe();
       this.subscription = null;
     }
-    this.saveChartOptions();
   }
 
   addChart(metricName: string, timeWindow?: number): void {
@@ -63,12 +62,14 @@ export class ChartsComponent implements OnInit, OnDestroy {
       opt.timeWindow = value;
     })
     this.charts.set(chart, { name: metricName, timeWindow: chart.instance.timeWindow });
+    this.saveChartOptions();
   }
 
   removeChart(chart: ComponentRef<ChartComponent>): void {
     this.charts.delete(chart);
     let index = this.chartContainer.indexOf(chart.hostView);
     this.chartContainer.remove(index);
+    this.saveChartOptions();
   }
 
   private addCharts(): void {
