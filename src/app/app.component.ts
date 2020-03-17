@@ -17,10 +17,11 @@ interface NavItem {
 })
 export class AppComponent {
   constructor(
-    public mediaQuery: MediaQueryService,
+    private router: Router,
+    private mediaQuery: MediaQueryService,
     private authService: AuthService,
     private userService: UserService,
-    private router: Router) {}
+  ) {}
 
   get username(): string {
     return this.authService.authenticatedUser ? this.authService.authenticatedUser.username : 'Guest';
