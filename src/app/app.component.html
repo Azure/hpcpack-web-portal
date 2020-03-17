@@ -25,6 +25,7 @@
 
   <mat-menu #usermenu="matMenu" class="user-menu">
     <button mat-menu-item (click)="logout()">Log Out</button>
+    <button mat-menu-item (click)="checkUpdate()">Check for Updates</button>
     <button mat-menu-item (click)="clearLocalSettings()">Clear Local Settings</button>
     <div mat-menu-item><mat-slide-toggle [checked]="trackable" (change)="toggleTrackable($event.checked)">Allow Telemetry</mat-slide-toggle></div>
   </mat-menu>

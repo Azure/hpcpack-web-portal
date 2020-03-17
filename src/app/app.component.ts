@@ -5,6 +5,7 @@ import { AuthService } from './services/auth.service';
 import { UserService } from './services/user.service';
 import { MediaQueryService } from './services/media-query.service'
 import { GoogleAnalyticsService } from './services/google-analytics.service';
+import { ApiService } from './services/api.service';
 
 interface NavItem {
   link: string;
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
     private mediaQuery: MediaQueryService,
     private authService: AuthService,
     private userService: UserService,
+    private api: ApiService,
   ) {}
 
   ngOnInit() {
@@ -46,6 +48,13 @@ export class AppComponent implements OnInit {
       median: this.mediaQuery.medianWidth,
       big: this.mediaQuery.bigWidth,
     };
+  }
+
+  checkUpdate(): void {
+    this.api.getAppVersion().subscribe(ver => {
+      //TODO: Make the URL configurable.
+      window.open(`https://azure.github.io/hpcpack-web-portal/?myVersion=${ver}`);
+    });
   }
 
   get trackable(): boolean {
