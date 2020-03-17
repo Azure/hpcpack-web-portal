@@ -4,7 +4,8 @@ import { Observable, Subscriber } from 'rxjs'
 import { DefaultService, BASE_PATH, Configuration, NodeMetric, MetricData, NodeState, RestProperty } from '../api-client'
 import { Node, INode } from '../models/node'
 import { Job } from '../models/job'
-import { ILooper, Looper, ObservableCreator } from './looper.service'
+import { Looper, ObservableCreator } from './looper.service'
+import { map } from 'rxjs/operators';
 
 export * from '../api-client'
 
@@ -20,6 +21,10 @@ export class ApiService extends DefaultService {
     @Optional() configuration: Configuration
   ) {
     super(httpClient, basePath, configuration);
+  }
+
+  getAppVersion(): Observable<string> {
+    return this.httpClient.get(`${this.basePath}/portal/version`, { responseType: 'text' }).pipe(map(text => text.trim()));
   }
 
   repeat<T>(operation: Observable<T> | ObservableCreator<T>, interval: number): Observable<T> {
