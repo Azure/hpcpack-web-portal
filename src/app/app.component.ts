@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, Event, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
 import { UserService } from './services/user.service';
 import { MediaQueryService } from './services/media-query.service'
+import { GoogleAnalyticsService } from './services/google-analytics.service';
 
 interface NavItem {
   link: string;
@@ -15,13 +17,20 @@ interface NavItem {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   constructor(
     private router: Router,
+    private ga: GoogleAnalyticsService,
     private mediaQuery: MediaQueryService,
     private authService: AuthService,
     private userService: UserService,
   ) {}
+
+  ngOnInit() {
+    this.router.events.pipe(
+      filter((e: Event) => e instanceof NavigationEnd)
+    ).subscribe((e: NavigationEnd) => this.ga.track());
+  }
 
   get username(): string {
     return this.authService.authenticatedUser ? this.authService.authenticatedUser.username : 'Guest';
@@ -37,6 +46,14 @@ export class AppComponent {
       median: this.mediaQuery.medianWidth,
       big: this.mediaQuery.bigWidth,
     };
+  }
+
+  get trackable(): boolean {
+    return this.ga.enabled;
+  }
+
+  toggleTrackable(enabled: boolean): void {
+    this.ga.enabled = enabled;
   }
 
   clearLocalSettings(): void {

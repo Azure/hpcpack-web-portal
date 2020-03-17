@@ -52,4 +52,5 @@ export class UserOptions {
   taskOptions: TaskOptions = {};
   chartOptions: ChartOption[] = [];
   logOptions: LogOptions = {};
+  allowTracking: boolean;
 }

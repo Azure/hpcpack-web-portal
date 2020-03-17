@@ -22,12 +22,13 @@
       <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
-</div>
 
-<mat-menu #usermenu="matMenu">
-  <button mat-menu-item (click)="clearLocalSettings()">Clear Local Settings</button>
-  <button mat-menu-item (click)="logout()">Log Out</button>
-</mat-menu>
+  <mat-menu #usermenu="matMenu" class="user-menu">
+    <div mat-menu-item><mat-slide-toggle [checked]="trackable" (change)="toggleTrackable($event.checked)">Allow Telemetry</mat-slide-toggle></div>
+    <button mat-menu-item (click)="clearLocalSettings()">Clear Local Settings</button>
+    <button mat-menu-item (click)="logout()">Log Out</button>
+  </mat-menu>
+</div>
 
 <ng-template #guestView>
   <div class="app">

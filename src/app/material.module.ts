@@ -19,6 +19,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 
@@ -45,6 +46,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatDialogModule,
     MatMenuModule,
     OverlayModule,
+    MatSlideToggleModule,
   ]
 })
 export class MaterialModule { }

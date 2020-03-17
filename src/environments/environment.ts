@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  API_BASE_PATH: 'https://52.148.90.210/hpc'
+  API_BASE_PATH: 'https://52.148.90.210/hpc',
+  GA_TRACK_ID: 'id'
 };
 
 /*

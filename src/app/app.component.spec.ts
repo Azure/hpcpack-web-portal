@@ -5,6 +5,7 @@ import { RouterOutletComponentStub, RouterLinkDirectiveStub } from '../test-stub
 import { MaterialModule } from './material.module'
 import { AppComponent } from './app.component';
 import { AuthService } from './services/auth.service';
+import { GA_TRACK_ID } from './services/google-analytics.service';
 
 @Component({ selector: 'app-breadcrumb', template: '' })
 class BreadcrumbStubComponent {}
@@ -24,6 +25,7 @@ describe('AppComponent', () => {
       providers: [
         { provide: Router, useValue: {} },
         { provide: AuthService, useValue: {} },
+        { provide: GA_TRACK_ID, useValue: 'id' },
       ]
     }).compileComponents();
   }));

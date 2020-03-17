@@ -29,7 +29,6 @@ export class NodesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.router.url);
   }
 
   isActivePath(path: string): boolean {
