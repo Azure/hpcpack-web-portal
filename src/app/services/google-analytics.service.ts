@@ -31,10 +31,10 @@ export class GoogleAnalyticsService {
   }
 
   track(): void {
-    console.log(location.href);
     if (this.trackId && this.enabled) {
-      console.log('Tracking...');
       gtag('config', this.trackId, { 'page_location': location.href });
+      //NOTE: Do not change names of GA event action, category and label freely, to avoid polluting existing records.
+      gtag('event', 'browse', { event_category: location.hostname, event_label: location.pathname });
     }
   }
 }
