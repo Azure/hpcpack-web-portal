@@ -19,7 +19,14 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+* For production build, run `npm run-script build-prd`
+* For staging build, run `npm run-script build-stg`
+
+The build artifacts will be stored in the `dist/web-portal` directory.
+
+## Package
+
+To package the build artifacts and release the package, run `./make-zip {version}`. The `version` is typically like '1.2.3'. However, it can be arbitrary string, like 'dev'. Usually, Azure Pipeline will produce a package with the command and assign a proper value to the version.
 
 ## Running unit tests
 
