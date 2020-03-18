@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, InjectionToken, Inject } from '@angular/core';
 import { Router, Event, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
@@ -13,6 +13,8 @@ interface NavItem {
   icon: string;
 }
 
+export const UPDATE_URL = new InjectionToken<string>('updateUrl');
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -20,6 +22,7 @@ interface NavItem {
 })
 export class AppComponent implements OnInit {
   constructor(
+    @Inject(UPDATE_URL) private updateUrl: string,
     private router: Router,
     private ga: GoogleAnalyticsService,
     private mediaQuery: MediaQueryService,
@@ -52,8 +55,7 @@ export class AppComponent implements OnInit {
 
   checkUpdate(): void {
     this.api.getAppVersion().subscribe(ver => {
-      //TODO: Make the URL configurable.
-      window.open(`https://azure.github.io/hpcpack-web-portal/?myVersion=${ver}`);
+      window.open(`${this.updateUrl}?myVersion=${ver}`);
     });
   }
 

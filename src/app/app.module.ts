@@ -6,7 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { MaterialModule } from './material.module'
-import { AppComponent } from './app.component';
+import { AppComponent, UPDATE_URL } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { AuthService } from './services/auth.service';
@@ -90,6 +90,7 @@ const routes: Routes = [{
     ClusterMetricService,
     MesssageService,
     GoogleAnalyticsService,
+    { provide: UPDATE_URL, useValue: environment.UPDATE_URL },
     { provide: GA_TRACK_ID, useValue: environment.GA_TRACK_ID },
     { provide: BASE_PATH, useValue: environment.API_BASE_PATH },
     { provide: Configuration, useClass: ApiConfigService },

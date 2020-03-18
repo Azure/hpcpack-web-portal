@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterOutletComponentStub, RouterLinkDirectiveStub } from '../test-stubs'
 import { MaterialModule } from './material.module'
-import { AppComponent } from './app.component';
+import { AppComponent, UPDATE_URL } from './app.component';
 import { AuthService } from './services/auth.service';
 import { ApiService } from './services/api.service';
 import { GA_TRACK_ID } from './services/google-analytics.service';
@@ -28,6 +28,7 @@ describe('AppComponent', () => {
         { provide: AuthService, useValue: {} },
         { provide: ApiService, useValue: {} },
         { provide: GA_TRACK_ID, useValue: 'id' },
+        { provide: UPDATE_URL, useValue: 'url' },
       ]
     }).compileComponents();
   }));
