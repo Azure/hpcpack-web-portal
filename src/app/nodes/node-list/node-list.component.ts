@@ -359,7 +359,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   get canShutdown(): boolean {
-    return this.anySelected && this.selection.selected.every(e => !e.isHeadNode && !e.isOnAzure && (e.State === 'Online' || e.State === 'Offline'));
+    return this.anySelected && this.selection.selected.every(e => !e.isHeadNode && !e.isOnAzure && !e.isLinuxNode && (e.State === 'Online' || e.State === 'Offline'));
   }
 
   shutdown(): void {

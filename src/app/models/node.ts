@@ -21,7 +21,7 @@ export class Node implements INode {
   private azureGroups = new Set<string>(['AzureIaaSNodes', 'AzureBatchServicePools', 'AzureNodes']);
 
   get isOnAzure(): boolean {
-    return this.OnAzure || this.Groups.findIndex(e => this.azureGroups.has(e)) >= 0;
+    return this.OnAzure || (this.Groups && this.Groups.findIndex(e => this.azureGroups.has(e)) >= 0);
   }
 
   get isOnPremise(): boolean {
@@ -29,11 +29,15 @@ export class Node implements INode {
   }
 
   get isAzureIaasNode(): boolean {
-    return this.Groups.indexOf('AzureIaaSNodes') >= 0;
+    return this.Groups && this.Groups.indexOf('AzureIaaSNodes') >= 0;
   }
 
   get isHeadNode(): boolean {
-    return this.ActiveServiceRoles.indexOf('HeadNode') >= 0;
+    return this.ActiveServiceRoles && this.ActiveServiceRoles.indexOf('HeadNode') >= 0;
+  }
+
+  get isLinuxNode(): boolean {
+    return this.Groups && this.Groups.indexOf('LinuxNodes') >= 0;
   }
 
   update(other: Node): void {
