@@ -351,7 +351,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
   }
 
   get canReboot(): boolean {
-    return this.anySelected && this.selection.selected.every(e => !e.isHeadNode && (e.isAzureIaasNode || e.isOnPremise) && e.State === 'Offline');
+    return this.anySelected && this.selection.selected.every(e => !e.isHeadNode && !e.isLinuxNode && (e.isAzureIaasNode || e.isOnPremise) && e.State === 'Offline');
   }
 
   reboot(): void {
