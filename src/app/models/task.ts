@@ -51,6 +51,10 @@ export class Task {
   AutoRequeueCount: number;
   RequestedNodeGroup: string;
 
+  get Ended(): boolean {
+    return ['Finished', 'Failed', 'Canceled'].includes(this.State);
+  }
+
   update(other: Task): void {
     for (let p of Task.properties) {
       (this as any)[p.name] = (other as any)[p.name];

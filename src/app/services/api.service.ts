@@ -6,10 +6,13 @@ import { Node, INode } from '../models/node'
 import { Job } from '../models/job'
 import { Looper, ObservableCreator } from './looper.service'
 import { map } from 'rxjs/operators';
+import { Task } from '../models/task';
 
 export * from '../api-client'
 
 export type NodeOperation = 'start' | 'stop' | 'reboot' | 'shutdown' | 'bringOnline' | 'takeOffline';
+
+export type TaskOperation = 'cancel' | 'finish' | 'requeue';
 
 @Injectable({
   providedIn: 'root'
@@ -183,5 +186,89 @@ export class ApiService extends DefaultService {
 
   finishJobAndWatch(jobId: number, updateInterval: number, updateExpiredIn: number): Observable<Job> {
     return this.doJobOperationAndWatch(this.finishJob(jobId), jobId, updateInterval, updateExpiredIn);
+  }
+
+  doTaskOperationAndWatch(operation: TaskOperation, taskId: string, updateInterval: number, updateExpiredIn: number): Observable<Task> {
+    let action: Observable<any>;
+    let watch: Observable<RestProperty[]>;
+    let segments = taskId.split('.').map(e => Number(e));
+    if (segments.length == 2) {
+      watch = this.getTask(segments[0], segments[1]);
+      switch (operation) {
+        case 'cancel':
+          action = this.cancelTask(segments[0], segments[1]);
+          break;
+        case 'finish':
+          action = this.finishTask(segments[0], segments[1]);
+          break;
+        case 'requeue':
+          action = this.requeueTask(segments[0], segments[1]);
+          break;
+        default:
+          throw `Invalid operation "${operation}"!`;
+      }
+    }
+    else if (segments.length == 3) {
+      watch = this.getSubtask(segments[0], segments[1], segments[2]);
+      switch (operation) {
+        case 'cancel':
+          action = this.cancelSubtask(segments[0], segments[1], segments[2]);
+          break;
+        case 'finish':
+          action = this.finishSubtask(segments[0], segments[1], segments[2]);
+          break;
+        case 'requeue':
+          action = this.requeueSubtask(segments[0], segments[1], segments[2]);
+          break;
+        default:
+          throw `Invalid operation "${operation}"!`;
+      }
+    }
+    else {
+      throw `Invalid taskId "${taskId}"!`;
+    }
+
+    return new Observable<Task>(subscriber => {
+      let looper: Looper<RestProperty[]>;
+      let sub = action.subscribe(_ => {
+        looper = Looper.start(
+          watch,
+          {
+            next: (data, looper) => {
+              let task = Task.fromProperties(data);
+              subscriber.next(task);
+
+              if (task.Ended) {
+                looper.stop();
+              }
+            },
+            stop: () => {
+              subscriber.complete();
+            }
+          },
+          updateInterval,
+          updateExpiredIn
+        );
+        return () => looper.stop();
+      });
+      return () => {
+        sub.unsubscribe();
+        if (looper) {
+          looper.stop();
+        }
+      }
+    });
+  }
+
+  cancelTaskAndWatch(taskId: string, updateInterval: number, updateExpiredIn: number): Observable<Task> {
+    return this.doTaskOperationAndWatch('cancel', taskId, updateInterval, updateExpiredIn);
+  }
+
+  finishTaskAndWatch(taskId: string, updateInterval: number, updateExpiredIn: number): Observable<Task> {
+    return this.doTaskOperationAndWatch('finish', taskId, updateInterval, updateExpiredIn);
+  }
+
+  requeueTaskAndWatch(taskId: string, updateInterval: number, updateExpiredIn: number): Observable<Task> {
+    return this.doTaskOperationAndWatch('requeue', taskId, updateInterval, updateExpiredIn);
   }
 }

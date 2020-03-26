@@ -6,7 +6,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { Subscription } from 'rxjs';
 import { Task } from '../../models/task';
 import { UserService } from '../../services/user.service';
-import { ApiService } from '../../services/api.service';
+import { ApiService, TaskOperation } from '../../services/api.service';
 import { ColumnDef, ColumnSelectorComponent, ColumnSelectorInput, ColumnSelectorResult }
   from '../../shared-components/column-selector/column-selector.component';
 import { CollapsablePanelOptions } from 'src/app/shared-components/collapsable-panel/collapsable-panel.component';
@@ -51,7 +51,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   get displayedColumns(): string[] {
-    return this.selectedColumns;
+    return ['Select'].concat(this.selectedColumns);
   }
 
   private orderByValue: string;
@@ -129,6 +129,12 @@ export class TaskListComponent implements OnInit, OnDestroy {
     }
   };
 
+  private updateInterval = 1500;
+
+  private updateExpiredIn = 5 * 60 * 1000;
+
+  private subscription: Subscription = new Subscription();
+
   private jobId: number;
 
   panelOptions: CollapsablePanelOptions;
@@ -165,6 +171,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
     }
     this.pageLoading = false;
     this.pageDataSub = null;
+    this.subscription.unsubscribe();
+    this.subscription = new Subscription();
     this.selection.clear();
     this.dataSource.data = [];
   }
@@ -222,5 +230,74 @@ export class TaskListComponent implements OnInit, OnDestroy {
         this.selectedColumns = result.selected;
       }
     });
+  }
+
+  get anySelected(): boolean {
+    return this.selection.selected.length > 0;
+  }
+
+  get allSelected(): boolean {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected == numRows;
+  }
+
+  get masterChecked(): boolean {
+    return this.selection.hasValue() && this.allSelected;
+  }
+
+  get masterIndeterminate(): boolean {
+    return this.selection.hasValue() && !this.allSelected;
+  }
+
+  masterToggle() {
+    this.allSelected ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(item => this.selection.select(item));
+  }
+
+  private updateTask(task: Task): void {
+    let old = this.dataSource.data.find(e => e.TaskId === task.TaskId)
+    if (old) {
+      old.update(task);
+    }
+  }
+
+  private operateOnSelectedTasks(operation: TaskOperation): void {
+    for (let task of this.selection.selected) {
+      let sub = this.api.doTaskOperationAndWatch(operation, task.TaskId, this.updateInterval, this.updateExpiredIn).subscribe(newTask => {
+        this.updateTask(newTask);
+      });
+      this.subscription.add(sub);
+    }
+  }
+
+  private readonly cancelableStates: Set<string> = new Set(['Configuring', 'Submitted', 'Validating', 'Queued', 'Dispatching', 'Running']);
+
+  get canCancelTasks(): boolean {
+    if (!this.anySelected) {
+      return false;
+    }
+    return this.selection.selected.every(e => this.cancelableStates.has(e.State));
+  }
+
+  cancelTasks(): void {
+    this.operateOnSelectedTasks('cancel');
+  }
+
+  finishTasks(): void {
+    this.operateOnSelectedTasks('finish');
+  }
+
+  get canRequeueTasks(): boolean {
+    if (!this.anySelected) {
+      return false;
+    }
+    //TODO: When parent job is over(either finished or failed), a task can not be requeued.
+    return this.selection.selected.every(e => e.State === 'Failed' || e.State === 'Canceled');
+  }
+
+  requeueTasks(): void {
+    this.operateOnSelectedTasks('requeue');
   }
 }

@@ -3,6 +3,9 @@
     <mat-list>
       <mat-list-item><button mat-button (click)="showColumnSelector()">Select Columns...</button></mat-list-item>
       <mat-list-item><button mat-button (click)="refresh()">Refresh Data</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!canCancelTasks" (click)="cancelTasks()">Cancel</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!canCancelTasks" (click)="finishTasks()">Finish</button></mat-list-item>
+      <mat-list-item><button mat-button [disabled]="!canRequeueTasks" (click)="requeueTasks()">Requeue</button></mat-list-item>
     </mat-list>
   </ng-template>
 
@@ -10,6 +13,21 @@
     <div class="table-container" #tableContainer>
       <table mat-table [dataSource]="dataSource" matSort [matSortDisableClear]="true" [matSortActive]="orderBy"
         [matSortDirection]="asc ? 'asc' : 'desc'" (matSortChange)="onSortChange($event)">
+
+        <ng-container matColumnDef="Select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="masterToggle()"
+                          [checked]="masterChecked"
+                          [indeterminate]="masterIndeterminate">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="selection.toggle(row)"
+                          [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
 
         <ng-container *ngFor="let column of columns" matColumnDef="{{column.name}}">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.label}}</th>
