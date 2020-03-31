@@ -74,7 +74,7 @@ export class OperationLogComponent implements OnInit, OnDestroy {
       },
       error: err => {
         this.loadingData = false;
-        console.log(err);
+        console.error(err);
       }
     });
   }

@@ -151,7 +151,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.paramMap.subscribe(map => {
       this.jobId = Number(map.get('id'));
-      console.log(this.jobId);
       this.refresh();
     });
   }
@@ -193,20 +192,18 @@ export class TaskListComponent implements OnInit, OnDestroy {
       },
       error: err => {
         this.pageLoading = false;
-        console.log(err);
+        console.error(err);
       }
     });
   }
 
   onPageChange(e: PageEvent): void {
-    console.log(e);
     this.pageIndex = e.pageIndex;
     this.pageSize = e.pageSize;
     this.refresh();
   }
 
   onSortChange(e: Sort): void {
-    console.log(e);
     this.orderBy = e.active;
     this.asc = (e.direction == "asc");
     if (this.pageSize < this.rowCount) {

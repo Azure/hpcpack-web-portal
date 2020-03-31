@@ -200,7 +200,7 @@ export class NodeListComponent implements OnInit, OnDestroy {
       },
       error: err => {
         this.loadingData = false;
-        console.log(err);
+        console.error(err);
       }
     });
   }
@@ -225,7 +225,6 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   //TODO: change URL accordingly?
   onPageChange(e: PageEvent): void {
-    console.log(e);
     this.pageIndex = e.pageIndex;
     this.pageSize = e.pageSize;
     this.refresh();
@@ -233,7 +232,6 @@ export class NodeListComponent implements OnInit, OnDestroy {
 
   //TODO: change URL accordingly?
   onSortChange(e: Sort): void {
-    console.log(e);
     this.orderBy = e.active;
     this.asc = (e.direction == "asc");
     if (!this.noPagination && this.pageSize < this.rowCount) {

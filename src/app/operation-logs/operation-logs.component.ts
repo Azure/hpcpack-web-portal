@@ -129,11 +129,9 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
     fromEvent<Event>(this.tableContainerRef.nativeElement, 'scroll')
       .pipe(debounceTime(500))
       .subscribe(e => this.onTableScroll(e));
-    console.log("Listening to scroll");
   }
 
   onTableScroll(e: Event): void {
-    console.log('Scrolling...');
     this.loadData();
   }
 
@@ -228,7 +226,7 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
       },
       error: err => {
         this.loadingData = false;
-        console.log(err);
+        console.error(err);
       }
     });
   }

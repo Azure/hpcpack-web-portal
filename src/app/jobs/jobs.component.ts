@@ -197,7 +197,7 @@ export class JobsComponent implements OnInit, OnDestroy {
       },
       error: err => {
         this.pageLoading = false;
-        console.log(err);
+        console.error(err);
       }
     });
   }
@@ -216,20 +216,18 @@ export class JobsComponent implements OnInit, OnDestroy {
       },
       error: err => {
         this.pageLoading = false;
-        console.log(err);
+        console.error(err);
       }
     });
   }
 
   onPageChange(e: PageEvent): void {
-    console.log(e);
     this.pageIndex = e.pageIndex;
     this.pageSize = e.pageSize;
     this.refresh();
   }
 
   onSortChange(e: Sort): void {
-    console.log(e);
     this.orderBy = e.active;
     this.asc = (e.direction == "asc");
     if (!this.noPagination && this.pageSize < this.rowCount) {

@@ -40,7 +40,7 @@ export class ApiService extends DefaultService {
           },
           error: (err) => {
           //An error handler here will prevent an error from stopping the loop
-          console.log(err);
+          console.error(err);
           }
         },
         interval
