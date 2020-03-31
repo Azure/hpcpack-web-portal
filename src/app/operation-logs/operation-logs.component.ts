@@ -74,8 +74,11 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
   //Cursor for loadMoreData, not simply meaning "now".
   private currentTime: Date;
 
-  //Get 14 days' log in one time
+  //Get 14 days' log once
   private readonly timeSpan = 1000 * 3600 * 24 * 14;
+
+  //Get the number of logs once at most
+  private readonly limit = 100;
 
   panelOptions: CollapsablePanelOptions;
 
@@ -211,15 +214,26 @@ export class OperationLogsComponent implements OnInit, AfterViewInit, OnDestroy 
     if (this.nodes) {
       nodes = this.nodes.join(',');
     }
-    this.dataSubscription = this.api.getClusterOperations(null, fromTime, this.currentTime, nodes).subscribe({
+    this.dataSubscription = this.api.getClusterOperations(null, fromTime, this.currentTime, this.limit, nodes).subscribe({
       next: res => {
         this.loadingData = false;
-        //Move cursor for next loadMoreData
-        this.currentTime = new Date(fromTime.getTime() + 1);
+
+        let data: OperationLog[] = null;
         if (res && res.length > 0) {
-          let data = res.map(e => OperationLog.fromJson(e));
+          data = res.map(e => OperationLog.fromJson(e));
           this.dataSource.data = this.dataSource.data.concat(data);
         }
+
+        //Move cursor for next loadMoreData
+        if (!data || data.length < this.limit) {
+          this.currentTime = new Date(fromTime.getTime() + 1);
+        }
+        else {
+          let last = data[data.length - 1];
+          //NOTE: If multiple events happened at the same last.UpdateTime, then here MAY hide some from showing.
+          this.currentTime = new Date(last.UpdateTime.getTime());
+        }
+
         if (onDataLoad) {
           onDataLoad();
         }
