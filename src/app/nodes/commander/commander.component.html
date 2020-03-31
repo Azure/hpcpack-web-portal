@@ -34,6 +34,7 @@
       </pre>
     </div>
   </div>
+  <mat-progress-bar class="progress" *ngIf="running" mode="indeterminate"></mat-progress-bar>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button [mat-dialog-close]="undefined">Close</button>

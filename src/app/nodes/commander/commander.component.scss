@@ -27,6 +27,10 @@ mat-dialog-content {
       tr:hover {
         cursor: pointer;
       }
+
+      td.mat-cell:first-of-type, th.mat-header-cell:first-of-type {
+        padding-right: 0.5em;
+      }
     }
 
     .output {
@@ -48,6 +52,10 @@ mat-dialog-content {
         color: red;
       }
     }
+  }
+
+  .progress {
+    margin: 1em 0 0;
   }
 }
 
