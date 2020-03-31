@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  API_BASE_PATH: 'https://52.148.90.210/hpc',
+  API_BASE_PATH: 'https://hpc-32420102-2/hpc',
   GA_TRACK_ID: 'id',
   UPDATE_URL: 'http://localhost:4000/hpcpack-web-portal/',
 };
