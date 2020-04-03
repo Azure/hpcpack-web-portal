@@ -1,6 +1,8 @@
 mat-dialog-content {
   display: flex;
   flex-direction: column;
+  min-width: 60vw;
+  min-height: 50vh;
 
   .command {
     display: flex;
