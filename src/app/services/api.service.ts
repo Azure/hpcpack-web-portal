@@ -7,6 +7,7 @@ import { Job } from '../models/job'
 import { Looper, ObservableCreator } from './looper.service'
 import { map } from 'rxjs/operators';
 import { Task } from '../models/task';
+import { OperationLog } from '../models/operation-log';
 
 export * from '../api-client'
 
@@ -270,5 +271,35 @@ export class ApiService extends DefaultService {
 
   requeueTaskAndWatch(taskId: string, updateInterval: number, updateExpiredIn: number): Observable<Task> {
     return this.doTaskOperationAndWatch('requeue', taskId, updateInterval, updateExpiredIn);
+  }
+
+  getClusterOperationUntilDone(logId: string, updateInterval: number, updateExpiredIn: number): Observable<OperationLog> {
+    return new Observable<OperationLog>(subscriber => {
+      let looper = Looper.start(
+        this.getClusterOperation(logId),
+        {
+          next: (data, looper) => {
+            let obj = OperationLog.fromJson(data);
+            let end = obj.State != 'Executing';
+            subscriber.next(obj);
+            if (end) {
+              looper.stop();
+            }
+          },
+          error: (err, looper) => {
+            subscriber.error(err);
+            looper.stop();
+          },
+          stop: () => {
+            subscriber.complete();
+          }
+        },
+        updateInterval,
+        updateExpiredIn
+      );
+      return () => {
+        looper.stop();
+      }
+    });
   }
 }

@@ -65,16 +65,16 @@ export class OperationLogComponent implements OnInit, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
     this.loadingData = true;
-    this.dataSubscription = this.api.getClusterOperation(this.log.Id).subscribe({
-      next: res => {
-        this.loadingData = false;
-        let obj = OperationLog.fromJson(res);
+    this.dataSubscription = this.api.getClusterOperationUntilDone(this.log.Id, 5 * 1000, 30 * 60 * 1000).subscribe({
+      next: obj => {
         this.log.update(obj);
         this.dataSource.data = this.log.Entries;
       },
       error: err => {
-        this.loadingData = false;
         console.error(err);
+      },
+      complete: () => {
+        this.loadingData = false;
       }
     });
   }
