@@ -22,7 +22,7 @@ The web portal is accessible at `https://{host}/hpc/portal`, in which the `host`
 
 ![Logs]({{ '/assets/media/Logs.png'| relative_url }} "Logs")
 
-__Note: For best user experience in using the web portal, we recommend Chrome and Firefox . You may experience problems in other browsers.__
+__Note: For best user experience in using the web portal, we recommend Chrome and Firefox. You may experience problems in other browsers.__
 
 ## Update the Web Portal
 
