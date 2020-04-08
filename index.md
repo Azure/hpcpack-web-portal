@@ -22,6 +22,8 @@ The web portal is accessible at `https://{host}/hpc/portal`, in which the `host`
 
 ![Logs]({{ '/assets/media/Logs.png'| relative_url }} "Logs")
 
+__Note: For best user experience in using the web portal, we recommend Chrome and Firefox . You may experience problems in other browsers.__
+
 ## Update the Web Portal
 
 The web portal is a Single Page Application(SPA) and can be updated in a standalone way, out of HPC Pack's release cycle. You can check its releases at [{{ site.github.repository_url }}/releases]({{ site.github.repository_url }}/releases).
