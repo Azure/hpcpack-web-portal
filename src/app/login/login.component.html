@@ -15,8 +15,12 @@
 
       <button type="submit" mat-flat-button color="primary" [disabled]="!userCred.valid">Login</button>
 
-      <p class="error">
+      <p class="error" *ngIf="error">
         <span>{{error}}</span>
+      </p>
+
+      <p class="note">
+        Note: For best user experience, Chrome and Firefox are recommended. You may experience problems using other browsers.
       </p>
     </form>
     <div class="space"></div>
