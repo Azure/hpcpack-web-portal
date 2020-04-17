@@ -11,7 +11,7 @@ export type AuthStateChangeHandler = (authenticated: boolean) => void;
 export class UserService extends LocalStorageService {
   protected readonly userKey = 'user';
 
-  private handler: AuthStateChangeHandler;
+  private authHandlers: Set<AuthStateChangeHandler> = new Set<AuthStateChangeHandler>();
 
   get user(): User {
     return this.getProperty(this.userKey);
@@ -33,17 +33,17 @@ export class UserService extends LocalStorageService {
 
   set authenticated(value: boolean) {
     this.setProperty(this.authenticatedKey, value);
-    if (this.handler) {
-      this.handler(value);
+    for (let h of this.authHandlers) {
+      h(value);
     }
   }
 
-  get onAuthStateChange(): AuthStateChangeHandler {
-    return this.handler;
+  AddAuthStateChangeHandler(handler: AuthStateChangeHandler): void {
+    this.authHandlers.add(handler);
   }
 
-  set onAuthStateChange(handler: AuthStateChangeHandler) {
-    this.handler = handler;
+  RemoveAuthStateChangeHandler(handler: AuthStateChangeHandler): void {
+    this.authHandlers.delete(handler);
   }
 
   protected get userOptionsKey(): string {

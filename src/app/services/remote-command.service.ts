@@ -1,24 +1,26 @@
 import { Injectable, Inject } from '@angular/core';
 import { BASE_PATH } from './api.service'
-import { UserService } from './user.service'
+import { UserService, AuthStateChangeHandler } from './user.service'
 
 @Injectable({
   providedIn: 'root'
 })
 export class RemoteCommandService {
+  private authHandler: AuthStateChangeHandler = (authenticated) => {
+    if (authenticated) {
+      this.setupJQuery();
+    }
+    else {
+      this.resetJQuery();
+    }
+  }
+
   constructor(
     @Inject(BASE_PATH) private basePath: string,
     private userService: UserService,
   ) {
     this.setupJQuery();
-    this.userService.onAuthStateChange = (authenticated) => {
-      if (authenticated) {
-        this.setupJQuery();
-      }
-      else {
-        this.resetJQuery();
-      }
-    }
+    this.userService.AddAuthStateChangeHandler(this.authHandler);
   }
 
   private setupJQuery(): void {
