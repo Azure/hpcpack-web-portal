@@ -20,7 +20,7 @@ describe('CommanderComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: ['a', 'b', 'c'] },
         { provide: FormBuilder, useValue: { control: (x: string) => {} } },
         { provide: BASE_PATH, useValue: '/' },
-        { provide: UserService, useValue: { user: {}} },
+        { provide: UserService, useValue: { user: {}, AddAuthStateChangeHandler: (a: any) => {} } },
         //{ provide: RemoteCommandService, useValue: {} },
       ]
     })

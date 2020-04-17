@@ -7,7 +7,7 @@ describe('RemoteCommandService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       { provide: BASE_PATH, useValue: '/' },
-      { provide: UserService, useValue: { user: {}} },
+      { provide: UserService, useValue: { user: {}, AddAuthStateChangeHandler: (a: any) => {} } },
     ]
   }));
 
