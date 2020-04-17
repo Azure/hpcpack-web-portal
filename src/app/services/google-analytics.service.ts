@@ -37,4 +37,11 @@ export class GoogleAnalyticsService {
       gtag('event', 'browse', { event_category: location.hostname, event_label: location.pathname });
     }
   }
+
+  trackEvent(action: string, category: string, label: string): void {
+    if (this.trackId && this.enabled) {
+      //NOTE: Do not change names of GA event action, category and label freely, to avoid polluting existing records.
+      gtag('event', action, { event_category: category, event_label: label });
+    }
+  }
 }

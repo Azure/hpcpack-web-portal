@@ -2,7 +2,7 @@ import { Component, OnInit, InjectionToken, Inject } from '@angular/core';
 import { Router, Event, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
-import { UserService } from './services/user.service';
+import { UserService, AuthStateChangeHandler } from './services/user.service';
 import { MediaQueryService } from './services/media-query.service'
 import { GoogleAnalyticsService } from './services/google-analytics.service';
 import { ApiService } from './services/api.service';
@@ -35,6 +35,16 @@ export class AppComponent implements OnInit {
     this.router.events.pipe(
       filter((e: Event) => e instanceof NavigationEnd)
     ).subscribe((e: NavigationEnd) => this.ga.track());
+    this.userService.AddAuthStateChangeHandler(this.authHandler);
+  }
+
+  private authHandler: AuthStateChangeHandler = (authenticated) => {
+    if (authenticated && this.ga.enabled) {
+      this.api.getClusterInfo().subscribe(info => {
+        this.ga.trackEvent('sub_and_dep', info.SubscriptionId, info.DeploymentId);
+        this.ga.trackEvent('dep_and_host', info.DeploymentId, location.hostname);
+      });
+    }
   }
 
   get username(): string {
