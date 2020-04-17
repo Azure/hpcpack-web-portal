@@ -40,9 +40,8 @@ export class AppComponent implements OnInit {
 
   private authHandler: AuthStateChangeHandler = (authenticated) => {
     if (authenticated && this.ga.enabled) {
-      this.api.getClusterInfo().subscribe(info => {
-        this.ga.trackEvent('sub_and_dep', info.SubscriptionId, info.DeploymentId);
-        this.ga.trackEvent('dep_and_host', info.DeploymentId, location.hostname);
+      this.api.getClusterSummary().subscribe(summary => {
+        this.ga.trackEvent('summary', `${summary.SubscriptionId}:${summary.DeploymentId}`, JSON.stringify(summary));
       });
     }
   }

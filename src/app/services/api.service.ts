@@ -1,7 +1,7 @@
 import { Injectable, Optional, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subscriber } from 'rxjs'
-import { DefaultService, BASE_PATH, Configuration, NodeMetric, MetricData, NodeState, RestProperty } from '../api-client'
+import { Observable, forkJoin } from 'rxjs'
+import { DefaultService, BASE_PATH, Configuration, NodeMetric, MetricData, NodeState, RestProperty, ClusterInfo } from '../api-client'
 import { Node, INode } from '../models/node'
 import { Job } from '../models/job'
 import { Looper, ObservableCreator } from './looper.service'
@@ -15,6 +15,28 @@ export type NodeOperation = 'start' | 'stop' | 'reboot' | 'shutdown' | 'bringOnl
 
 export type TaskOperation = 'cancel' | 'finish' | 'requeue';
 
+export class ClusterSummary implements ClusterInfo {
+  Host: string;
+
+  SubscriptionId: string;
+
+  DeploymentId: string;
+
+  Location: string;
+
+  Nodes: number;
+
+  NodesOnAzure: number;
+
+  BatchPools: number;
+
+  Cores: number;
+
+  Memory: number;
+
+  TimeStamp: Date;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,6 +47,42 @@ export class ApiService extends DefaultService {
     @Optional() configuration: Configuration
   ) {
     super(httpClient, basePath, configuration);
+  }
+
+  getClusterSummary(): Observable<ClusterSummary> {
+    return new Observable<ClusterSummary>(subscriber => {
+      let sub = forkJoin(this.getClusterInfo(), this.getClusterNodes()).subscribe(results => {
+        let clusterInfo = results[0];
+        let nodes = results[1];
+        let summary = new ClusterSummary();
+        summary.Host = location.hostname;
+        summary.SubscriptionId = clusterInfo.SubscriptionId;
+        summary.DeploymentId = clusterInfo.DeploymentId;
+        summary.Location = clusterInfo.Location;
+        summary.Nodes = nodes.length;
+        let nodesOnAzure = 0;
+        let batchPools = 0;
+        let cores = 0;
+        let memory = 0;
+        for (let node of nodes) {
+          if (node.OnAzure) {
+            nodesOnAzure++;
+          }
+          if (node.Groups.indexOf('AzureBatchServicePools') >= 0) {
+            batchPools++;
+          }
+          cores += node.Cores;
+          memory += node.MemorySize;
+        }
+        summary.NodesOnAzure = nodesOnAzure;
+        summary.BatchPools = batchPools;
+        summary.Cores = cores;
+        summary.Memory = memory;
+        summary.TimeStamp = new Date();
+        subscriber.next(summary);
+      });
+      return () => sub.unsubscribe();
+    });
   }
 
   getAppVersion(): Observable<string> {
