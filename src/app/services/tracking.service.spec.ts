@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TrackingService, GA_TRACK_ID } from './tracking.service';
+import { TrackingService, GA_TRACK_ID, AI_TRACK_ID } from './tracking.service';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
 import { ApiService } from './api.service';
@@ -12,6 +12,7 @@ describe('TrackingService', () => {
       { provide: ApiService, useValue: {} },
       { provide: UserService, useValue: { AddAuthStateChangeHandler: (x: any) => {} } },
       { provide: GA_TRACK_ID, useValue: 'id' },
+      { provide: AI_TRACK_ID, useValue: 'id' },
     ]
   }));
 
