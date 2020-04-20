@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GoogleAnalyticsService, GA_TRACK_ID } from './google-analytics.service';
+import { TrackingService, GA_TRACK_ID } from './tracking.service';
 import { UserService } from './user.service';
 
-describe('GoogleAnalyticsService', () => {
+describe('TrackingService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       { provide: UserService, useValue: { user: {}} },
@@ -12,7 +12,7 @@ describe('GoogleAnalyticsService', () => {
   }));
 
   it('should be created', () => {
-    const service: GoogleAnalyticsService = TestBed.get(GoogleAnalyticsService);
+    const service: TrackingService = TestBed.get(TrackingService);
     expect(service).toBeTruthy();
   });
 });

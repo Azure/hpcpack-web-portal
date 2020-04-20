@@ -6,7 +6,7 @@ import { MaterialModule } from './material.module'
 import { AppComponent, UPDATE_URL } from './app.component';
 import { AuthService } from './services/auth.service';
 import { ApiService } from './services/api.service';
-import { GA_TRACK_ID } from './services/google-analytics.service';
+import { GA_TRACK_ID } from './services/tracking.service';
 
 @Component({ selector: 'app-breadcrumb', template: '' })
 class BreadcrumbStubComponent {}

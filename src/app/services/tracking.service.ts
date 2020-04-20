@@ -8,7 +8,7 @@ export const GA_TRACK_ID = new InjectionToken<string>('gaTrackId');
 @Injectable({
   providedIn: 'root'
 })
-export class GoogleAnalyticsService {
+export class TrackingService {
   constructor(
     @Inject(GA_TRACK_ID) private trackId: string,
     private userService: UserService,

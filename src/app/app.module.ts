@@ -17,7 +17,7 @@ import { RemoteCommandService } from './services/remote-command.service'
 import { MediaQueryService } from './services/media-query.service'
 import { ClusterMetricService } from './services/cluster-metric.service'
 import { MesssageService } from './services/messsage.service';
-import { GoogleAnalyticsService, GA_TRACK_ID } from './services/google-analytics.service';
+import { TrackingService, GA_TRACK_ID } from './services/tracking.service';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { SharedComponentsModule } from './shared-components/shared-components.module'
 
@@ -89,7 +89,7 @@ const routes: Routes = [{
     MediaQueryService,
     ClusterMetricService,
     MesssageService,
-    GoogleAnalyticsService,
+    TrackingService,
     { provide: UPDATE_URL, useValue: environment.UPDATE_URL },
     { provide: GA_TRACK_ID, useValue: environment.GA_TRACK_ID },
     { provide: BASE_PATH, useValue: environment.API_BASE_PATH },

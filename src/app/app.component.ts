@@ -4,7 +4,7 @@ import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
 import { UserService, AuthStateChangeHandler } from './services/user.service';
 import { MediaQueryService } from './services/media-query.service'
-import { GoogleAnalyticsService } from './services/google-analytics.service';
+import { TrackingService } from './services/tracking.service';
 import { ApiService } from './services/api.service';
 
 interface NavItem {
@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
   constructor(
     @Inject(UPDATE_URL) private updateUrl: string,
     private router: Router,
-    private ga: GoogleAnalyticsService,
+    private ga: TrackingService,
     private mediaQuery: MediaQueryService,
     private authService: AuthService,
     private userService: UserService,
