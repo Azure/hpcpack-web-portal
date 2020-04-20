@@ -1,8 +1,7 @@
 import { Component, OnInit, InjectionToken, Inject } from '@angular/core';
-import { Router, Event, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
-import { UserService, AuthStateChangeHandler } from './services/user.service';
+import { UserService } from './services/user.service';
 import { MediaQueryService } from './services/media-query.service'
 import { TrackingService } from './services/tracking.service';
 import { ApiService } from './services/api.service';
@@ -24,27 +23,14 @@ export class AppComponent implements OnInit {
   constructor(
     @Inject(UPDATE_URL) private updateUrl: string,
     private router: Router,
-    private ga: TrackingService,
+    private tracking: TrackingService,
     private mediaQuery: MediaQueryService,
     private authService: AuthService,
     private userService: UserService,
     private api: ApiService,
   ) {}
 
-  ngOnInit() {
-    this.router.events.pipe(
-      filter((e: Event) => e instanceof NavigationEnd)
-    ).subscribe((e: NavigationEnd) => this.ga.track());
-    this.userService.AddAuthStateChangeHandler(this.authHandler);
-  }
-
-  private authHandler: AuthStateChangeHandler = (authenticated) => {
-    if (authenticated && this.ga.enabled) {
-      this.api.getClusterSummary().subscribe(summary => {
-        this.ga.trackEvent('summary', `${summary.SubscriptionId}:${summary.DeploymentId}`, JSON.stringify(summary));
-      });
-    }
-  }
+  ngOnInit() {}
 
   get username(): string {
     return this.authService.authenticatedUser ? this.authService.authenticatedUser.username : 'Guest';
@@ -69,11 +55,11 @@ export class AppComponent implements OnInit {
   }
 
   get trackable(): boolean {
-    return this.ga.enabled;
+    return this.tracking.enabled;
   }
 
   toggleTrackable(enabled: boolean): void {
-    this.ga.enabled = enabled;
+    this.tracking.enabled = enabled;
   }
 
   clearLocalSettings(): void {

@@ -6,7 +6,7 @@ import { MaterialModule } from './material.module'
 import { AppComponent, UPDATE_URL } from './app.component';
 import { AuthService } from './services/auth.service';
 import { ApiService } from './services/api.service';
-import { GA_TRACK_ID } from './services/tracking.service';
+import { TrackingService, GA_TRACK_ID } from './services/tracking.service';
 
 @Component({ selector: 'app-breadcrumb', template: '' })
 class BreadcrumbStubComponent {}
@@ -27,6 +27,7 @@ describe('AppComponent', () => {
         { provide: Router, useValue: {} },
         { provide: AuthService, useValue: {} },
         { provide: ApiService, useValue: {} },
+        { provide: TrackingService, useValue: {} },
         { provide: GA_TRACK_ID, useValue: 'id' },
         { provide: UPDATE_URL, useValue: 'url' },
       ]
