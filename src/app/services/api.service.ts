@@ -32,6 +32,10 @@ export class ClusterSummary implements ClusterInfo {
 
   Cores: number;
 
+  CoresOnAzure: number;
+
+  CoresInBatch: number;
+
   Memory: number;
 
   TimeStamp: Date;
@@ -63,20 +67,31 @@ export class ApiService extends DefaultService {
         let nodesOnAzure = 0;
         let batchPools = 0;
         let cores = 0;
+        let coresOnAzure = 0;
+        let coresInBatch = 0;
         let memory = 0;
         for (let node of nodes) {
-          if (node.OnAzure) {
-            nodesOnAzure++;
+          try {
+            if (node.OnAzure) {
+              nodesOnAzure++;
+              coresOnAzure += node.Cores;
+            }
+            if (node.Groups.indexOf('AzureBatchServicePools') >= 0) {
+              batchPools++;
+              coresInBatch += node.Cores;
+            }
+            cores += node.Cores;
+            memory += node.MemorySize;
           }
-          if (node.Groups.indexOf('AzureBatchServicePools') >= 0) {
-            batchPools++;
+          catch(e) {
+            console.warn(e);
           }
-          cores += node.Cores;
-          memory += node.MemorySize;
         }
         summary.NodesOnAzure = nodesOnAzure;
         summary.BatchPools = batchPools;
         summary.Cores = cores;
+        summary.CoresOnAzure = coresOnAzure;
+        summary.CoresInBatch = coresInBatch;
         summary.Memory = memory;
         summary.TimeStamp = new Date();
         subscriber.next(summary);
