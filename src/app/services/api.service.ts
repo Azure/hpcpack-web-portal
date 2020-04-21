@@ -18,11 +18,17 @@ export type TaskOperation = 'cancel' | 'finish' | 'requeue';
 export class ClusterSummary implements ClusterInfo {
   Host: string;
 
+  ServerVersion: string;
+
+  PortalVersion: string;
+
   SubscriptionId: string;
 
   DeploymentId: string;
 
   Location: string;
+
+  HeadNodes: number;
 
   Nodes: number;
 
@@ -37,6 +43,10 @@ export class ClusterSummary implements ClusterInfo {
   CoresInBatch: number;
 
   Memory: number;
+
+  MemoryOnAzure: number;
+
+  MemoryInBatch: number;
 
   TimeStamp: Date;
 }
@@ -55,30 +65,44 @@ export class ApiService extends DefaultService {
 
   getClusterSummary(): Observable<ClusterSummary> {
     return new Observable<ClusterSummary>(subscriber => {
-      let sub = forkJoin(this.getClusterInfo(), this.getClusterNodes()).subscribe(results => {
+      let sub = forkJoin(this.getClusterInfo(), this.getClusterNodes(), this.getAppVersion()).subscribe(results => {
         let clusterInfo = results[0];
         let nodes = results[1];
+        let appVersion = results[2];
         let summary = new ClusterSummary();
         summary.Host = location.hostname;
+        summary.PortalVersion = appVersion;
         summary.SubscriptionId = clusterInfo.SubscriptionId;
         summary.DeploymentId = clusterInfo.DeploymentId;
         summary.Location = clusterInfo.Location;
         summary.Nodes = nodes.length;
+        let headNodes = 0;
         let nodesOnAzure = 0;
         let batchPools = 0;
         let cores = 0;
         let coresOnAzure = 0;
         let coresInBatch = 0;
         let memory = 0;
+        let memoryOnAzure = 0;
+        let memoryInBatch = 0;
+        let version: string;
         for (let node of nodes) {
           try {
             if (node.OnAzure) {
               nodesOnAzure++;
               coresOnAzure += node.Cores;
+              memoryOnAzure += node.MemorySize;
             }
             if (node.Groups.indexOf('AzureBatchServicePools') >= 0) {
               batchPools++;
               coresInBatch += node.Cores;
+              memoryInBatch += node.MemorySize;
+            }
+            else if (node.Groups.indexOf('HeadNodes') >= 0) {
+              headNodes++;
+              if (!version) {
+                version = node.HpcPackVersion;
+              }
             }
             cores += node.Cores;
             memory += node.MemorySize;
@@ -87,12 +111,16 @@ export class ApiService extends DefaultService {
             console.warn(e);
           }
         }
+        summary.ServerVersion = version;
+        summary.HeadNodes = headNodes;
         summary.NodesOnAzure = nodesOnAzure;
         summary.BatchPools = batchPools;
         summary.Cores = cores;
         summary.CoresOnAzure = coresOnAzure;
         summary.CoresInBatch = coresInBatch;
         summary.Memory = memory;
+        summary.MemoryOnAzure = memoryOnAzure;
+        summary.MemoryInBatch = memoryInBatch;
         summary.TimeStamp = new Date();
         subscriber.next(summary);
       });

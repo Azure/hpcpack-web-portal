@@ -27,7 +27,7 @@ export class TrackingService {
     this.ai = new ApplicationInsights({
       config: {
         instrumentationKey: this.aiTrackId,
-        //disableAjaxTracking: true,
+        disableAjaxTracking: true,
       }
     });
     this.ai.loadAppInsights();
