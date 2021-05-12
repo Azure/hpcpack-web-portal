@@ -26,7 +26,7 @@
     "@angular/platform-browser-dynamic": "~8.2.0",
     "@angular/router": "~8.2.0",
     "@microsoft/applicationinsights-web": "^2.5.4",
-    "chart.js": "^2.9.2",
+    "chart.js": "^2.9.4",
     "core-js": "^3.4.1",
     "hammerjs": "^2.0.8",
     "jquery": "^3.4.1",
